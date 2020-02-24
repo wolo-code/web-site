@@ -1,0 +1,70 @@
+.download-hash {
+	font-size: 12px;
+	display: block;
+	color: #ccc!important
+}
+
+.download-hash-value {
+	font-family: consolas;
+	color: #c9c9c9!important
+}
+
+#download-list {
+	text-align: center;
+	margin: auto;
+	padding: 6px 16px 0 0;
+	overflow: hidden;
+	display: inline-block;
+	float: right
+}
+
+#download-pwa {
+	padding-left: 6px;
+	min-width: 70px;
+	display: inline-block
+}
+
+#download-windows {
+	padding: 5px 0 5px 12px;
+	display: inline-block
+}
+
+#download-windows >span {
+	width: 33px;
+	height: 33px;
+	display: block
+}
+
+#download-android-bottom {
+	width: 136px
+}
+
+.download {
+	display: inline-block;
+	margin: 10px 10px 4px;
+}
+
+.available span {
+	display: block;
+	color: #444!important;
+	padding-bottom: 4px;
+	font-size: smaller;
+}
+
+.coming-soon span {
+	display: block;
+	color: #888!important;
+	padding-bottom: 4px
+}
+
+span.download-android {
+	width: 136px
+}
+
+.download-content-list-2 {
+	padding-left: 28px!important
+}
+
+#download_version {
+	font-size: smaller;
+}

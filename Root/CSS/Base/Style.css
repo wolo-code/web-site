@@ -1,0 +1,35 @@
+strong {
+	color: #69b7cf !important;
+}
+
+ul li firstChild {
+	color: #69b7cf;
+}
+
+ul li span {
+	color: #555;
+}
+
+.bullet {
+	padding: 0 8px 0 5px;
+	color: #c8c8c8 !important;
+	font-size: 0.3em;
+	display: none
+}
+
+.list-dash {
+	list-style-type: none;
+	padding-left: 16px;
+}
+
+.list-dash li {
+	margin-bottom: 10px;
+}
+
+.tba {
+	color: #ccc;
+}
+
+.wcode {
+	font-size: larger;
+}

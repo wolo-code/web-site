@@ -1,0 +1,12 @@
+Id	Label	Title	JS	Description	Flags
+root	Wolo	Wolo - word based location codes	0	Word based location codes	EXTERNAL
+about	About	About Wolo 	0	Words based location codes	
+case	Case	WCode Location case	0	Case - WCode location	HIDE_TITLE
+competition	Competition	WCode Location competition	0	competition - WCode Location	HIDE_TITLE
+presentation	Presentation	WCode Location presentation	0	Slideshow - WCode location	HIDE_TITLE
+downloads	Downloads	WCode Downloads	0	Download WCode binaries
+terms	Terms of use	Terms of use	0	Terms of use of Wolo codes	
+policy	Privacy Policy	Privacy Policy	0	Privacy policy of Wolo codes	
+license	License	WCode project license	0	Licenses to various intellectual properties related to the WCode project
+logo	Logo	Wolo logo	0	Logo of Wolo codes	
+about_me	About me	About Ujjwal Singh - inventor of WCode	0	Web links of the creator of WCode - Ujjwal Singh

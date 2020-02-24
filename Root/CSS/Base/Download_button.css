@@ -1,0 +1,38 @@
+span#download_button {
+	margin: 8px;
+	display: inline-block;
+	text-align: right
+}
+
+#download_button > a > span {
+	height: 28px;
+	width: 28px;
+	display: block
+}
+
+#download_button:hover path:first-child {
+	fill: #56b4d1
+}
+
+#download_button:hover svg > path:last-child {
+	stroke: #56b4d1
+}
+
+span#download_button_bottom svg {
+	padding-bottom: 8px
+}
+
+#download_button_bottom > a > span {
+	height: 36px;
+	width: 36px;
+	display: inline-block;
+	padding: 4px 12px
+}
+
+#download_button_bottom:hover svg > path:first-child {
+	fill: #56b4d1
+}
+
+#download_button_bottom:hover svg > path:last-child {
+	stroke: #56b4d1
+}
