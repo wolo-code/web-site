@@ -1,0 +1,4 @@
+function presentation() {
+	beginLoading();
+	fadeLoading();
+}
