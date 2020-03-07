@@ -12,6 +12,8 @@ Path	Name	Extension
 	presentation	svg
 	logo_wolo	svg
 	logo_full	svg
+	menu
+	menu	json
 resource\	placeholder	svg
 resource\	logo_w	png
 resource\	logo_n	png
