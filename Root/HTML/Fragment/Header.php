@@ -7,8 +7,11 @@
 	</div>
 	<div id='header-logo'>
 		<a id='header-logo-image' href='/' class='header-logo image'>
-			<?php includeSVG('', 'Logo_full'); ?>
+			<?php includeSVG('', 'Logo_wolo'); ?>
 		</a>
+		<a id='header-logo-image_codes' href='/' class='header-logo image'>
+			<?php includeSVG('', 'Logo_codes'); ?>
+		</a>		
 	</div>
 	</div>
 	<div id='header-bar'>
