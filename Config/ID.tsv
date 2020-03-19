@@ -1,6 +1,8 @@
 Id	Label	Title	JS	Description	Flags
 root	Wolo	Wolo - word based location codes	0	Word based location codes	EXTERNAL
 about	About	About Wolo 	0	Words based location codes	
+faq	FAQ	Frequently asked questions	0	Frequently asked questions about Wolo codes
+features	Features	Features	0	Features of the Wolo app	
 case	Case	WCode Location case	0	Case - WCode location	HIDE_TITLE
 competition	Competition	WCode Location competition	0	competition - WCode Location	HIDE_TITLE
 presentation	Presentation	WCode Location presentation	1	Slideshow - WCode location	HIDE_TITLE
