@@ -10,7 +10,7 @@
 		<li>
 			<div>Sourced content</div>
 			<p>
-				Disclaimer:
+				Disclaimer :
 			</p>
 			<p class="indent-c">
 				Any content sourced from the internet, unless in the public domain is property of the original owner.<br>
