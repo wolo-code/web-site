@@ -3,7 +3,8 @@
 		<li>
 			<div>Original content</div>
 			<p>
-				Any original content written or created exclusively for this website are copyright protected and property of <a class="content-link XURL" href='/about_me' data-target='about_me' data-title='About me'>Ujjwal Singh</a>
+				Any original content written or created exclusively for this website are copyright protected and property of <a class="content-link XURL" href='/about_me' data-target='about_me' data-title='About me'>Ujjwal Singh</a>.<br>
+				Please refer to <a href='/terms' data-target='terms' class="content-link XURL">terms of use</a>
 			</p>
 		</li>
 		<li>
