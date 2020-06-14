@@ -16,7 +16,7 @@
 	</div>
 	<div id='header-bar'>
 	<div><span class='toggle-push-left image grow' id='menu-button'><?php includeSVG('', 'Menu_icon'); ?></span></div>
-	<div id='notification' class='hide'>Error!</div>
+	<div id='notification' class='hide'></div>
 	<div id='header-right-list'>
 		<span id='header_buttons_right'>
 			<span id='search-button' class='grow'><span class='image'><?php includeSVG('', 'Search'); ?></span></span>
