@@ -1,14 +1,14 @@
 Id	Label	Title	JS	Description	Flags
-root	Wolo	Wolo - word based location codes	0	Word based location codes	EXTERNAL
-about	About	About Wolo 	0	Words based location codes	
-faq	FAQ	Frequently asked questions	0	Frequently asked questions about Wolo codes
-features	Features	Features	0	Features of the Wolo app	
-case	Case	WCode Location case	0	Case - WCode location	HIDE_TITLE
-competition	Competition	WCode Location competition	0	competition - WCode Location	HIDE_TITLE
-presentation	Presentation	WCode Location presentation	1	Slideshow - WCode location	HIDE_TITLE
-downloads	Downloads	WCode Downloads	0	Download WCode binaries
-terms	Terms of use	Terms of use	0	Terms of use of Wolo codes	
-policy	Privacy Policy	Privacy Policy	0	Privacy policy of Wolo codes	
-license	License	WCode project license	0	Licenses to various intellectual properties related to the WCode project
-logo	Logo	Wolo logo	0	Logo of Wolo codes	
-about_me	About me	About Ujjwal Singh - inventor of WCode	0	Web links of the creator of WCode - Ujjwal Singh
+root	Wolo	Wolo: word based location codes	0	Word based location codes	EXTERNAL
+about	About	About Wolo	0	Word based location codes	
+faq	FAQ	Wolo: Frequently asked questions	0	Frequently asked questions about Wolo codes
+features	Features	Wolo: Features	0	Features of the Wolo app	
+case	Case	Wolo: Location case	0	Case - Wolo location	HIDE_TITLE
+competition	Competition	Wolo: Location competition	0	Competition - Wolo Location	HIDE_TITLE
+presentation	Presentation	Wolo: Location presentation	1	Slideshow - Wolo location	HIDE_TITLE
+downloads	Downloads	Wolo: Downloads	0	Download Wolo binaries
+terms	Terms of use	Wolo: Terms of use	0	Terms of use of Wolo codes	
+policy	Privacy Policy	Wolo: Privacy Policy	0	Privacy policy of Wolo codes	
+license	License	Wolo: Project license	0	Licenses to various intellectual properties related to the Wolo project
+logo	Logo	Wolo: logo	0	Logo of Wolo codes	
+about_me	About me	About Ujjwal Singh - inventor of Wolo	0	Web links of the creator of Wolo - Ujjwal Singh
