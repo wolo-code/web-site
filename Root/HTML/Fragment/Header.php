@@ -2,7 +2,7 @@
 	<div id='header-title'>
 	<div id='header-slogan'>
 		<a id='header-slogan-href' href='/'>
-			<span id='header-slogan-text'>words based location codes</span>
+			<span id='header-slogan-text'>simple precise addresses</span>
 		</a>
 	</div>
 	<div id='header-logo'>
