@@ -60,3 +60,8 @@
 #download_version {
 	font-size: smaller;
 }
+
+#download-unified-url {
+	margin-top: 12px;
+	margin-left: 12px;
+}
