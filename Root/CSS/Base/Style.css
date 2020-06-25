@@ -33,3 +33,7 @@ ul li span {
 .wcode {
 	font-size: larger;
 }
+
+.separator {
+	color: #cfcfcf !important;
+}
