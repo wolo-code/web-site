@@ -1,0 +1,9 @@
+copy-item "..\\..\\App\\Project\\Root\\Resource\\launcher-icon-0-75x.png" .\Root\Resource\
+copy-item "..\\..\\App\\Project\\Root\\Resource\\launcher-icon-1x.png" .\Root\Resource\
+copy-item "..\\..\\App\\Project\\Root\\Resource\\launcher-icon-1-5x.png" .\Root\Resource\
+copy-item "..\\..\\App\\Project\\Root\\Resource\\launcher-icon-2x.png" .\Root\Resource\
+copy-item "..\\..\\App\\Project\\Root\\Resource\\launcher-icon-3x.png" .\Root\Resource\
+copy-item "..\\..\\App\\Project\\Root\\Resource\\launcher-icon-4x.png" .\Root\Resource\
+copy-item "..\\..\\App\\Project\\Root\\Resource\\favicon.svg" .\Root\Resource\
+copy-item "..\\..\\App\\Project\\Root\\Resource\\favicon.ico" .\Root\Resource\
+copy-item "..\\..\\App\\Project\\Root\\Resource\\apple-touch-icon.png" .\Root\Resource\
