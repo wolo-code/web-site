@@ -1,5 +1,5 @@
 <div id='message'>
-	<div>
+	<div class='h_faded_bar'>
 		
 		<div id='location_title'>
 			<?php includeSVG($id, 'location_title'); ?>
