@@ -35,10 +35,6 @@
 	display: block
 }
 
-#download-android-bottom {
-	width: 136px
-}
-
 .download {
 	display: inline-block;
 	margin: 10px 10px 4px;
@@ -55,10 +51,6 @@
 	display: block;
 	color: #888!important;
 	padding-bottom: 4px
-}
-
-span.download-android {
-	width: 136px
 }
 
 .download-content-list-2 {
