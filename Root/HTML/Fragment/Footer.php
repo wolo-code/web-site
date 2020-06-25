@@ -11,6 +11,16 @@
 	<div id='footer-wrapper-divider'></div>
 	<div id='footer-wrapper-inside'>
 
+		<div>
+			<span id='download-bottom-url'>
+				<span>app:</span> <a class='content-link' href="https://wolo.codes/get">wolo.codes/get</a>
+			</span>
+			<span id="download_button_bottom" class="grow"> <a href="/downloads"><span class="image"><?php includeSVG('', 'Download'); ?></span></a> </span>
+			<span id='download-android-bottom' class="download active">
+				<a href='https://play.google.com/store/apps/details?id=codes.wolo.droid' class='content-link'><span class='image'><?php includeSVG('', 'Google-Play-badge'); ?></span></a>
+			</span>
+		</div>
+		
 		<div id='social-links' class='center'>
 			<span class='social grow'>
 				<a href='https://twitter.com/wolocodes' id='site-twitter' onclick="trackOutboundLink('wolo-twitter', 'https://twitter.com/wolocodes')"><span class='image'><?php includeSVG('', 'Twitter'); ?></span></a>
