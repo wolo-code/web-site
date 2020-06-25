@@ -40,14 +40,14 @@
 	margin: 10px 10px 4px;
 }
 
-.available span {
+.available > span:first-child {
 	display: block;
 	color: #444!important;
 	padding-bottom: 4px;
 	font-size: smaller;
 }
 
-.coming-soon span {
+.coming-soon > span:first-child {
 	display: block;
 	color: #888!important;
 	padding-bottom: 4px
