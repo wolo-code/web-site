@@ -54,7 +54,7 @@
 			<ol id='locaiton_appendix_list'>
 				<li>Each city can have over a billion unique addresses. <span>( 1bn 73mn &amp; 741,824 precisely )</span></li>
 				<li>Ground address - within a city, with 2m resolution</li>
-				<li>Words from a limited set of only 1024 words</li>
+				<li>Words from a limited <a class='link' href='https://wcodes.org/wordlist'>list</a> of only 1024 words</li>
 			</ol>
 		</div>
 		
