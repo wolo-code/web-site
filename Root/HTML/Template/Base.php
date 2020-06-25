@@ -11,7 +11,8 @@
 	<?php require '../HTML/Fragment/OG_Meta.php' ?>
 	<?php require '../HTML/Fragment/FB_Meta.php' ?>
 	<?php require '../HTML/Fragment/Twitter_Meta.php' ?>
-	<link rel="shortcut icon" type='image/x-icon' href='/favicon.ico' >
+	<link rel='icon' type='image/svg+xml' href='/favicon.svg' >
+	<link rel="alternate icon" type='image/x-icon' href='/favicon.ico' >
 	<link rel='apple-touch-icon' type='image/png' href='/apple-touch-icon.png' >
 	<link rel='manifest' href='/manifest.json' >
 	<link href="<?php echo $config['base_url']; if($id != 'root') echo '/'.$id ?>" rel='canonical' >
