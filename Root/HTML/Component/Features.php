@@ -20,12 +20,12 @@
 			</p>
 		</li>
 		<li>
-			<h3>QR</h3>
+			<h3>Labels</h3>
 			<p>
-				QR stickers can be generated that take the user directly to that point on map
+				Standard Wolo Code labels can be generated that can be printed and placed at points of interests.
 			</p>
 			<p>
-				<?php $img_title='location_qr'; $ext='svg'; $extern='true'; $alt=''; $center='true'; require('Fragment\Component_image.php') ?>
+				<?php $img_title='location_label'; $ext='svg'; $extern='true'; $alt=''; $center='true'; require('Fragment\Component_image.php') ?>
 			</p>
 		</li>
 		<li>
