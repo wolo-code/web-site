@@ -20,6 +20,13 @@
 			</p>
 		</li>
 		<li>
+			<h3>Works offline *</h3>
+			<p>
+				All codes basically 'already' exist and thus do not need to be generated and synced to a central database.<br>
+				Thus the system can work offline without needing any internet connection. (* App full offline capability : WIP )
+			</p>
+		</li>
+		<li>
 			<h3>Labels</h3>
 			<p>
 				Standard Wolo Code labels can be generated that can be printed and placed at points of interests.
