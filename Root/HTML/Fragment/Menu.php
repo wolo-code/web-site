@@ -7,7 +7,7 @@
 <?php
 			$SIDEBAR_NAV_GROUP = 'sidebar-nav-group page-list';
 			$MENU_MAX_ITEM_COUNT = -7;
-			group_text($SIDEBAR_NAV_GROUP, $MENU_MAX_ITEM_COUNT, ['//wolo.codes', 'App']);
+			group_text($SIDEBAR_NAV_GROUP, $MENU_MAX_ITEM_COUNT, ['//wolo.codes', 'App'], ['press_release\launch', 'Launch']);
 			group_text($SIDEBAR_NAV_GROUP, $MENU_MAX_ITEM_COUNT, ['about', 'About'], ['faq', 'FAQ'], ['features', 'Features'], ['case', 'Case'], ['competition', 'Competition'], ['presentation', 'Presentation']);
 			group_text($SIDEBAR_NAV_GROUP, $MENU_MAX_ITEM_COUNT, ['downloads', 'Downloads']);
 			group_text($SIDEBAR_NAV_GROUP, $MENU_MAX_ITEM_COUNT, ['terms', 'Terms of use'], ['policy', 'Privacy policy'], ['license', 'License'], ['logo', 'Logo']);
