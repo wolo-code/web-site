@@ -12,7 +12,7 @@
 			group_text($SIDEBAR_NAV_GROUP, $MENU_MAX_ITEM_COUNT, ['downloads', 'Downloads']);
 			group_text($SIDEBAR_NAV_GROUP, $MENU_MAX_ITEM_COUNT, ['terms', 'Terms of use'], ['policy', 'Privacy policy'], ['license', 'License'], ['logo', 'Logo']);
 			group_text($SIDEBAR_NAV_GROUP, $MENU_MAX_ITEM_COUNT, ['//wcodes.org', 'WCodes'], ['//wcodes.org/wordlist', 'Wordlist']);
-			group_text($SIDEBAR_NAV_GROUP, $MENU_MAX_ITEM_COUNT, ['about_me', 'About me']);
+			group_text($SIDEBAR_NAV_GROUP, $MENU_MAX_ITEM_COUNT, ['about_me', 'About me'], ['media', 'Media']);
 ?>
 		</div>
 	</div>
