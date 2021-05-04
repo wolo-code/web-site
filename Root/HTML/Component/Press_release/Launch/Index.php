@@ -47,7 +47,7 @@
 	<p>
 		Website: <a href='/' class="content-link">wolo.codes</a><br>
 		Details: <a href='/about' data-target='about' class="content-link XURL">wolo.codes\about</a><br>
-		App: <a href='/get' data-target='terms' class="content-link XURL">wolo.codes\get</a><br>
+		App: <a href='/get' class="content-link">wolo.codes\get</a><br>
 		Play Store: <a href='/terms' data-target='terms' class="content-link XURL">Wolo Codes</a><br>
 		Technology: <a href='//wcodes.org' data-target='terms' class="content-link XURL">wcodes.org</a><br>
 	</p>
