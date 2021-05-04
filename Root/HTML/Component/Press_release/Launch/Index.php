@@ -45,7 +45,7 @@
 		The app is available for free on Play Store and as a web app.
 	</p>
 	<p>
-		Website: <a href='/' data-target='root' class="content-link XURL">wolo.codes</a><br>
+		Website: <a href='/' class="content-link">wolo.codes</a><br>
 		Details: <a href='/about' data-target='about' class="content-link XURL">wolo.codes\about</a><br>
 		App: <a href='/get' data-target='terms' class="content-link XURL">wolo.codes\get</a><br>
 		Play Store: <a href='/terms' data-target='terms' class="content-link XURL">Wolo Codes</a><br>
