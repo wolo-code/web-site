@@ -2,7 +2,7 @@
 	<div id='header-title'>
 	<div id='header-slogan'>
 		<a id='header-slogan-href' href='/'>
-			<span id='header-slogan-text'>simple precise addresses</span>
+			<span id='header-slogan-text'>simplest precise address</span>
 		</a>
 	</div>
 	<div id='header-logo'>
