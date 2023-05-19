@@ -40,10 +40,6 @@
 				<?php $img_title='location_demo_map'; $ext='svg'; $alt=''; $center='true'; require('Fragment\Component_image.php') ?>
 			</div>
 			
-			<div id='location_app_demo_satellite' class='pagebreak'>
-				<?php $img_title='location_demo_map_parking'; $ext='svg'; $alt=''; $center='true'; require('Fragment\Component_image.php') ?>
-			</div>
-			
 			<div id='location_app_intro' class='pagebreak'>
 				<?php $img_title='location_app_intro'; $ext='svg'; $extern='true'; $alt=''; $center='true'; require('Fragment\Component_image.php') ?>
 			</div>
