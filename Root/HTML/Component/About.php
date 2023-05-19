@@ -29,7 +29,7 @@
 		</div>
 
 		<div id='location_qr' class='pagebreak'>
-			<h2><span class='bullet'></span>Stickers <span class='key'>&amp;</span> QR</h2>
+			<h2><span class='bullet'></span>Wolo Code <span class='key'>Labels</span></h2>
 			<?php $img_title='location_label'; $ext='svg'; $extern='true'; $alt=''; $center='true'; require('Fragment\Component_image.php') ?>
 		</div>
 
