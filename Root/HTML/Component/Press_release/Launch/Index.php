@@ -1,6 +1,6 @@
 <div id='message'>
 	<?php includeSVG('', 'Logo_wolo'); ?>
-	<?php includeSVG('', 'Logo_codes'); ?>
+	<?php includeSVG('', 'Logo_code'); ?>
 
 	<h2>Simple precise addresses</h2>
 	<h3>App available on Play Store & The Web</h3>

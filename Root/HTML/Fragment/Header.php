@@ -10,7 +10,7 @@
 			<?php includeSVG('', 'Logo_wolo'); ?>
 		</a>
 		<a id='header-logo-image_codes' href='/' class='header-logo image'>
-			<?php includeSVG('', 'Logo_codes'); ?>
+			<?php includeSVG('', 'Logo_code'); ?>
 		</a>		
 	</div>
 	</div>
