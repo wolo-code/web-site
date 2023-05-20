@@ -47,7 +47,7 @@
 				The city with respect to which the code is generated for a given location can be manually changed.
 			</p>
 			<p>
-				e.g. &lt;City A&gt; cat apple tomato :: 12&deg;58'19.6"N 77&deg;35'38.1"E :: &lt;City B&gt; mango cheese grape
+				e.g. <em>&lt;City A&gt; cat apple tomato</em> :: <em>12&deg;58'19.6"N 77&deg;35'38.1"E</em> :: <em>&lt;City B&gt; mango cheese grape</em>
 			</p>
 		</li>
 		<li>
