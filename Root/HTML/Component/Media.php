@@ -1,9 +1,9 @@
 <div id='message'>
-	<p>Wolo Codes in Media:</p>
+	<p>Wolo Code in Media:</p>
 	<ol>
 		<li class="content-low indent-a"><a class='content-link' href='https://nykdaily.com/2021/03/wolo-codes-app-is-now-taking-gps-technology-to-new-levels'>NYK Daily: Wolo Codes app is now taking GPS technology to new levels</a></li>
 	</ol>
-	<p>Wolo Codes references:</p>
+	<p>Wolo Code references:</p>
 	<ol>
 		<li class="content-low indent-a"><a class='content-link' href='https://www.youtube.com/watch?v=LfGeIWCeeKU&t=321s'>YouTube: WCode Introduction - Location codes</a></li>
 		<li class="content-low indent-a"><a class='content-link' hfef='https://www.indiegogo.com/projects/wcode-encode-with-words'>Indiegogo: WCode - encode with words</a></li>

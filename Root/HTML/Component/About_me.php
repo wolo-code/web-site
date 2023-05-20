@@ -10,7 +10,7 @@
 		<div>
 			<div class='R1'>email</div>
 			<div class='R2'>
-				<a class='content-link' href="mailto:ujjwal@wolo.codes?subject=Wolo%20codes">ujjwal@wolo.codes</a>
+				<a class='content-link' href="mailto:ujjwal@wolo.codes?subject=Wolo%20Code">ujjwal@wolo.codes</a>
 			</div>
 		</div>
 		<div>

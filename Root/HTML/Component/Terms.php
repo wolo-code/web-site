@@ -1,7 +1,7 @@
 <div id='message'>
 	
 	<p>
-		Our company 'Wolo' builds technologies that help you get to places easily and directly. The following Terms govern your use of Wolo codes and the other products, features, apps, services, technologies and software that we offer (the Wolo Products or Products), except where we expressly state that separate terms (and not these) apply.
+		Our company 'Wolo' builds technologies that help you get to places easily and directly. The following Terms govern your use of Wolo Code and the other products, features, apps, services, technologies and software that we offer (the Wolo Products or Products), except where we expressly state that separate terms (and not these) apply.
 	</p>
 
 	<h3>
