@@ -27,7 +27,11 @@
 		<div id='location_door' class='pagebreak'>
 			<?php $img_title='location_door'; $ext='svg'; $extern='true'; $alt=''; $center='true'; require('Fragment\Component_image.php') ?>
 		</div>
-
+		
+		<div id='location_simplification' class='pagebreak'>
+			<?php $img_title='location_simplification'; $ext='svg'; $extern='true'; $alt=''; $center='true'; require('Fragment\Component_image.php') ?>
+		</div>
+						
 		<div id='location_qr' class='pagebreak'>
 			<h2><span class='bullet'></span>Wolo Code <span class='key'>Labels</span></h2>
 			<?php $img_title='location_label'; $ext='svg'; $extern='true'; $alt=''; $center='true'; require('Fragment\Component_image.php') ?>
