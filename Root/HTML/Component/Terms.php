@@ -85,7 +85,7 @@
 	</h3>
 	<p>
 		If you have any questions about this Privacy Policy, please contact us.
-		<a id='mail-link' class='content-link' href='mailto:hello@wolo.codes?subject=Wolo_codes-Terms'>hello@wolo.codes</a>
+		<a id='mail-link' class='content-link' href='mailto:hello@wolo.codes?subject=Wolo%20Code%20-%20Terms'>hello@wolo.codes</a>
 	</p>
 	
 	<?php require('..\HTML\Fragment\Component_bottom_nav.php') ?>
