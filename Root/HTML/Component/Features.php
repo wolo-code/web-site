@@ -32,7 +32,7 @@
 				Standard Wolo Code labels can be generated that can be printed and placed at points of interests.
 			</p>
 			<p>
-				<?php $img_title='location_label'; $ext='svg'; $extern='true'; $alt=''; $center='true'; require('Fragment\Component_image.php') ?>
+				<?php $img_title='location_label'; $ext='svg'; $extern='true'; $alt=''; $center='true'; require('Fragment/Component_image.php') ?>
 			</p>
 		</li>
 		<li>
@@ -58,4 +58,4 @@
 		</li>
 	</ol>
 </div>
-<?php require('..\HTML\Fragment\Component_bottom_nav.php') ?>
+<?php require('../HTML/Fragment/Component_bottom_nav.php') ?>

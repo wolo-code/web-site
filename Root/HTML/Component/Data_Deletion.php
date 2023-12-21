@@ -11,4 +11,4 @@
 	</ul>
 	<p>You will recieve confirmation of the completion of your request within 3 days.</p>
 </div>
-<?php require('..\HTML\Fragment\Component_bottom_nav.php') ?>
+<?php require('../HTML/Fragment/Component_bottom_nav.php') ?>

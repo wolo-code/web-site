@@ -52,4 +52,4 @@
 		Technology: <a href='//wcodes.org' data-target='terms' class="content-link XURL">wcodes.org</a><br>
 	</p>
 </div>
-<?php require('..\HTML\Fragment\Component_bottom_nav.php') ?>
+<?php require('../HTML/Fragment/Component_bottom_nav.php') ?>

@@ -68,5 +68,5 @@
 		<a id='mail-link' class='content-link' href='mailto:hello@wolo.codes?subject=Wolo%20Code%20-%20Privacy'>hello@wolo.codes</a>
 	</p>
 	
-	<?php require('..\HTML\Fragment\Component_bottom_nav.php') ?>
+	<?php require('../HTML/Fragment/Component_bottom_nav.php') ?>
 </div>
