@@ -2,7 +2,7 @@
 	<?php includeSVG('', 'Logo_wolo'); ?>
 	<?php includeSVG('', 'Logo_code'); ?>
 
-	<h2>Simple precise addresses</h2>
+	<h2>Simplest precise addresses</h2>
 	<h3>App available on Play Store & The Web</h3>
 	<h4>A Wolo Code is a precise address which is only three simple words long - that can be navigated to by GPS directly</h4>
 

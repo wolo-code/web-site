@@ -13,25 +13,25 @@ Path	Name	Extension
 	logo_wolo	svg
 	logo_full	svg
 	menu
-resource\	placeholder	svg
-resource\	logo_w	png
-resource\	logo_n	png
-resource\	logo_backslash	png
-resource\	logo_fwdslash	png
-about\	index	jpg
-about\	location_demo_map	svg
-about\	location_solution_statement	svg
-about\	location_problem_description	svg
-about\	location_solution_description	svg
-about\	location_problem_statement	svg
-about\	location_door	svg
-about\	location_simplification	svg
-about\	location_app_intro	svg
-about\	location_label	svg
-features\	location_label	svg
-case\	address_dream	svg
-case\	alberto_happy	svg
-case\	alberto_intro	svg
-case\	issue_stats	svg
-case\	Issue_uber	svg
-competition\	comparision	svg
+resource/	placeholder	svg
+resource/	logo_w	png
+resource/	logo_n	png
+resource/	logo_backslash	png
+resource/	logo_fwdslash	png
+about/	index	jpg
+about/	location_demo_map	svg
+about/	location_solution_statement	svg
+about/	location_problem_description	svg
+about/	location_solution_description	svg
+about/	location_problem_statement	svg
+about/	location_door	svg
+about/	location_simplification	svg
+about/	location_app_intro	svg
+about/	location_label	svg
+features/	location_label	svg
+case/	address_dream	svg
+case/	alberto_happy	svg
+case/	alberto_intro	svg
+case/	issue_stats	svg
+case/	Issue_uber	svg
+competition/	comparision	svg
