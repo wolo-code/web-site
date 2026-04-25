@@ -3,7 +3,7 @@ project_title	Wolo codes
 project_description	Simplest precise addresses
 site_name	wolo.codes
 site_domain	wolo.codes
-version 1.1.1
+version	1.1.1
 base_url	https://wolo.codes
 author	Ujjwal Singh
 twitter_owner	wolocodes
