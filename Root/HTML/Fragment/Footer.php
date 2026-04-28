@@ -35,7 +35,7 @@
 		
 		<div class='footer-content'>
 			<a class="content-link-gray XURL" href='/license' data-target='license' data-title='License'>&copy; <?php echo date('Y'); ?></a>
-			<a class="content-link XURL" href='/about' data-target='about' data-title='About'>Wolo Code</a><a class='content-link' target='_blank' href='/about'></a>
+			<a class="content-link XURL" href='/about' data-target='about' data-title='About'>Wolo</a><a class='content-link' target='_blank' href='/about'></a>
 		</div>
 		
 	</div>
