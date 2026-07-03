@@ -1,17 +1,17 @@
 <div id='header-wrapper' style='overflow: hidden'>
 	<div id='header-title'>
 	<div id='header-slogan'>
-		<a id='header-slogan-href' href='/'>
+		<a id='header-slogan-href' class='XURL' href='/' data-target='root' data-title=''>
 			<span id='header-slogan-text'>simplest precise address</span>
 		</a>
 	</div>
 	<div id='header-logo'>
-		<a id='header-logo-image' href='/' class='header-logo image'>
+		<a id='header-logo-image' href='/' class='header-logo image XURL' data-target='root' data-title=''>
 			<?php includeSVG('', 'Logo_wolo'); ?>
 		</a>
-		<a id='header-logo-image_codes' href='/' class='header-logo image'>
+		<a id='header-logo-image_codes' href='/' class='header-logo image XURL' data-target='root' data-title=''>
 			<?php includeSVG('', 'Logo_code'); ?>
-		</a>		
+		</a>
 	</div>
 	</div>
 	<div id='header-bar'>
