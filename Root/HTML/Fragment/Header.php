@@ -11,7 +11,7 @@
 		</a>
 		<a id='header-logo-image_codes' href='/' class='header-logo image'>
 			<?php includeSVG('', 'Logo_code'); ?>
-		</a>		
+		</a>
 	</div>
 	</div>
 	<div id='header-bar'>
