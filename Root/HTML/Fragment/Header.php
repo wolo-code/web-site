@@ -22,9 +22,6 @@
 			<span id='header_button'>
 				<span id='search-button' class='grow'><span class='image'><?php includeSVG('', 'Search'); ?></span></span>
 				<span id='translate-button' class='grow'><span class='image'><?php includeSVG('', 'Translate'); ?></span></span>
-				<span id='download_button' class='grow'>
-					<a href='/downloads'><span class='image'><?php includeSVG('', 'Download'); ?></span></a>
-				</span>
 				<span id='theme-selector'>
 					<button id='darkmode-button' class='grow' type='button' aria-haspopup='menu' aria-expanded='false'>
 						<span class='theme-current-icon image' data-theme-icon='light'><?php includeSVG('', 'Light_mode'); ?></span>
@@ -48,4 +45,3 @@
 	</div>
 </div>
 <div id='header-wrapper-divider'></div>
-
