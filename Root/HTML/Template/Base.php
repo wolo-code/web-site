@@ -43,7 +43,9 @@
 				<div class='container'>
 					<div id='content-wrapper-inside'>
 						<div class='shadow-scroll-top'></div>
-						<div id='google_translate_element'></div>
+						<div id='translation-controls' class='hide_display'>
+							<div id='google_translate_element'></div>
+						</div>
 						<?php require '../HTML/Fragment/GCSE.php' ?>
 						<div id='canvas-wrapper'>
 							<div id='path-container' class="<?php echo ($id == 'root'? 'hide_scale' : '') ?>"><div id=path><?php require '../HTML/Fragment/Path.php' ?></div></div>
@@ -66,3 +68,4 @@
 	</div>
 </body>
 </html>
+

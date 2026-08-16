@@ -2,3 +2,7 @@
 	margin-left: -40px;
 	margin-right: -40px;
 }
+
+html.dark-mode #header-logo-image_codes svg path {
+	fill: #888;
+}
