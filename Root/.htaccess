@@ -6,8 +6,6 @@ RewriteBase /
 RewriteEngine On
 DirectorySlash Off
 
-RewriteRule ^$ - [R=404]
-
 RewriteRule ^(.+)/$ $1 [R=301]
 
 RewriteRule ^aboutme$ about_me [R=307,L]
@@ -55,3 +53,4 @@ RewriteRule ^(.*?)\.json$ Framework/HTML/Component.php [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.+)$ Framework/HTML/Page.php [L]
+
