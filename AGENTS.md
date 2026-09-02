@@ -13,3 +13,8 @@ Prefer Dockerless native Tiggu: `. E:\Web\project\PublishRunner.ps1; Invoke-Wolo
 ## Cutie Framework
 
 `root/Framework` is a submodule (`blank-org/cutie-framework`). Keep Framework submodule standing rules intact: commit the submodule SHA in the same change set when it moves; if cutie-framework has unpushed commits, push that repo first, then pin the SHA here.
+
+## Image proportion and credits
+- Site config/Image_display.tsv overrides Framework defaults (ole tile|hero, 	ile_fit contain|cover, 	ile_position).
+- SVGs default to contained tiles; landscape art like FAQ should use hero + cover (or 	ile + cover) to avoid letterboxing in 160x110 nav tiles.
+- config/Image_credits.csv + HTML/Fragment/Image_credit.php power the cover credit popup. Full page renders must use `renderComponentBody()` in HTML/Template/Base.php (not a raw `require getComponentPath`) so covers inject.
