@@ -54,7 +54,7 @@
 								<?php require '../../HTML/Fragment/Menu.php'; ?>
 								<div id='canvas-main'>
 									<div id='content'>
-										<?php require (getComponentPath($id)) ?>
+										<?php echo renderComponentBody($id) ?>
 									</div>
 								</div>
 							</div>
