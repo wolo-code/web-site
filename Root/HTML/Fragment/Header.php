@@ -1,4 +1,4 @@
-<div id='header-wrapper' style='overflow: hidden'>
+<div id='header-wrapper'>
 	<div id='header-title'>
 	<div id='header-slogan'>
 		<a id='header-slogan-href' class='content-link' href='/'>

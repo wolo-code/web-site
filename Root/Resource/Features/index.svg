@@ -7,19 +7,19 @@
 			<stop stop-color="#f6f1e8" offset="0"/>
 			<stop stop-color="#e0eef1" offset="1"/>
 		</linearGradient>
-		<filter id="shadow" x="-.2" y="-.2" width="1.4" height="1.5">
+		<filter id="shadow" x="-10%" y="-10%" width="120%" height="125%">
 			<feDropShadow dx="0" dy="12" flood-color="#40516f" flood-opacity=".14" stdDeviation="14"/>
 		</filter>
 	</defs>
 	<rect width="1600" height="900" fill="url(#bg)"/>
-	<g filter="url(#shadow)">
-		<rect x="285" y="170" width="440" height="250" rx="42" fill="#fff" stroke="#40516f" stroke-width="12"/>
-		<rect x="875" y="170" width="440" height="250" rx="42" fill="#d9edf2" stroke="#56b4d1" stroke-width="12"/>
-		<rect x="285" y="480" width="440" height="250" rx="42" fill="#d9edf2" stroke="#56b4d1" stroke-width="12"/>
-		<rect x="875" y="480" width="440" height="250" rx="42" fill="#fff" stroke="#40516f" stroke-width="12"/>
+	<g filter="url(#shadow)" stroke-width="12">
+		<rect x="285" y="170" width="440" height="250" rx="42" fill="#fff" stroke="#40516f" stroke-opacity="0"/>
+		<rect x="875" y="170" width="440" height="250" rx="42" fill="#d9edf2" stroke="#56b4d1" stroke-opacity="0"/>
+		<rect x="285" y="480" width="440" height="250" rx="42" fill="#d9edf2" stroke="#56b4d1" stroke-opacity="0"/>
+		<rect x="875" y="480" width="440" height="250" rx="42" fill="#fff" stroke="#40516f" stroke-opacity="0"/>
 	</g>
 	<!-- Encode: three memorable words become one compact code. -->
-	<g fill="none" stroke="#40516f" stroke-linecap="round" stroke-linejoin="round" stroke-width="18">
+	<g fill="none" stroke="#56b4d1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18">
 		<path d="m382 253-47 42 47 42"/>
 		<path d="m628 253 47 42-47 42"/>
 		<path d="m454 251h102"/>
@@ -28,29 +28,25 @@
 	</g>
 	<circle cx="429" cy="251" r="9" fill="#d0a85c"/>
 	<circle cx="581" cy="339" r="9" fill="#d0a85c"/>
-	<!-- Decode: a Wolo Code resolves to a precise point. -->
-	<g fill="none" stroke="#40516f" stroke-linecap="round" stroke-linejoin="round" stroke-width="18">
-		<path d="m1095 220c-52 0-94 41-94 93 0 70 94 108 94 108s94-38 94-108c0-52-42-93-94-93z"/>
-		<circle cx="1095" cy="310" r="34"/>
-	</g>
-	<circle cx="1095" cy="310" r="12" fill="#d0a85c"/>
-	<!-- Offline: the core location code remains available without a connection. -->
-	<g fill="none" stroke="#40516f" stroke-linecap="round" stroke-linejoin="round" stroke-width="18">
-		<path d="m390 660h210c45 0 75-26 75-62 0-34-27-60-63-63-16-43-57-72-104-72-54 0-98 36-108 84-43 2-76 27-76 60 0 30 27 53 66 53z"/>
-		<path d="m354 699 302-238" stroke="#d0a85c" stroke-width="24"/>
-	</g>
-	<!-- Address book: saved places can be recalled later. -->
-	<g fill="none" stroke="#40516f" stroke-linecap="round" stroke-linejoin="round" stroke-width="18">
-		<rect x="992" y="532" width="210" height="154" rx="18"/>
-		<path d="m968 557h46m-46 52h46m-46 52h46"/>
-		<circle cx="1097" cy="585" r="25"/>
-		<path d="m1048 650c9-27 28-41 49-41s40 14 49 41"/>
-	</g>
-	<g fill="#56b4d1">
-		<circle cx="758" cy="295" r="13"/>
-		<circle cx="842" cy="295" r="13"/>
-		<circle cx="758" cy="605" r="13"/>
-		<circle cx="842" cy="605" r="13"/>
+	<g fill="none" stroke="#56b4d1">
+		<!-- Decode: a Wolo Code resolves to a precise point. -->
+		<g transform="translate(0,-28)" stroke-width="10">
+			<path d="m1095 220c-52 0-94 41-94 93 0 70 94 108 94 108s94-38 94-108c0-52-42-93-94-93z" fill="none"/>
+			<circle cx="1095" cy="310" r="34" fill="none"/>
+			<circle cx="1095" cy="310" r="12" fill="#d0a85c"/>
+		</g>
+		<!-- Offline: the core location code remains available without a connection. -->
+		<g transform="translate(0,42)" stroke-linecap="round" stroke-linejoin="round" stroke-width="18">
+			<path d="m390 660h210c45 0 75-26 75-62 0-34-27-60-63-63-16-43-57-72-104-72-54 0-98 36-108 84-43 2-76 27-76 60 0 30 27 53 66 53z"/>
+			<path d="m354 699 302-238" stroke-width="24"/>
+		</g>
+		<!-- Address book: saved places can be recalled later. -->
+		<g stroke-linecap="round" stroke-linejoin="round" stroke-width="18">
+			<rect x="992" y="532" width="210" height="154" rx="18"/>
+			<path d="m968 557h46m-46 52h46m-46 52h46"/>
+			<circle cx="1097" cy="583" r="25"/>
+			<path d="m1048 650c9-27 28-41 49-41s40 14 49 41"/>
+		</g>
 	</g>
 	<metadata>
 		<rdf:RDF>
