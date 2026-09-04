@@ -20,10 +20,11 @@
 			</p>
 		</li>
 		<li>
-			<h3>Works offline *</h3>
+			<h3>Works offline</h3>
 			<p>
-				All codes basically 'already' exist and thus do not need to be generated and synced to a central database.<br>
-				Thus the system can work offline without needing any internet connection. (* App full offline capability : WIP )
+				All codes already exist, so they do not need to be generated and synced to a central database.
+				After one online visit, the web app encodes and decodes without a network: shell, word list, cached cities, last map area tiles, and queued saves.
+				Sign-in and unseen map areas still need a connection.
 			</p>
 		</li>
 		<li>
