@@ -34,6 +34,7 @@ resource/	logo_n	png
 resource/	logo_backslash	png
 resource/	logo_fwdslash	png
 about/	index	jpg
+about/	location_title	svg
 about/	location_demo_map	svg
 about/	location_solution_statement	svg
 about/	location_problem_description	svg
