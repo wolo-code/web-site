@@ -23,22 +23,25 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.+)\.js$ Framework/JS/Link/$1.js [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.+)\.ico$ Resource/$1.ico [L]
+RewriteRule ^(.+)\.ico$ Resource/$1.ico [END]
 
-RewriteCond %{DOCUMENT_ROOT}/Resource/$1 -d
-RewriteRule ^(.*?)\.jpg$ Resource/$1/index.jpg [R=302,L]
+RewriteCond %{DOCUMENT_ROOT}/Resource/$1/index.jpg -f
+RewriteRule ^(.*?)\.jpg$ Resource/$1/index.jpg [END]
 
-RewriteCond %{DOCUMENT_ROOT}/Resource/$1 -d
-RewriteRule ^(.*?)\.svg$ Resource/$1/index.svg [R=302,L]
+RewriteCond %{DOCUMENT_ROOT}/Resource/$1/index.png -f
+RewriteRule ^(.*?)\.png$ Resource/$1/index.png [END]
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.+)\.jpg$ Resource/$1.jpg [L]
-
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.+)\.png$ Resource/$1.png [L]
+RewriteCond %{DOCUMENT_ROOT}/Resource/$1/index.svg -f
+RewriteRule ^(.*?)\.svg$ Resource/$1/index.svg [END]
 
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.+)\.svg$ Resource/$1.svg [L]
+RewriteRule ^(.+)\.jpg$ Resource/$1.jpg [END]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.+)\.png$ Resource/$1.png [END]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.+)\.svg$ Resource/$1.svg [END]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{DOCUMENT_ROOT}/File%{REQUEST_URI} -f

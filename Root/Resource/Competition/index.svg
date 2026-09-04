@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-labelledby="title desc" role="img" version="1.1" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+	<title id="title">Location system comparison</title>
+	<desc id="desc">Two location pins flank a balanced comparison scale.</desc>
+	<defs>
+		<linearGradient id="bg" x2="0" y2="1">
+			<stop stop-color="#f6f1e8" offset="0"/>
+			<stop stop-color="#e0eef1" offset="1"/>
+		</linearGradient>
+	</defs>
+	<rect width="1600" height="900" fill="url(#bg)"/>
+	<path d="m800 210v430m-175 0h350m-339-340h328m-328 2-105 190h210zm328-2-105 190h210z" fill="none" stroke="#56b4d1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"/>
+	<g stroke="#56b4d1" stroke-width="16">
+		<path d="m533 502c0 56 210 56 210 0" fill="#d9edf2"/>
+		<path d="m861 500c0 56 210 56 210 0" fill="#d9edf2"/>
+		<circle cx="800" cy="205" r="50" fill="#d0a85c"/>
+	</g>
+	<metadata>
+		<rdf:RDF>
+			<cc:Work rdf:about="">
+				<dc:title>Location system comparison</dc:title>
+			</cc:Work>
+		</rdf:RDF>
+	</metadata>
+</svg>

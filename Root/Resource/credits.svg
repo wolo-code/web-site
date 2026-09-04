@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-labelledby="title desc" role="img" version="1.1" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+	<title id="title">Credits and acknowledgements</title>
+	<desc id="desc">Three people support a central heart with celebratory stars.</desc>
+	<defs>
+		<linearGradient id="bg" x2="0" y2="1">
+			<stop stop-color="#f6f1e8" offset="0"/>
+			<stop stop-color="#e0eef1" offset="1"/>
+		</linearGradient>
+	</defs>
+	<rect width="1600" height="900" fill="url(#bg)"/>
+	<path d="m800 690s-245-145-245-330c0-105 72-170 160-170 52 0 85.324 25 85 25s33-25 85-25c88 0 160 65 160 170 0 185-245 330-245 330z" fill="#d9edf2" stroke="#56b4d1" stroke-linejoin="round" stroke-width="20"/>
+	<path d="m800 290 35 72 80 12-58 56 14 80-71-38-71 38 14-80-58-56 80-12z" fill="#d0a85c"/>
+	<path d="m427.5 270v110m-55-55h110m690-55v110m-55-55h110" stroke="#56b4d1" stroke-linecap="round" stroke-width="22"/>
+	<metadata>
+		<rdf:RDF>
+			<cc:Work rdf:about="">
+				<dc:title>Credits and acknowledgements</dc:title>
+			</cc:Work>
+		</rdf:RDF>
+	</metadata>
+</svg>

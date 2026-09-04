@@ -18,9 +18,7 @@
 		<li>
 			<div class='content-li-title'>Does it work offline?</div>
 			<p>
-				While the technology does work offline as the codes are generated algorithmically,<br>
-				the current web based implementation does NOT have provisions for required caching<br>
-				for offline capability
+				Yes for the core encoder after one online visit: shell, word list, cached cities, last map area tiles, and queued saves work offline. Firebase sign-in and unseen map areas still need a network.
 			</p>
 		</li>
 	</ol>
