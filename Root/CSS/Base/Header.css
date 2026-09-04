@@ -1,3 +1,7 @@
+/* Contain header floats in a BFC without clipping the theme menu. */
+#header-wrapper {
+	display: flow-root;
+}
 #header-logo-image_codes {
 	margin-left: -40px;
 	margin-right: -40px;
