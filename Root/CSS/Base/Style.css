@@ -37,3 +37,12 @@ ul li span {
 .separator {
 	color: #cfcfcf !important;
 }
+
+.mail-obf {
+	direction: rtl;
+	unicode-bidi: bidi-override;
+}
+
+a.mail-link {
+	cursor: pointer;
+}

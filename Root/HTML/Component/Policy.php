@@ -65,7 +65,10 @@
 	</h3>
 	<p>
 		If you have any questions about this Privacy Policy, please contact us.
-		<a id='mail-link' class='content-link' href='mailto:hello@wolo.codes?subject=Wolo%20Code%20-%20Privacy'>hello@wolo.codes</a>
+		<br><?php
+			require_once __DIR__ . '/../Fragment/Mail_link.php';
+			echo renderMailLink('hello', 'wolo.codes', array('id' => 'mail-link', 'class' => 'content-link', 'subject' => 'Wolo Code - Privacy'));
+		?>
 	</p>
 	
 	<?php require('../HTML/Fragment/Component_bottom_nav.php') ?>

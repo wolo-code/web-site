@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/../Fragment/Mail_link.php'; ?>
 <div id='message'>
 	<h3>Data Deletion Policy</h3>
 	<p><strong>App:</strong> Wolo Code (by Wolo — wolo.codes)</p>
@@ -15,7 +16,7 @@
 	<h4>How to Request Data Deletion</h4>
 	<p>User can request for their data to be deleted following these steps:</p>
 	<ol>
-		<li>email: <a class='content-link' href="mailto:delete@wolo.codes?subject=Wolo%20Code%20-%20data%20deletion%20request">delete@wolo.codes</a></li>
+		<li>email:<br><?php echo renderMailLink('delete', 'wolo.codes', array('class' => 'content-link', 'subject' => 'Wolo Code - data deletion request')); ?></li>
 		<li>with subject: <strong>Wolo Code - data deletion request</strong></li>
 		<li>from your <strong>registered</strong> email address</li>
 	</ol>
@@ -27,7 +28,7 @@
 	</ul>
 	
 	<h4>Cannot Access Registered Email?</h4>
-	<p>If you cannot access your registered email, contact: <a class='content-link' href="mailto:delete@wolo.codes?subject=Wolo%20Code%20-%20data%20deletion%20request%20-%20account%20access%20issue">delete@wolo.codes</a> with proof of ownership.</p>
+	<p>If you cannot access your registered email, contact:<br><?php echo renderMailLink('delete', 'wolo.codes', array('class' => 'content-link', 'subject' => 'Wolo Code - data deletion request - account access issue')); ?> with proof of ownership.</p>
 	
 	<p><strong>Confirmation:</strong> You will receive confirmation of the completion of your request within 7 days.</p>
 </div>

@@ -10,7 +10,10 @@
 		<div>
 			<div class='R1'>email</div>
 			<div class='R2'>
-				<a class='content-link' href="mailto:ujjwal@wolo.codes?subject=Wolo%20Code">ujjwal@wolo.codes</a>
+				<?php
+					require_once __DIR__ . '/../Fragment/Mail_link.php';
+					echo renderMailLink('ujjwal', 'wolo.codes', array('class' => 'content-link', 'subject' => 'Wolo Code'));
+				?>
 			</div>
 		</div>
 		<div>
