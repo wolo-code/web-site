@@ -1,3 +1,1 @@
-#footer-wrapper {
-	margin-top: -147px !important;
-}
+/* Footer offset is flex-based in Framework Shell.css, not a length pull-up. */

@@ -1,6 +1,3 @@
-#footer-wrapper {
-	margin-top: -232px;
-}
 
 #download-bottom-url {
 	display: block;
@@ -12,6 +9,13 @@
 	color: #bbbbbb!important;
 }
 
-#download_button_bottom path {
-	transition: all ease-out 0.3s;
+#download-android-bottom svg,
+#download-apple-bottom svg {
+	height: 40px;
+	width: auto;
+	vertical-align: middle;
+}
+
+#download-apple-bottom {
+	margin-left: 8px;
 }
