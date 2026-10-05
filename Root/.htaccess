@@ -14,6 +14,8 @@ RewriteRule ^facebook$ https://facebook.com/wcodesorg [R=307,L]
 RewriteRule ^twitter$ https://twitter.com/wcodesorg [R=307,L]
 RewriteRule ^gplus$ https://plus.google.com/+wcodesorg [R=307,L]
 
+RewriteRule ^sounds/(.+)\.(mp3|wav)$ Resource/Sounds/$1.$2 [END]
+
 RewriteRule ^style.css$ Framework/CSS/Style.php [L]
 RewriteRule ^script.js$ Framework/JS/Script.php [L]
 
