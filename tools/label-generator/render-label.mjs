@@ -15,6 +15,13 @@ const BRAND_BLUE = "#69b7cf";
 const FOOTER_TEXT = "Scan or enter at www.wolo.codes";
 const DEFAULT_VARIANT = "minimalist";
 const LABEL_FRAME_PATH = "m 19.840979,2.5671816 c -0.524583,-0.6903878 -1.398888,-1.1371095 -2.375197,-1.1371095 l -16.0289336,0.013538 c -1.60289296,0 -2.9143517,1.2047943 -2.9143517,2.693866 v 13.5370149 c 0,1.489072 1.31145874,2.693866 2.9143517,2.693866 l 16.0289336,0.01354 c 0.976309,0 1.850614,-0.446721 2.375197,-1.137109 l 6.367858,-8.338802 z";
+const FRAME_MIN_X = -1.4775033;
+const FRAME_MAX_X = 26.208837;
+const FRAME_MIN_Y = 1.4300721;
+const FRAME_MAX_Y = 20.381896;
+const FRAME_BAR_LEFT = 1.4368484;
+const FRAME_BAR_RIGHT = 17.465782;
+const FRAME_ARROW_BASE = 19.840979;
 
 const abelWoff = readFileSync(resolve(__dirname, "node_modules/@fontsource/abel/files/abel-latin-400-normal.woff"));
 const abelFont = fontkit.create(abelWoff);
@@ -114,6 +121,27 @@ function parseCodeWords(codeOrUrl) {
   return clean.replaceAll(".", " ");
 }
 
+function textBox(text, x, baselineY, fontSize, letterSpacing = 0, anchor = "middle") {
+  const width = measureTextWidth(text, fontSize, letterSpacing);
+  const left = anchor === "middle" ? x - width / 2 : anchor === "end" ? x - width : x;
+  return {
+    left,
+    right: left + width,
+    top: baselineY - fontSize * 0.82,
+    bottom: baselineY + fontSize * 0.26
+  };
+}
+
+function assertInsideBox(box, bounds, label) {
+  if (box.left < bounds.left || box.right > bounds.right || box.top < bounds.top || box.bottom > bounds.bottom) {
+    throw new Error(
+      `Layout overflow for "${label}": ` +
+      `box(${box.left.toFixed(1)},${box.top.toFixed(1)}→${box.right.toFixed(1)},${box.bottom.toFixed(1)}) ` +
+      `outside bounds(${bounds.left.toFixed(1)},${bounds.top.toFixed(1)}→${bounds.right.toFixed(1)},${bounds.bottom.toFixed(1)})`
+    );
+  }
+}
+
 export function filenameStem(label) {
   const variant = label.variant || DEFAULT_VARIANT;
   const titlePart = slugify(label.title || "") || "untitled";
@@ -133,43 +161,77 @@ export function validateLabel(label) {
 
 export function renderMinimalistSvg(label) {
   validateLabel(label);
-  const frameX = 70;
-  const frameY = 120;
-  const frameW = SVG_WIDTH - frameX * 2;
-  const frameH = 430;
-  const frameScaleX = frameW / 28.2;
-  const frameScaleY = frameH / 21.6;
+  const frameX = 16;
+  const frameY = 140;
+  const frameW = SVG_WIDTH - 32;
+  const frameH = 350;
+  const frameScaleX = frameW / (FRAME_MAX_X - FRAME_MIN_X);
+  const frameScaleY = frameH / (FRAME_MAX_Y - FRAME_MIN_Y);
+  const frameTx = frameX - FRAME_MIN_X * frameScaleX;
+  const frameTy = frameY - FRAME_MIN_Y * frameScaleY;
+  const frameMapX = (value) => frameTx + value * frameScaleX;
+  const frameMapY = (value) => frameTy + value * frameScaleY;
+
   const footerBarH = 58;
-  const footerBarX = frameX + 2;
+  const footerBarX = frameMapX(FRAME_BAR_LEFT);
+  const footerBarW = frameMapX(FRAME_BAR_RIGHT) - footerBarX;
   const footerBarY = frameY + frameH - footerBarH - 2;
-  const footerBarW = frameW - 4;
 
   const hasTitle = !!String(label.title || "").trim();
-  const yShift = hasTitle ? 0 : -34;
+  const yShift = hasTitle ? 0 : -36;
   const heroWords = parseCodeWords(label.code || label.url);
   if (!heroWords.trim()) throw new Error(`Label "${label.slug}" has invalid code "${label.code}"`);
-  const hero = fitHero(heroWords, frameW - 210);
-  const heroCenterY = 302;
+  const textLeftX = frameMapX(2.3);
+  const textRightX = frameMapX(FRAME_ARROW_BASE - 0.8);
+  const textCenterX = (textLeftX + textRightX) / 2;
+  const hero = fitHero(heroWords, textRightX - textLeftX - 24);
+  const heroCenterY = frameY + 145;
   const heroLineHeight = hero.size * 1.12;
-  const titlePath = hasTitle ? textPath(label.title, SVG_WIDTH / 2, 152, 30, 0.4) : "";
-  const sectionPath = textPath(label.section, frameX + 86, 196 + yShift, 34, 0.6, "start");
-  const heroOne = textPath(hero.lines[0], SVG_WIDTH / 2, (hero.lines.length === 1 ? heroCenterY : heroCenterY - heroLineHeight / 2) + yShift, hero.size, hero.letterSpacing);
-  const heroTwo = hero.lines.length > 1 ? textPath(hero.lines[1], SVG_WIDTH / 2, heroCenterY + heroLineHeight / 2 + yShift, hero.size, hero.letterSpacing) : "";
-  const address1 = textPath(label.address1, frameX + 86, 394 + yShift, 30, 0.2, "start");
-  const address2 = textPath(label.address2, frameX + 86, 432 + yShift, 30, 0.2, "start");
-  const footer = textPath(FOOTER_TEXT, SVG_WIDTH / 2, footerBarY + 40, 32, 0);
+  const titleBaseline = frameY + 46;
+  const sectionBaseline = frameY + 86 + yShift;
+  const heroOneBaseline = (hero.lines.length === 1 ? heroCenterY : heroCenterY - heroLineHeight / 2) + yShift;
+  const heroTwoBaseline = heroCenterY + heroLineHeight / 2 + yShift;
+  const address1Baseline = frameY + 238 + yShift;
+  const address2Baseline = frameY + 274 + yShift;
 
-  const logoW = 340;
-  const logoH = 74;
+  const titlePath = hasTitle ? textPath(label.title, textCenterX, titleBaseline, 30, 0.4) : "";
+  const sectionPath = textPath(label.section, textLeftX, sectionBaseline, 34, 0.6, "start");
+  const heroOne = textPath(hero.lines[0], textCenterX, heroOneBaseline, hero.size, hero.letterSpacing);
+  const heroTwo = hero.lines.length > 1 ? textPath(hero.lines[1], textCenterX, heroTwoBaseline, hero.size, hero.letterSpacing) : "";
+  const address1 = textPath(label.address1, textLeftX, address1Baseline, 30, 0.2, "start");
+  const address2 = textPath(label.address2, textLeftX, address2Baseline, 30, 0.2, "start");
+  const footerFontSize = 30;
+  const footer = textPath(FOOTER_TEXT, SVG_WIDTH / 2, footerBarY + 39, footerFontSize, 0);
+
+  const logoW = 320;
+  const logoH = logoW / 2.28;
   const logoX = (SVG_WIDTH - logoW) / 2;
-  const logoY = 18;
+  const logoY = 16;
 
   const codeAria = escapeXml(`${label.section} ${heroWords}`);
+  const textBounds = {
+    left: textLeftX,
+    right: textRightX,
+    top: frameY + 20,
+    bottom: footerBarY - 8
+  };
+  if (hasTitle) assertInsideBox(textBox(label.title, textCenterX, titleBaseline, 30, 0.4, "middle"), textBounds, "title");
+  assertInsideBox(textBox(label.section, textLeftX, sectionBaseline, 34, 0.6, "start"), textBounds, "section");
+  assertInsideBox(textBox(hero.lines[0], textCenterX, heroOneBaseline, hero.size, hero.letterSpacing, "middle"), textBounds, "hero line 1");
+  if (heroTwo) assertInsideBox(textBox(hero.lines[1], textCenterX, heroTwoBaseline, hero.size, hero.letterSpacing, "middle"), textBounds, "hero line 2");
+  assertInsideBox(textBox(label.address1, textLeftX, address1Baseline, 30, 0.2, "start"), textBounds, "address1");
+  assertInsideBox(textBox(label.address2, textLeftX, address2Baseline, 30, 0.2, "start"), textBounds, "address2");
+  assertInsideBox(textBox(FOOTER_TEXT, SVG_WIDTH / 2, footerBarY + 39, footerFontSize, 0, "middle"), {
+    left: footerBarX + 16,
+    right: footerBarX + footerBarW - 16,
+    top: footerBarY + 4,
+    bottom: footerBarY + footerBarH - 4
+  }, "footer");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${SVG_WIDTH}" height="${SVG_HEIGHT}" viewBox="0 0 ${SVG_WIDTH} ${SVG_HEIGHT}" role="img" aria-label="${codeAria}">
   <rect width="${SVG_WIDTH}" height="${SVG_HEIGHT}" fill="#ffffff" />
-  <path d="${LABEL_FRAME_PATH}" fill="none" stroke="${BRAND_BLUE}" stroke-width="0.10" transform="translate(${frameX.toFixed(2)} ${frameY.toFixed(2)}) scale(${frameScaleX.toFixed(6)} ${frameScaleY.toFixed(6)})" />
+  <path d="${LABEL_FRAME_PATH}" fill="none" stroke="${BRAND_BLUE}" stroke-width="0.11" transform="translate(${frameTx.toFixed(2)} ${frameTy.toFixed(2)}) scale(${frameScaleX.toFixed(6)} ${frameScaleY.toFixed(6)})" />
 
   <g>
     <image href="${logoFullDataUri}" x="${logoX}" y="${logoY}" width="${logoW}" height="${logoH}" />
