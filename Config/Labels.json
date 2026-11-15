@@ -3,18 +3,30 @@
     "title": "Boudhanath Stupa",
     "slug": "boudha",
     "variant": "minimalist",
-    "region": "Kathmandu",
-    "words": "mask net soil",
-    "url": "https://wolo.codes/kathmandu.mask.net.soil",
-    "address": "Boudhanath Stupa, Kathmandu 44600, Nepal"
+    "section": "Kathmandu",
+    "address1": "Boudhanath Stupa",
+    "address2": "Kathmandu 44600, Nepal",
+    "code": "kathmandu.mask.net.soil",
+    "url": "https://wolo.codes/kathmandu.mask.net.soil"
   },
   {
     "title": "Everest Base Camp",
     "slug": "everest-base-camp",
     "variant": "minimalist",
-    "region": "Nepal 35",
-    "words": "turnip pocket earth",
-    "url": "https://wolo.codes/nepal-35.turnip.pocket.earth",
-    "address": "Everest Base Camp, Khumjung, Nepal"
+    "section": "Nepal 35",
+    "address1": "Everest Base Camp",
+    "address2": "Khumjung, Nepal",
+    "code": "nepal-35.turnip.pocket.earth",
+    "url": "https://wolo.codes/nepal-35.turnip.pocket.earth"
+  },
+  {
+    "title": "",
+    "slug": "no-title-sample",
+    "variant": "minimalist",
+    "section": "Kathmandu",
+    "address1": "Inner Ring Road",
+    "address2": "Nepal",
+    "code": "kathmandu.river.mango.bell",
+    "url": "https://wolo.codes/kathmandu.river.mango.bell"
   }
 ]

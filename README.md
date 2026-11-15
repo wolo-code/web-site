@@ -9,7 +9,11 @@ Sample labels are data-driven from `Config/Labels.json`.
    - `title` (place name, used in output filename)
    - `slug` (stable label id / gallery anchor)
    - `variant` (currently `minimalist`)
-   - `region`, `words`, `url`, `address`
+   - `section` (city/region line)
+   - `address1` (textual address line 1)
+   - `address2` (second address line)
+   - `code` (Wolo code string, e.g. `kathmandu.mask.net.soil`; renderer uses last 3 words)
+   - `url` (live code URL)
 2. Generate assets:
    ```bash
    cd tools/label-generator
@@ -32,5 +36,24 @@ Sample labels are data-driven from `Config/Labels.json`.
    - (optional backward compatibility) `/labels/<slug>.svg|png`
 
 The `/labels` page reads the same JSON file, so adding a label is one data entry plus running the generator.
+
+## Dynamic label URL
+
+- Route: `/label`
+- Params:
+  - `title` (optional)
+  - `section` (required, left-aligned on label)
+  - `address1` (required; textual address line 1)
+  - `address2` (required; second address line)
+  - `code` (required unless `url` is provided; words are derived from code path using current Wolo format)
+  - `url` (optional fallback if `code` omitted; path is parsed for code)
+- Output defaults to SVG (`image/svg+xml`).
+- PNG is available with `?format=png` (or `download=png`).
+- `download=1` adds an attachment header for SVG/PNG.
+
+Examples:
+
+- `/label?title=Boudhanath%20Stupa&section=Kathmandu&address1=Boudhanath%20Stupa&address2=Kathmandu%2044600%2C%20Nepal&code=kathmandu.mask.net.soil`
+- `/label?section=Kathmandu&address1=Inner%20Ring%20Road&address2=Nepal&code=kathmandu.river.mango.bell` (no title layout)
 
 Design notes are documented in `docs/LABEL_DESIGN_NOTES.md`.
