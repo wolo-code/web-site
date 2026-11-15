@@ -18,6 +18,12 @@ function label_asset_stem($label) {
 	return $slug.'-'.$title.'-'.$variant;
 }
 
+function label_asset_stem_variant($label, $variant) {
+	$copy = $label;
+	$copy['variant'] = $variant;
+	return label_asset_stem($copy);
+}
+
 function label_dynamic_url($label) {
 	$params = [];
 	$title = trim((string)($label['title'] ?? ''));
@@ -26,6 +32,7 @@ function label_dynamic_url($label) {
 	$params['address1'] = (string)($label['address1'] ?? '');
 	$params['address2'] = (string)($label['address2'] ?? '');
 	$params['code'] = (string)($label['code'] ?? '');
+	$params['variant'] = (string)($label['variant'] ?? 'minimalist');
 	return '/label?'.http_build_query($params);
 }
 
@@ -60,6 +67,8 @@ function label_code_words($label) {
 		$code_words = htmlspecialchars(label_code_words($label), ENT_QUOTES, 'UTF-8');
 		$live_label_url = htmlspecialchars(label_dynamic_url($label), ENT_QUOTES, 'UTF-8');
 		$asset_stem = htmlspecialchars(label_asset_stem($label), ENT_QUOTES, 'UTF-8');
+		$code_asset_stem = htmlspecialchars(label_asset_stem_variant($label, 'code'), ENT_QUOTES, 'UTF-8');
+		$has_code_variant = !empty($label['extra_variants']) && is_array($label['extra_variants']) && in_array('code', $label['extra_variants'], true);
 		$code = trim($section.' '.$code_words);
 	?>
 	<section class='label-card' id='<?php echo $slug ?>'>
@@ -74,6 +83,16 @@ function label_code_words($label) {
 				loading='lazy'
 			>
 		</div>
+		<?php if($has_code_variant): ?>
+		<div class='label-image-wrap'>
+			<img
+				class='label-image label-image-code'
+				src='/labels/<?php echo $code_asset_stem ?>.png'
+				alt='Code-only Wolo label variant for <?php echo ($title ?: 'sample') ?>'
+				loading='lazy'
+			>
+		</div>
+		<?php endif; ?>
 		<div class='label-meta'>
 			<p><strong>Title:</strong> <?php echo ($title !== '' ? $title : '(none)') ?></p>
 			<p><strong>Variant:</strong> <?php echo $variant ?></p>
@@ -83,6 +102,9 @@ function label_code_words($label) {
 			<p><strong>Address line 2:</strong> <?php echo $address2 ?></p>
 			<p><strong>Live code URL:</strong> <a class='content-link' href='<?php echo $url ?>'><?php echo $url ?></a></p>
 			<p><strong>Dynamic label URL:</strong> <a class='content-link' href='<?php echo $live_label_url ?>'><?php echo $live_label_url ?></a></p>
+			<?php if($has_code_variant): ?>
+			<p><strong>Dynamic code variant URL:</strong> <a class='content-link' href='<?php echo htmlspecialchars(label_dynamic_url(array_merge($label, ['variant' => 'code'])), ENT_QUOTES, 'UTF-8') ?>'><?php echo htmlspecialchars(label_dynamic_url(array_merge($label, ['variant' => 'code'])), ENT_QUOTES, 'UTF-8') ?></a></p>
+			<?php endif; ?>
 		</div>
 	</section>
 	<?php endforeach; ?>

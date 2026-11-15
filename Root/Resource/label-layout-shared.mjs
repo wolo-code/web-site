@@ -1,5 +1,6 @@
 export const SVG_WIDTH = 1200;
 export const BRAND_BLUE = "#69b7cf";
+export const SECTION_COLOR = "#333333";
 export const FOOTER_TEXT = "Scan or enter at www.wolo.codes";
 
 function boxFromMetrics(left, baseline, width, fontSize) {
@@ -66,11 +67,8 @@ function fitHero(words, maxWidth, measureText) {
   return best;
 }
 
-export function createLabelLayout(label, measureText) {
+function createMinimalistLayout(label, measureText, heroWords) {
   const hasTitle = !!String(label.title || "").trim();
-  const heroWords = parseCodeWords(label.code || label.url);
-  if (!heroWords) throw new Error(`Label "${label.slug ?? "unknown"}" has invalid code`);
-
   const topRule = { x: 180, y: 28, w: 840, h: 5 };
   const logo = { w: 284, h: 284 / 4.56 };
   logo.x = (SVG_WIDTH - logo.w) / 2;
@@ -163,6 +161,8 @@ export function createLabelLayout(label, measureText) {
   if (logo.y - (topRule.y + topRule.h) < 12) throw new Error("Logo must keep minimum gap under top rule");
 
   return {
+    variant: "minimalist",
+    canvasWidth: SVG_WIDTH,
     hasTitle,
     heroWords,
     hero,
@@ -182,4 +182,89 @@ export function createLabelLayout(label, measureText) {
     sectionSlashX: boxes.section.left - 20,
     heroSlashX: heroRight + 12
   };
+}
+
+function createCodeLayout(label, measureText, heroWords) {
+  const canvasWidth = 760;
+  const canvasHeight = 520;
+  const bracket = { x: 76, top: 90, w: 608, h: 300, stroke: 3, arm: 22 };
+  const textLeft = bracket.x + 30;
+  const textRight = bracket.x + bracket.w - 30;
+  const textCenter = (textLeft + textRight) / 2;
+  const sectionFont = 34;
+
+  const hero = fitHero(heroWords, textRight - textLeft - 36, measureText);
+  const sectionBaseline = bracket.top + 44;
+  const heroCenterY = bracket.top + 168;
+  const heroLineHeight = hero.size * 1.12;
+  const heroOneBaseline = hero.lines.length === 1 ? heroCenterY : heroCenterY - heroLineHeight / 2;
+  const heroTwoBaseline = heroCenterY + heroLineHeight / 2;
+
+  const sectionWidth = measureText(label.section, sectionFont, 0.6);
+  const heroOneWidth = measureText(hero.lines[0], hero.size, hero.letterSpacing);
+  const heroTwoWidth = hero.lines.length > 1 ? measureText(hero.lines[1], hero.size, hero.letterSpacing) : 0;
+  const heroRight = Math.max(
+    textCenter + heroOneWidth / 2,
+    hero.lines.length > 1 ? textCenter + heroTwoWidth / 2 : -Infinity
+  );
+
+  const boxes = {
+    section: boxFromMetrics(textLeft, sectionBaseline, sectionWidth, sectionFont),
+    heroOne: boxFromMetrics(textCenter - heroOneWidth / 2, heroOneBaseline, heroOneWidth, hero.size),
+    heroTwo: hero.lines.length > 1 ? boxFromMetrics(textCenter - heroTwoWidth / 2, heroTwoBaseline, heroTwoWidth, hero.size) : null
+  };
+
+  const bracketBounds = {
+    left: bracket.x + 18,
+    right: bracket.x + bracket.w - 18,
+    top: bracket.top + 14,
+    bottom: bracket.top + bracket.h - 14
+  };
+  const checkInside = (name, box, bounds) => {
+    if (!box) return;
+    if (box.left < bounds.left || box.right > bounds.right || box.top < bounds.top || box.bottom > bounds.bottom) {
+      throw new Error(`Layout overflow for "${name}"`);
+    }
+  };
+  checkInside("section", boxes.section, bracketBounds);
+  checkInside("hero line 1", boxes.heroOne, bracketBounds);
+  checkInside("hero line 2", boxes.heroTwo, bracketBounds);
+  if (boxes.section.bottom + 4 > boxes.heroOne.top) throw new Error("Layout collision: section overlaps hero words");
+
+  const allText = [boxes.section, boxes.heroOne, boxes.heroTwo].filter(Boolean);
+  for (let i = 0; i < allText.length; i += 1) {
+    for (let j = i + 1; j < allText.length; j += 1) {
+      if (overlap(allText[i], allText[j], 2)) throw new Error(`Text overlap detected between blocks ${i} and ${j}`);
+    }
+  }
+
+  return {
+    variant: "code",
+    canvasWidth,
+    hasTitle: false,
+    heroWords,
+    hero,
+    topRule: null,
+    logo: null,
+    bracket,
+    textLeft,
+    textCenter,
+    titleBaseline: null,
+    sectionBaseline,
+    heroOneBaseline,
+    heroTwoBaseline,
+    address1Baseline: null,
+    address2Baseline: null,
+    footer: null,
+    svgHeight: canvasHeight,
+    sectionSlashX: boxes.section.left - 20,
+    heroSlashX: heroRight + 12
+  };
+}
+
+export function createLabelLayout(label, measureText, variant = "minimalist") {
+  const heroWords = parseCodeWords(label.code || label.url);
+  if (!heroWords) throw new Error(`Label "${label.slug ?? "unknown"}" has invalid code`);
+  if (variant === "code") return createCodeLayout(label, measureText, heroWords);
+  return createMinimalistLayout(label, measureText, heroWords);
 }

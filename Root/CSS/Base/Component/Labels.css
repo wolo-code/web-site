@@ -34,6 +34,10 @@
 	display: block;
 }
 
+#message .label-image-code {
+	max-width: 460px;
+}
+
 #message .label-meta p {
 	margin: 8px 0;
 	line-height: 1.45;

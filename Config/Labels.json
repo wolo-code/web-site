@@ -7,6 +7,7 @@
     "address1": "Boudha Stupa Rd",
     "address2": "Kathmandu 44600, Nepal",
     "code": "kathmandu.mask.net.soil",
+    "extra_variants": ["code"],
     "url": "https://wolo.codes/kathmandu.mask.net.soil"
   },
   {
@@ -17,6 +18,7 @@
     "address1": "Everest Base Camp",
     "address2": "Khumjung, Nepal",
     "code": "nepal-35.turnip.pocket.earth",
+    "extra_variants": ["code"],
     "url": "https://wolo.codes/nepal-35.turnip.pocket.earth"
   },
   {

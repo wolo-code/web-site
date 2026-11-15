@@ -3,7 +3,7 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Resvg } from "@resvg/resvg-js";
 import * as fontkit from "fontkit";
-import { SVG_WIDTH, BRAND_BLUE, FOOTER_TEXT, createLabelLayout } from "../../Root/Resource/label-layout-shared.mjs";
+import { SVG_WIDTH, BRAND_BLUE, SECTION_COLOR, FOOTER_TEXT, createLabelLayout } from "../../Root/Resource/label-layout-shared.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -71,7 +71,7 @@ export function filenameStem(label) {
 }
 
 export function validateLabel(label) {
-  for (const key of ["title", "slug", "variant", "section", "address1", "address2", "code"]) {
+  for (const key of ["title", "slug", "variant", "section", "code"]) {
     if (!(key in label) || typeof label[key] !== "string") {
       throw new Error(`Label "${label.slug ?? "unknown"}" missing required string field "${key}"`);
     }
@@ -79,34 +79,47 @@ export function validateLabel(label) {
       throw new Error(`Label "${label.slug ?? "unknown"}" has empty required field "${key}"`);
     }
   }
+  const variant = label.variant || DEFAULT_VARIANT;
+  if (!["minimalist", "code"].includes(variant)) {
+    throw new Error(`Label "${label.slug ?? "unknown"}" has unsupported variant "${variant}"`);
+  }
+  for (const key of ["address1", "address2"]) {
+    if (!(key in label) || typeof label[key] !== "string") {
+      throw new Error(`Label "${label.slug ?? "unknown"}" missing required string field "${key}"`);
+    }
+    if (variant !== "code" && label[key].trim() === "") {
+      throw new Error(`Label "${label.slug ?? "unknown"}" has empty required field "${key}"`);
+    }
+  }
 }
 
 export function renderMinimalistSvg(label) {
   validateLabel(label);
-  const layout = createLabelLayout(label, measureTextWidth);
+  const variant = label.variant || DEFAULT_VARIANT;
+  const layout = createLabelLayout(label, measureTextWidth, variant);
   const titlePath = layout.hasTitle ? textPath(label.title, layout.textCenter, layout.titleBaseline, 44, 0.2) : "";
   const sectionPath = textPath(label.section, layout.textLeft, layout.sectionBaseline, 34, 0.6, "start");
   const heroOne = textPath(layout.hero.lines[0], layout.textCenter, layout.heroOneBaseline, layout.hero.size, layout.hero.letterSpacing);
   const heroTwo = layout.hero.lines.length > 1 ? textPath(layout.hero.lines[1], layout.textCenter, layout.heroTwoBaseline, layout.hero.size, layout.hero.letterSpacing) : "";
   const leftSlash = textPath("\\", layout.sectionSlashX, layout.sectionBaseline, 30, 0, "start");
   const rightSlash = textPath("/", layout.heroSlashX, layout.hero.lines.length === 1 ? layout.heroOneBaseline : layout.heroTwoBaseline, 30, 0, "start");
-  const address1 = textPath(label.address1, layout.textCenter, layout.address1Baseline, 42, 0.2, "middle");
-  const address2 = textPath(label.address2, layout.textCenter, layout.address2Baseline, 42, 0.2, "middle");
-  const footer = textPath(FOOTER_TEXT, SVG_WIDTH / 2, layout.footer.y + 39, 30, 0);
+  const address1 = layout.address1Baseline ? textPath(label.address1, layout.textCenter, layout.address1Baseline, 42, 0.2, "middle") : "";
+  const address2 = layout.address2Baseline ? textPath(label.address2, layout.textCenter, layout.address2Baseline, 42, 0.2, "middle") : "";
+  const footer = layout.footer ? textPath(FOOTER_TEXT, layout.canvasWidth / 2, layout.footer.y + 39, 30, 0) : "";
   const codeAria = escapeXml(`${label.section} ${layout.heroWords}`);
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${SVG_WIDTH}" height="${layout.svgHeight}" viewBox="0 0 ${SVG_WIDTH} ${layout.svgHeight}" role="img" aria-label="${codeAria}">
-  <rect width="${SVG_WIDTH}" height="${layout.svgHeight}" fill="#ffffff" />
-  <rect x="${layout.topRule.x}" y="${layout.topRule.y}" width="${layout.topRule.w}" height="${layout.topRule.h}" fill="${BRAND_BLUE}" />
+<svg xmlns="http://www.w3.org/2000/svg" width="${layout.canvasWidth}" height="${layout.svgHeight}" viewBox="0 0 ${layout.canvasWidth} ${layout.svgHeight}" role="img" aria-label="${codeAria}">
+  <rect width="${layout.canvasWidth}" height="${layout.svgHeight}" fill="#ffffff" />
+  ${layout.topRule ? `<rect x="${layout.topRule.x}" y="${layout.topRule.y}" width="${layout.topRule.w}" height="${layout.topRule.h}" fill="${BRAND_BLUE}" />` : ""}
 
   <g>
-    <image href="${logoFullDataUri}" x="${layout.logo.x}" y="${layout.logo.y}" width="${layout.logo.w}" height="${layout.logo.h}" />
+    ${layout.logo ? `<image href="${logoFullDataUri}" x="${layout.logo.x}" y="${layout.logo.y}" width="${layout.logo.w}" height="${layout.logo.h}" />` : ""}
   </g>
 
   ${layout.hasTitle ? `<path d="${titlePath}" fill="#3f3f3f" />` : ""}
   <path d="${leftSlash}" fill="${BRAND_BLUE}" fill-opacity="0.55" />
-  <path d="${sectionPath}" fill="${BRAND_BLUE}" />
+  <path d="${sectionPath}" fill="${SECTION_COLOR}" />
 
   <path d="M ${layout.bracket.x} ${layout.bracket.top + layout.bracket.arm} L ${layout.bracket.x} ${layout.bracket.top} L ${layout.bracket.x + layout.bracket.arm} ${layout.bracket.top}" stroke="${BRAND_BLUE}" stroke-width="${layout.bracket.stroke}" fill="none" />
   <path d="M ${layout.bracket.x + layout.bracket.w - layout.bracket.arm} ${layout.bracket.top} L ${layout.bracket.x + layout.bracket.w} ${layout.bracket.top} L ${layout.bracket.x + layout.bracket.w} ${layout.bracket.top + layout.bracket.arm}" stroke="${BRAND_BLUE}" stroke-width="${layout.bracket.stroke}" fill="none" />
@@ -117,17 +130,19 @@ export function renderMinimalistSvg(label) {
   ${heroTwo ? `<path d="${heroTwo}" fill="#111111" stroke="#111111" stroke-width="2.6" stroke-linejoin="round" />` : ""}
   <path d="${rightSlash}" fill="${BRAND_BLUE}" fill-opacity="0.55" />
 
-  <path d="${address1}" fill="#3f3f3f" />
-  <path d="${address2}" fill="#3f3f3f" />
+  ${address1 ? `<path d="${address1}" fill="#3f3f3f" />` : ""}
+  ${address2 ? `<path d="${address2}" fill="#3f3f3f" />` : ""}
 
-  <rect x="${layout.footer.x}" y="${layout.footer.y}" width="${layout.footer.w}" height="${layout.footer.h}" fill="${BRAND_BLUE}" />
-  <path d="${footer}" fill="#ffffff" />
+  ${layout.footer ? `<rect x="${layout.footer.x}" y="${layout.footer.y}" width="${layout.footer.w}" height="${layout.footer.h}" fill="${BRAND_BLUE}" />` : ""}
+  ${footer ? `<path d="${footer}" fill="#ffffff" />` : ""}
 </svg>`;
 }
 
 export function renderPng(svgSource) {
+  const widthMatch = svgSource.match(/width="(\d+(?:\.\d+)?)"/);
+  const sourceWidth = widthMatch ? Number(widthMatch[1]) : SVG_WIDTH;
   const resvg = new Resvg(svgSource, {
-    fitTo: { mode: "width", value: SVG_WIDTH * PNG_SCALE }
+    fitTo: { mode: "width", value: Math.round(sourceWidth * PNG_SCALE) }
   });
   return resvg.render().asPng();
 }

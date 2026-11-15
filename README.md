@@ -9,6 +9,7 @@ Sample labels are data-driven from `Config/Labels.json`.
    - `title` (place name, used in output filename)
    - `slug` (stable label id / gallery anchor)
    - `variant` (currently `minimalist`)
+   - `extra_variants` (optional array; use `["code"]` to export compact code-only artwork)
    - `section` (city/region line)
    - `address1` (textual address line 1)
    - `address2` (second address line)
@@ -45,11 +46,12 @@ The `/labels` page reads the same JSON file, so adding a label is one data entry
 - The renderer reuses the web-app label download pattern (`html2canvas` + PNG download link behavior) adapted from `web-app/Root/JS/Component/Root/QR.js`.
 - Params:
   - `title` (optional)
-  - `section` (required, left-aligned on label)
+  - `section` (required, left-aligned in the code frame; rendered in 80% black `#333333`)
   - `address1` (required; textual address line 1)
   - `address2` (required; second address line)
   - `code` (required unless `url` is provided; words are derived from code path using current Wolo format)
   - `url` (optional fallback if `code` omitted; path is parsed for code)
+  - `variant` (optional: `minimalist` or `code`; `code` ignores title/address params)
 - The page renders SVG in-browser and includes a **Download PNG** button.
 
 Examples:

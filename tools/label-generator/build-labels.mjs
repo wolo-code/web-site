@@ -26,19 +26,20 @@ function run() {
   mkdirSync(testOutputDir, { recursive: true });
 
   for (const label of labels) {
-    validateLabel(label);
     if (!("url" in label) || typeof label.url !== "string" || label.url.trim() === "") {
       throw new Error(`Label "${label.slug}" missing required field "url"`);
     }
-    const variant = label.variant || DEFAULT_VARIANT;
-    if (variant !== DEFAULT_VARIANT) throw new Error(`Unsupported variant "${variant}" for label "${label.slug}"`);
-
-    const svg = renderMinimalistSvg(label);
-    const png = renderPng(svg);
-    const stem = filenameStem(label);
-    writeOutputs(outputDir, stem, svg, png);
-    writeOutputs(outputDir, label.slug, svg, png); // keep existing slug-only URL path working
-    console.log(`generated labels/${stem}.svg + labels/${stem}.png (+ slug aliases)`);
+    const variants = [label.variant || DEFAULT_VARIANT, ...((Array.isArray(label.extra_variants) ? label.extra_variants : []))];
+    for (const variant of variants) {
+      const variantLabel = { ...label, variant };
+      validateLabel(variantLabel);
+      const svg = renderMinimalistSvg(variantLabel);
+      const png = renderPng(svg);
+      const stem = filenameStem(variantLabel);
+      writeOutputs(outputDir, stem, svg, png);
+      if (variant === DEFAULT_VARIANT) writeOutputs(outputDir, label.slug, svg, png); // keep slug-only URL path working for default variant
+      console.log(`generated labels/${stem}.svg + labels/${stem}.png${variant === DEFAULT_VARIANT ? " (+ slug aliases)" : ""}`);
+    }
   }
 
   const longCase = {
