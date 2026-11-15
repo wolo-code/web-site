@@ -3,3 +3,4 @@
 .firebase/*.cache
 public
 interim
+tools/label-generator/node_modules
