@@ -169,7 +169,7 @@ export function renderMinimalistSvg(label) {
   const bracketX = 220;
   const bracketY = 142;
   const bracketW = 760;
-  const bracketH = 198;
+  const bracketH = 146;
   const bracketStroke = 3;
   const bracketArm = 22;
 
@@ -178,27 +178,32 @@ export function renderMinimalistSvg(label) {
   const footerBarX = topRuleX;
 
   const hasTitle = !!String(label.title || "").trim();
-  const yShift = 0;
   const heroWords = parseCodeWords(label.code || label.url);
   if (!heroWords.trim()) throw new Error(`Label "${label.slug}" has invalid code "${label.code}"`);
   const textLeftX = bracketX + 30;
   const textRightX = bracketX + bracketW - 30;
   const textCenterX = (textLeftX + textRightX) / 2;
+  const logoW = 284;
+  const logoH = logoW / 4.56;
+  const logoX = (SVG_WIDTH - logoW) / 2;
+  const logoY = topRuleY + topRuleH + 18;
   const hero = fitHero(heroWords, textRightX - textLeftX - 40);
-  const heroCenterY = bracketY + 132;
+  const heroCenterY = bracketY + 84;
   const heroLineHeight = hero.size * 1.12;
-  const sectionBaseline = bracketY + 46;
-  const heroOneBaseline = (hero.lines.length === 1 ? heroCenterY : heroCenterY - heroLineHeight / 2) + yShift;
-  const heroTwoBaseline = heroCenterY + heroLineHeight / 2 + yShift;
-  const slashLeftBaseline = sectionBaseline;
-  const slashRightBaseline = hero.lines.length === 1 ? heroOneBaseline : heroTwoBaseline;
-
   const titleFont = 44;
   const addressFont = 42;
   const textLineStep = Math.round(addressFont * 1.3);
-  const contentBlockTop = bracketY + bracketH + 20;
-  const titleBaseline = contentBlockTop + titleFont;
-  const address1Baseline = hasTitle ? titleBaseline + textLineStep : contentBlockTop + addressFont;
+
+  const titleBaseline = hasTitle ? logoY + logoH + 46 : 0;
+  const sectionBaseline = hasTitle ? titleBaseline + 42 : logoY + logoH + 42;
+  const bracketTop = sectionBaseline + 28;
+  const heroOneBaseline = hero.lines.length === 1 ? heroCenterY + (bracketTop - bracketY) : heroCenterY - heroLineHeight / 2 + (bracketTop - bracketY);
+  const heroTwoBaseline = heroCenterY + heroLineHeight / 2 + (bracketTop - bracketY);
+  const slashLeftBaseline = sectionBaseline;
+  const slashRightBaseline = hero.lines.length === 1 ? heroOneBaseline : heroTwoBaseline;
+
+  const contentBlockTop = bracketTop + bracketH + 24;
+  const address1Baseline = contentBlockTop + addressFont;
   const address2Baseline = address1Baseline + textLineStep;
   const footerBarY = Math.round(address2Baseline + 30);
   const svgHeight = footerBarY + footerBarH + 22;
@@ -218,28 +223,23 @@ export function renderMinimalistSvg(label) {
   const footerFontSize = 30;
   const footer = textPath(FOOTER_TEXT, SVG_WIDTH / 2, footerBarY + 39, footerFontSize, 0);
 
-  const logoW = 284;
-  const logoH = logoW / 4.56;
-  const logoX = (SVG_WIDTH - logoW) / 2;
-  const logoY = topRuleY + topRuleH + 18;
-
   const codeAria = escapeXml(`${label.section} ${heroWords}`);
   const bracketTextBounds = {
     left: bracketX + 18,
     right: bracketX + bracketW - 18,
-    top: bracketY + 14,
-    bottom: bracketY + bracketH - 14
+    top: bracketTop + 14,
+    bottom: bracketTop + bracketH - 14
   };
   const contentBounds = {
     left: 100,
     right: SVG_WIDTH - 100,
-    top: bracketY,
+    top: topRuleY + topRuleH + 8,
     bottom: footerBarY - 16
   };
-  assertInsideBox(sectionBox, bracketTextBounds, "section");
+  assertInsideBox(sectionBox, contentBounds, "section");
   assertInsideBox(heroOneBox, bracketTextBounds, "hero line 1");
   if (heroTwoBox) assertInsideBox(heroTwoBox, bracketTextBounds, "hero line 2");
-  if (sectionBox.bottom + 8 > heroOneBox.top) {
+  if (sectionBox.bottom + 10 > bracketTop) {
     throw new Error("Layout collision: section overlaps hero words");
   }
   const titleBox = hasTitle ? textBox(label.title, textCenterX, titleBaseline, titleFont, 0.2, "middle") : null;
@@ -271,18 +271,19 @@ export function renderMinimalistSvg(label) {
     <image href="${logoFullDataUri}" x="${logoX}" y="${logoY}" width="${logoW}" height="${logoH}" />
   </g>
 
-  <path d="M ${bracketX} ${bracketY + bracketArm} L ${bracketX} ${bracketY} L ${bracketX + bracketArm} ${bracketY}" stroke="${BRAND_BLUE}" stroke-width="${bracketStroke}" fill="none" />
-  <path d="M ${bracketX + bracketW - bracketArm} ${bracketY} L ${bracketX + bracketW} ${bracketY} L ${bracketX + bracketW} ${bracketY + bracketArm}" stroke="${BRAND_BLUE}" stroke-width="${bracketStroke}" fill="none" />
-  <path d="M ${bracketX} ${bracketY + bracketH - bracketArm} L ${bracketX} ${bracketY + bracketH} L ${bracketX + bracketArm} ${bracketY + bracketH}" stroke="${BRAND_BLUE}" stroke-width="${bracketStroke}" fill="none" />
-  <path d="M ${bracketX + bracketW - bracketArm} ${bracketY + bracketH} L ${bracketX + bracketW} ${bracketY + bracketH} L ${bracketX + bracketW} ${bracketY + bracketH - bracketArm}" stroke="${BRAND_BLUE}" stroke-width="${bracketStroke}" fill="none" />
-
-  <path d="${sectionPath}" fill="${BRAND_BLUE}" />
+  ${hasTitle ? `<path d="${titlePath}" fill="#3f3f3f" />` : ""}
   <path d="${leftSlash}" fill="${BRAND_BLUE}" fill-opacity="0.55" />
+  <path d="${sectionPath}" fill="${BRAND_BLUE}" />
+
+  <path d="M ${bracketX} ${bracketTop + bracketArm} L ${bracketX} ${bracketTop} L ${bracketX + bracketArm} ${bracketTop}" stroke="${BRAND_BLUE}" stroke-width="${bracketStroke}" fill="none" />
+  <path d="M ${bracketX + bracketW - bracketArm} ${bracketTop} L ${bracketX + bracketW} ${bracketTop} L ${bracketX + bracketW} ${bracketTop + bracketArm}" stroke="${BRAND_BLUE}" stroke-width="${bracketStroke}" fill="none" />
+  <path d="M ${bracketX} ${bracketTop + bracketH - bracketArm} L ${bracketX} ${bracketTop + bracketH} L ${bracketX + bracketArm} ${bracketTop + bracketH}" stroke="${BRAND_BLUE}" stroke-width="${bracketStroke}" fill="none" />
+  <path d="M ${bracketX + bracketW - bracketArm} ${bracketTop + bracketH} L ${bracketX + bracketW} ${bracketTop + bracketH} L ${bracketX + bracketW} ${bracketTop + bracketH - bracketArm}" stroke="${BRAND_BLUE}" stroke-width="${bracketStroke}" fill="none" />
+
   <path d="${heroOne}" fill="#111111" stroke="#111111" stroke-width="2.6" stroke-linejoin="round" />
   ${heroTwo ? `<path d="${heroTwo}" fill="#111111" stroke="#111111" stroke-width="2.6" stroke-linejoin="round" />` : ""}
   <path d="${rightSlash}" fill="${BRAND_BLUE}" fill-opacity="0.55" />
 
-  ${hasTitle ? `<path d="${titlePath}" fill="#3f3f3f" />` : ""}
   <path d="${address1}" fill="#3f3f3f" />
   <path d="${address2}" fill="#3f3f3f" />
 

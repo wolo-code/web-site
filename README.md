@@ -53,7 +53,7 @@ The `/labels` page reads the same JSON file, so adding a label is one data entry
 
 Examples:
 
-- `/label?title=Boudhanath%20Stupa&section=Kathmandu&address1=Boudhanath%20Stupa&address2=Kathmandu%2044600%2C%20Nepal&code=kathmandu.mask.net.soil`
+- `/label?title=Boudhanath%20Stupa&section=Kathmandu&address1=Boudha%20Stupa%20Rd&address2=Kathmandu%2044600%2C%20Nepal&code=kathmandu.mask.net.soil`
 - `/label?section=Kathmandu&address1=Inner%20Ring%20Road&address2=Nepal&code=kathmandu.river.mango.bell` (no title layout)
 
 Design notes are documented in `docs/LABEL_DESIGN_NOTES.md`.
