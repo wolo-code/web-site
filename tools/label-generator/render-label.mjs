@@ -133,6 +133,15 @@ function assertInsideBox(box, bounds, label) {
   }
 }
 
+function boxesOverlap(a, b, padding = 0) {
+  return !(
+    a.right + padding <= b.left ||
+    b.right + padding <= a.left ||
+    a.bottom + padding <= b.top ||
+    b.bottom + padding <= a.top
+  );
+}
+
 export function filenameStem(label) {
   const variant = label.variant || DEFAULT_VARIANT;
   const titlePart = slugify(label.title || "") || "untitled";
@@ -153,12 +162,12 @@ export function validateLabel(label) {
 export function renderMinimalistSvg(label) {
   validateLabel(label);
   const topRuleX = 180;
-  const topRuleY = 66;
+  const topRuleY = 28;
   const topRuleW = 840;
   const topRuleH = 5;
 
   const bracketX = 220;
-  const bracketY = 124;
+  const bracketY = 142;
   const bracketW = 760;
   const bracketH = 198;
   const bracketStroke = 3;
@@ -167,7 +176,6 @@ export function renderMinimalistSvg(label) {
   const footerBarW = topRuleW;
   const footerBarH = 58;
   const footerBarX = topRuleX;
-  const footerBarY = 562;
 
   const hasTitle = !!String(label.title || "").trim();
   const yShift = 0;
@@ -177,7 +185,7 @@ export function renderMinimalistSvg(label) {
   const textRightX = bracketX + bracketW - 30;
   const textCenterX = (textLeftX + textRightX) / 2;
   const hero = fitHero(heroWords, textRightX - textLeftX - 40);
-  const heroCenterY = bracketY + 136;
+  const heroCenterY = bracketY + 132;
   const heroLineHeight = hero.size * 1.12;
   const sectionBaseline = bracketY + 46;
   const heroOneBaseline = (hero.lines.length === 1 ? heroCenterY : heroCenterY - heroLineHeight / 2) + yShift;
@@ -185,25 +193,35 @@ export function renderMinimalistSvg(label) {
   const slashLeftBaseline = sectionBaseline;
   const slashRightBaseline = hero.lines.length === 1 ? heroOneBaseline : heroTwoBaseline;
 
-  const titleBaseline = bracketY + bracketH + 44;
-  const address1Baseline = titleBaseline + (hasTitle ? 38 : 0);
-  const address2Baseline = address1Baseline + 34;
+  const titleFont = 44;
+  const addressFont = 42;
+  const textLineStep = Math.round(addressFont * 1.3);
+  const contentBlockTop = bracketY + bracketH + 20;
+  const titleBaseline = contentBlockTop + titleFont;
+  const address1Baseline = hasTitle ? titleBaseline + textLineStep : contentBlockTop + addressFont;
+  const address2Baseline = address1Baseline + textLineStep;
+  const footerBarY = Math.round(address2Baseline + 30);
+  const svgHeight = footerBarY + footerBarH + 22;
 
-  const titlePath = hasTitle ? textPath(label.title, textCenterX, titleBaseline, 49, 0.2) : "";
+  const titlePath = hasTitle ? textPath(label.title, textCenterX, titleBaseline, titleFont, 0.2) : "";
   const sectionPath = textPath(label.section, textLeftX, sectionBaseline, 34, 0.6, "start");
   const heroOne = textPath(hero.lines[0], textCenterX, heroOneBaseline, hero.size, hero.letterSpacing);
   const heroTwo = hero.lines.length > 1 ? textPath(hero.lines[1], textCenterX, heroTwoBaseline, hero.size, hero.letterSpacing) : "";
-  const leftSlash = textPath("\\", textLeftX - 22, slashLeftBaseline, 30, 0, "start");
-  const rightSlash = textPath("/", textRightX + 8, slashRightBaseline, 30, 0, "start");
-  const address1 = textPath(label.address1, textCenterX, address1Baseline, 46, 0.2, "middle");
-  const address2 = textPath(label.address2, textCenterX, address2Baseline, 46, 0.2, "middle");
+  const sectionBox = textBox(label.section, textLeftX, sectionBaseline, 34, 0.6, "start");
+  const heroOneBox = textBox(hero.lines[0], textCenterX, heroOneBaseline, hero.size, hero.letterSpacing, "middle");
+  const heroTwoBox = heroTwo ? textBox(hero.lines[1], textCenterX, heroTwoBaseline, hero.size, hero.letterSpacing, "middle") : null;
+  const heroRightEdge = heroTwoBox ? heroTwoBox.right : heroOneBox.right;
+  const leftSlash = textPath("\\", sectionBox.left - 20, slashLeftBaseline, 30, 0, "start");
+  const rightSlash = textPath("/", heroRightEdge + 12, slashRightBaseline, 30, 0, "start");
+  const address1 = textPath(label.address1, textCenterX, address1Baseline, addressFont, 0.2, "middle");
+  const address2 = textPath(label.address2, textCenterX, address2Baseline, addressFont, 0.2, "middle");
   const footerFontSize = 30;
   const footer = textPath(FOOTER_TEXT, SVG_WIDTH / 2, footerBarY + 39, footerFontSize, 0);
 
-  const logoW = 320;
-  const logoH = logoW / 2.28;
+  const logoW = 284;
+  const logoH = logoW / 4.56;
   const logoX = (SVG_WIDTH - logoW) / 2;
-  const logoY = 26;
+  const logoY = topRuleY + topRuleH + 18;
 
   const codeAria = escapeXml(`${label.section} ${heroWords}`);
   const bracketTextBounds = {
@@ -218,15 +236,25 @@ export function renderMinimalistSvg(label) {
     top: bracketY,
     bottom: footerBarY - 16
   };
-  assertInsideBox(textBox(label.section, textLeftX, sectionBaseline, 34, 0.6, "start"), bracketTextBounds, "section");
-  assertInsideBox(textBox(hero.lines[0], textCenterX, heroOneBaseline, hero.size, hero.letterSpacing, "middle"), bracketTextBounds, "hero line 1");
-  if (heroTwo) assertInsideBox(textBox(hero.lines[1], textCenterX, heroTwoBaseline, hero.size, hero.letterSpacing, "middle"), bracketTextBounds, "hero line 2");
-  if (textBox(label.section, textLeftX, sectionBaseline, 34, 0.6, "start").bottom + 8 > textBox(hero.lines[0], textCenterX, heroOneBaseline, hero.size, hero.letterSpacing, "middle").top) {
+  assertInsideBox(sectionBox, bracketTextBounds, "section");
+  assertInsideBox(heroOneBox, bracketTextBounds, "hero line 1");
+  if (heroTwoBox) assertInsideBox(heroTwoBox, bracketTextBounds, "hero line 2");
+  if (sectionBox.bottom + 8 > heroOneBox.top) {
     throw new Error("Layout collision: section overlaps hero words");
   }
-  if (hasTitle) assertInsideBox(textBox(label.title, textCenterX, titleBaseline, 49, 0.2, "middle"), contentBounds, "title");
-  assertInsideBox(textBox(label.address1, textCenterX, address1Baseline, 46, 0.2, "middle"), contentBounds, "address1");
-  assertInsideBox(textBox(label.address2, textCenterX, address2Baseline, 46, 0.2, "middle"), contentBounds, "address2");
+  const titleBox = hasTitle ? textBox(label.title, textCenterX, titleBaseline, titleFont, 0.2, "middle") : null;
+  const address1Box = textBox(label.address1, textCenterX, address1Baseline, addressFont, 0.2, "middle");
+  const address2Box = textBox(label.address2, textCenterX, address2Baseline, addressFont, 0.2, "middle");
+  if (titleBox) assertInsideBox(titleBox, contentBounds, "title");
+  assertInsideBox(address1Box, contentBounds, "address1");
+  assertInsideBox(address2Box, contentBounds, "address2");
+  const allText = [sectionBox, heroOneBox, heroTwoBox, titleBox, address1Box, address2Box, textBox(FOOTER_TEXT, SVG_WIDTH / 2, footerBarY + 39, footerFontSize, 0, "middle")].filter(Boolean);
+  for (let i = 0; i < allText.length; i += 1) {
+    for (let j = i + 1; j < allText.length; j += 1) {
+      if (boxesOverlap(allText[i], allText[j], 2)) throw new Error(`Text overlap detected between blocks ${i} and ${j}`);
+    }
+  }
+  if (logoY - (topRuleY + topRuleH) < 12) throw new Error("Logo must keep minimum gap under top rule");
   assertInsideBox(textBox(FOOTER_TEXT, SVG_WIDTH / 2, footerBarY + 39, footerFontSize, 0, "middle"), {
     left: footerBarX + 16,
     right: footerBarX + footerBarW - 16,
@@ -235,8 +263,8 @@ export function renderMinimalistSvg(label) {
   }, "footer");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${SVG_WIDTH}" height="${SVG_HEIGHT}" viewBox="0 0 ${SVG_WIDTH} ${SVG_HEIGHT}" role="img" aria-label="${codeAria}">
-  <rect width="${SVG_WIDTH}" height="${SVG_HEIGHT}" fill="#ffffff" />
+<svg xmlns="http://www.w3.org/2000/svg" width="${SVG_WIDTH}" height="${svgHeight}" viewBox="0 0 ${SVG_WIDTH} ${svgHeight}" role="img" aria-label="${codeAria}">
+  <rect width="${SVG_WIDTH}" height="${svgHeight}" fill="#ffffff" />
   <rect x="${topRuleX}" y="${topRuleY}" width="${topRuleW}" height="${topRuleH}" fill="${BRAND_BLUE}" />
 
   <g>
@@ -250,8 +278,8 @@ export function renderMinimalistSvg(label) {
 
   <path d="${sectionPath}" fill="${BRAND_BLUE}" />
   <path d="${leftSlash}" fill="${BRAND_BLUE}" fill-opacity="0.55" />
-  <path d="${heroOne}" fill="#111111" stroke="#111111" stroke-width="1.5" stroke-linejoin="round" />
-  ${heroTwo ? `<path d="${heroTwo}" fill="#111111" stroke="#111111" stroke-width="1.5" stroke-linejoin="round" />` : ""}
+  <path d="${heroOne}" fill="#111111" stroke="#111111" stroke-width="2.6" stroke-linejoin="round" />
+  ${heroTwo ? `<path d="${heroTwo}" fill="#111111" stroke="#111111" stroke-width="2.6" stroke-linejoin="round" />` : ""}
   <path d="${rightSlash}" fill="${BRAND_BLUE}" fill-opacity="0.55" />
 
   ${hasTitle ? `<path d="${titlePath}" fill="#3f3f3f" />` : ""}
