@@ -1,4 +1,4 @@
-import { SVG_WIDTH, BRAND_BLUE, FOOTER_TEXT, createLabelLayout } from "/label-layout-shared.mjs";
+import { SVG_WIDTH, BRAND_BLUE, FOOTER_TEXT, createLabelLayout } from "/label-layout-shared.js";
 
 const MAX_LEN = { title: 80, section: 64, address1: 80, address2: 96, code: 120 };
 
@@ -121,32 +121,29 @@ function buildLabelSvg(label, layout) {
 	return svg;
 }
 
-function triggerPngDownload(svg) {
-	const xml = new XMLSerializer().serializeToString(svg);
-	const blob = new Blob([xml], { type: "image/svg+xml;charset=utf-8" });
-	const svgUrl = URL.createObjectURL(blob);
-	const img = new Image();
-	img.onload = () => {
-		const scale = 2;
-		const canvas = document.createElement("canvas");
-		canvas.width = Math.round(svg.viewBox.baseVal.width * scale);
-		canvas.height = Math.round(svg.viewBox.baseVal.height * scale);
-		const ctx = canvas.getContext("2d");
-		ctx.fillStyle = "#ffffff";
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-		URL.revokeObjectURL(svgUrl);
-		canvas.toBlob((pngBlob) => {
-			if(!pngBlob) return;
-			const url = URL.createObjectURL(pngBlob);
-			const a = document.createElement("a");
-			a.href = url;
-			a.download = "label.png";
-			a.click();
-			URL.revokeObjectURL(url);
-		}, "image/png");
-	};
-	img.src = svgUrl;
+function downloadURI(uri, name) {
+	const link = document.createElement("a");
+	link.download = name;
+	link.href = uri;
+	link.click();
+}
+
+function downloadLabelPng() {
+	const qrBody = document.getElementById("label-preview");
+	if(!qrBody || typeof window.html2canvas !== "function") return;
+	window.html2canvas(qrBody, {
+		scale: 1,
+		onclone: function(clonedDocument) {
+			clonedDocument.querySelectorAll("#label-preview svg image").forEach(function(logo) {
+				const style = clonedDocument.defaultView.getComputedStyle(logo);
+				logo.setAttribute("width", style.width);
+				logo.setAttribute("height", style.height);
+			});
+		}
+	}).then((canvas) => {
+		const qrImage = canvas.toDataURL("image/png");
+		downloadURI(qrImage, "Wolo Label.png");
+	});
 }
 
 function mount() {
@@ -159,7 +156,7 @@ function mount() {
 		const layout = createLabelLayout(label, measureFactory());
 		const svg = buildLabelSvg(label, layout);
 		preview.replaceChildren(svg);
-		download.addEventListener("click", () => triggerPngDownload(svg));
+		download.addEventListener("click", downloadLabelPng);
 	} catch (error) {
 		const message = document.createElement("p");
 		message.textContent = error instanceof Error ? error.message : "Unable to render label.";

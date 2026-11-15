@@ -42,6 +42,7 @@ The `/labels` page reads the same JSON file, so adding a label is one data entry
 - Route: `/label`
 - Served as a normal site page (component `Root/HTML/Component/Label.php`) with browser rendering from `/label-runtime.js`.
 - This works in both local Apache/PHP rendering and baked Firebase static hosting because rendering is client-side.
+- The renderer reuses the web-app label download pattern (`html2canvas` + PNG download link behavior) adapted from `web-app/Root/JS/Component/Root/QR.js`.
 - Params:
   - `title` (optional)
   - `section` (required, left-aligned on label)
@@ -49,8 +50,7 @@ The `/labels` page reads the same JSON file, so adding a label is one data entry
   - `address2` (required; second address line)
   - `code` (required unless `url` is provided; words are derived from code path using current Wolo format)
   - `url` (optional fallback if `code` omitted; path is parsed for code)
-- Output defaults to SVG (`image/svg+xml`).
-- The page includes a **Download PNG** button (client-side canvas export).
+- The page renders SVG in-browser and includes a **Download PNG** button.
 
 Examples:
 

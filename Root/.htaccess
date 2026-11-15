@@ -22,6 +22,10 @@ RewriteRule ^script.js$ Framework/JS/Script.php [L]
 RewriteRule ^manifest\.json$ /Framework/Files/Manifest.json.php [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{DOCUMENT_ROOT}/Resource/$1.js -f
+RewriteRule ^(.+)\.js$ Resource/$1.js [END]
+
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.+)\.js$ Framework/JS/Link/$1.js [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f

@@ -40,7 +40,7 @@ The `/labels` gallery uses the canonical variant/title filename, while slug anch
 - Route implementation is static-hosting safe:
   - page: `Root/HTML/Component/Label.php`
   - runtime: `Root/Resource/label-runtime.js`
-  - shared layout module used by generator + runtime: `Root/Resource/label-layout-shared.mjs`
+  - shared layout module used by generator + runtime geometry: `Root/Resource/label-layout-shared.mjs` (generator) and `Root/Resource/label-layout-shared.js` (browser-served module path)
 - Query params:
   - `title` (optional)
   - `section` (required)
@@ -49,5 +49,5 @@ The `/labels` gallery uses the canonical variant/title filename, while slug anch
   - `code` (required unless `url` is passed)
   - `url` (optional fallback for extracting code path)
 - SVG is default output; `format=png` returns PNG.
-- `/label` includes a client-side Download PNG action.
-- Static generator (`tools/label-generator/render-label.mjs`) and `/label` runtime both use `label-layout-shared.mjs` so layout checks and geometry stay in sync.
+- `/label` includes a client-side Download PNG action using the web-app `QR.js` export pattern (`html2canvas` + `downloadURI`).
+- Static generator (`tools/label-generator/render-label.mjs`) and `/label` runtime both use the same shared layout math so geometry/checks stay in sync.

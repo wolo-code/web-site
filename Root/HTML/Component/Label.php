@@ -15,5 +15,6 @@
 #label-preview svg { width: 100%; height: auto; display: block; }
 #message .label-live-actions { margin-top: 12px; }
 </style>
+<script src='https://html2canvas.hertzen.com/dist/html2canvas.min.js'></script>
 <script type='module' src='/label-runtime.js'></script>
 <?php require('../HTML/Fragment/Component_bottom_nav.php') ?>
