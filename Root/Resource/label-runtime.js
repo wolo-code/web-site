@@ -10,14 +10,19 @@ function normalizeText(value, maxLen, required = true) {
 	return clipped;
 }
 
+function queryParams() {
+	const raw = window.location.search.startsWith("?") ? window.location.search.slice(1) : window.location.search;
+	return new URLSearchParams(raw.replace(/\+/g, "%20"));
+}
+
 function readLabelFromQuery() {
-	const params = new URLSearchParams(window.location.search);
+	const params = queryParams();
 	const variantRaw = normalizeText(params.get("variant"), 24, false).toLowerCase();
 	const variant = variantRaw === "code" ? "code" : "minimalist";
 	const title = normalizeText(params.get("title"), MAX_LEN.title, false);
-	const section = normalizeText(params.get("section"), MAX_LEN.section, true);
-	const address1 = normalizeText(params.get("address1"), MAX_LEN.address1, variant !== "code");
-	const address2 = normalizeText(params.get("address2"), MAX_LEN.address2, variant !== "code");
+	const section = normalizeText(params.get("section"), MAX_LEN.section, false);
+	const address1 = normalizeText(params.get("address1"), MAX_LEN.address1, false);
+	const address2 = normalizeText(params.get("address2"), MAX_LEN.address2, false);
 	let code = normalizeText(params.get("code"), MAX_LEN.code, false);
 	if(!code) {
 		const url = normalizeText(params.get("url"), 200, false);
@@ -29,7 +34,11 @@ function readLabelFromQuery() {
 			}
 		}
 	}
-	code = normalizeText(code, MAX_LEN.code, true);
+	code = normalizeText(code, MAX_LEN.code, false);
+	const missing = [];
+	if(!section) missing.push("section");
+	if(!code) missing.push("code");
+	if(missing.length) throw new Error(`Missing required label parameter: ${missing.join(", ")}`);
 	return { title, section, address1, address2, code, slug: "live", variant };
 }
 

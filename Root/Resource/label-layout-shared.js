@@ -74,7 +74,7 @@ function createMinimalistLayout(label, measureText, heroWords) {
   logo.x = (SVG_WIDTH - logo.w) / 2;
   logo.y = topRule.y + topRule.h + 18;
 
-  const bracket = { x: 220, w: 760, h: 170, stroke: 3, arm: 22 };
+  const bracket = { x: 220, w: 760, h: 230, stroke: 3, arm: 22 };
   const textLeft = bracket.x + 30;
   const textRight = bracket.x + bracket.w - 30;
   const textCenter = (textLeft + textRight) / 2;
@@ -86,13 +86,13 @@ function createMinimalistLayout(label, measureText, heroWords) {
 
   const titleBaseline = hasTitle ? logo.y + logo.h + 46 : null;
   const bracketTop = hasTitle ? titleBaseline + 20 : logo.y + logo.h + 24;
-  const sectionBaseline = bracketTop + 42;
+  const bracketMid = bracketTop + bracket.h / 2;
+  const sectionBaseline = bracketMid - 10;
 
   const hero = fitHero(heroWords, textRight - textLeft - 40, measureText);
-  const heroCenterY = bracketTop + 120;
   const heroLineHeight = hero.size * 1.12;
-  const heroOneBaseline = hero.lines.length === 1 ? heroCenterY : heroCenterY - heroLineHeight / 2;
-  const heroTwoBaseline = heroCenterY + heroLineHeight / 2;
+  const heroOneBaseline = bracketMid + hero.size * 0.82 + 4;
+  const heroTwoBaseline = hero.lines.length > 1 ? heroOneBaseline + heroLineHeight : heroOneBaseline;
 
   const address1Baseline = bracketTop + bracket.h + 52;
   const address2Baseline = address1Baseline + addressStep;
@@ -187,18 +187,18 @@ function createMinimalistLayout(label, measureText, heroWords) {
 function createCodeLayout(label, measureText, heroWords) {
   const canvasWidth = 760;
   const canvasHeight = 520;
-  const bracket = { x: 76, top: 90, w: 608, h: 300, stroke: 3, arm: 22 };
+  const bracket = { x: 76, top: 90, w: 608, h: 360, stroke: 3, arm: 22 };
   const textLeft = bracket.x + 30;
   const textRight = bracket.x + bracket.w - 30;
   const textCenter = (textLeft + textRight) / 2;
   const sectionFont = 34;
 
   const hero = fitHero(heroWords, textRight - textLeft - 36, measureText);
-  const sectionBaseline = bracket.top + 44;
-  const heroCenterY = bracket.top + 168;
+  const bracketMid = bracket.top + bracket.h / 2;
+  const sectionBaseline = bracketMid - 10;
   const heroLineHeight = hero.size * 1.12;
-  const heroOneBaseline = hero.lines.length === 1 ? heroCenterY : heroCenterY - heroLineHeight / 2;
-  const heroTwoBaseline = heroCenterY + heroLineHeight / 2;
+  const heroOneBaseline = bracketMid + hero.size * 0.82 + 4;
+  const heroTwoBaseline = hero.lines.length > 1 ? heroOneBaseline + heroLineHeight : heroOneBaseline;
 
   const sectionWidth = measureText(label.section, sectionFont, 0.6);
   const heroOneWidth = measureText(hero.lines[0], hero.size, hero.letterSpacing);

@@ -14,7 +14,8 @@
   - `Scan or enter at www.wolo.codes`
 - No rounded code box, no viewfinder brackets, no QR code.
 - Region text is small and blue.
-- Vertical order: top rule -> logo -> optional title -> section (`\` prefix, 80% black `#333333`) -> bracketed code words (`/` suffix) -> address lines -> scan bar.
+- Vertical order: top rule -> logo -> optional title -> bracket frame content -> address lines -> scan bar.
+- Inside bracket frame: section (`\` prefix, 80% black `#333333`) sits right above the frame midline, and the code words begin right below the midline (with trailing `/`).
 - Optional title appears above section; when title is absent, the stack collapses upward without a blank gap.
 - Section line (`section`) is left-aligned above the bracketed words.
 - Three code words are the largest text and black, derived from the code string (last three dot-separated words).

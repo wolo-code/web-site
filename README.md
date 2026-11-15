@@ -46,7 +46,7 @@ The `/labels` page reads the same JSON file, so adding a label is one data entry
 - The renderer reuses the web-app label download pattern (`html2canvas` + PNG download link behavior) adapted from `web-app/Root/JS/Component/Root/QR.js`.
 - Params:
   - `title` (optional)
-  - `section` (required, left-aligned in the code frame; rendered in 80% black `#333333`)
+  - `section` (required, left-aligned in the code frame; rendered in 80% black `#333333`, positioned right above the bracket midline)
   - `address1` (required; textual address line 1)
   - `address2` (required; second address line)
   - `code` (required unless `url` is provided; words are derived from code path using current Wolo format)
