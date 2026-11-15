@@ -1,0 +1,33 @@
+#message .labels-intro {
+	margin-bottom: 24px;
+}
+
+#message .label-card {
+	margin: 24px 0 36px;
+	padding: 18px;
+	border: 1px solid #d5e9ef;
+	border-radius: 12px;
+	background: #fcfeff;
+}
+
+#message .label-title {
+	margin: 0 0 14px;
+	font-size: 1.2rem;
+}
+
+#message .label-image-wrap {
+	margin: 0 0 16px;
+}
+
+#message .label-image {
+	width: 100%;
+	max-width: 700px;
+	border: 1px solid #d9e3e7;
+	border-radius: 10px;
+	display: block;
+}
+
+#message .label-meta p {
+	margin: 8px 0;
+	line-height: 1.45;
+}

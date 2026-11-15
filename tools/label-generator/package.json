@@ -1,0 +1,14 @@
+{
+  "name": "wolo-label-generator",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Generate Wolo label SVG and PNG assets from Config/Labels.json",
+  "scripts": {
+    "build": "node build-labels.mjs"
+  },
+  "dependencies": {
+    "@fontsource/abel": "^5.2.8",
+    "@fontsource/roboto": "^5.2.9",
+    "@resvg/resvg-js": "^2.6.2"
+  }
+}
