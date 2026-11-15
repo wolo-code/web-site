@@ -40,6 +40,8 @@ The `/labels` page reads the same JSON file, so adding a label is one data entry
 ## Dynamic label URL
 
 - Route: `/label`
+- Served as a normal site page (component `Root/HTML/Component/Label.php`) with browser rendering from `/label-runtime.js`.
+- This works in both local Apache/PHP rendering and baked Firebase static hosting because rendering is client-side.
 - Params:
   - `title` (optional)
   - `section` (required, left-aligned on label)
@@ -48,8 +50,7 @@ The `/labels` page reads the same JSON file, so adding a label is one data entry
   - `code` (required unless `url` is provided; words are derived from code path using current Wolo format)
   - `url` (optional fallback if `code` omitted; path is parsed for code)
 - Output defaults to SVG (`image/svg+xml`).
-- PNG is available with `?format=png` (or `download=png`).
-- `download=1` adds an attachment header for SVG/PNG.
+- The page includes a **Download PNG** button (client-side canvas export).
 
 Examples:
 

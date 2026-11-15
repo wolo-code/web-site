@@ -12,6 +12,8 @@ Path	Name	Extension
 	presentation	svg
 	logo_wolo	svg
 	logo_full	svg
+	label-runtime	js
+	label-layout-shared	mjs
 	faq	svg
 	features	svg
 	case	svg
