@@ -15,6 +15,9 @@ Sample labels are data-driven from `Config/Labels.json`.
 3. The script writes:
    - `Root/Resource/labels/<slug>.svg`
    - `Root/Resource/labels/<slug>.png` (2x export for sharing/social posts)
+   - stress-test render (not in gallery):
+     - `Root/Resource/labels/tests/kathmandu-longest-words-test.svg`
+     - `Root/Resource/labels/tests/kathmandu-longest-words-test.png`
 4. Ensure each generated file has a matching row in `Config/URL.tsv` so baked web-public output serves:
    - `/labels/<slug>.svg`
    - `/labels/<slug>.png`
