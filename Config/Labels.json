@@ -1,13 +1,17 @@
 [
   {
+    "title": "Boudhanath Stupa",
     "slug": "boudha",
+    "variant": "minimalist",
     "region": "Kathmandu",
     "words": "mask net soil",
     "url": "https://wolo.codes/kathmandu.mask.net.soil",
     "address": "Boudhanath Stupa, Kathmandu 44600, Nepal"
   },
   {
+    "title": "Everest Base Camp",
     "slug": "everest-base-camp",
+    "variant": "minimalist",
     "region": "Nepal 35",
     "words": "turnip pocket earth",
     "url": "https://wolo.codes/nepal-35.turnip.pocket.earth",
