@@ -7,16 +7,15 @@
 
 ## Minimalist variant (mirrors current app label style)
 
-- Uses the real Wolo logo assets from the project:
-  - `Root/Resource/logo_wolo.svg`
-  - `Root/Resource/logo_code.svg`
+- Uses the real Wolo lockup asset from the project:
+  - `Root/Resource/logo_full.svg`
 - Plain rectangular border in brand blue (`#69b7cf`).
-- Footer text is integrated with the border by interrupting the lower border line under the text area:
+- Footer is a blue filled bar attached to the bottom of the bordered label with white text:
   - `Scan or enter at www.wolo.codes`
 - No rounded code box, no viewfinder brackets, no QR code.
 - Region text is small and blue.
-- Three code words are the largest text and black.
-- Traditional address text is smaller.
+- Three code words are the largest text and black, rendered heavier to match app label emphasis.
+- Region and address use the same type family as the code text.
 
 ## Output naming scheme
 

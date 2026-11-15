@@ -22,10 +22,8 @@ const DEFAULT_VARIANT = "minimalist";
 const abelWoff = readFileSync(resolve(__dirname, "node_modules/@fontsource/abel/files/abel-latin-400-normal.woff"));
 const abelFont = fontkit.create(abelWoff);
 
-const logoWoloSvg = readFileSync(resolve(repoRoot, "Root/Resource/logo_wolo.svg"), "utf8");
-const logoCodeSvg = readFileSync(resolve(repoRoot, "Root/Resource/logo_code.svg"), "utf8");
-const logoWoloDataUri = `data:image/svg+xml;base64,${Buffer.from(logoWoloSvg).toString("base64")}`;
-const logoCodeDataUri = `data:image/svg+xml;base64,${Buffer.from(logoCodeSvg).toString("base64")}`;
+const logoFullSvg = readFileSync(resolve(repoRoot, "Root/Resource/logo_full.svg"), "utf8");
+const logoFullDataUri = `data:image/svg+xml;base64,${Buffer.from(logoFullSvg).toString("base64")}`;
 
 function escapeXml(value) {
   return String(value)
@@ -110,10 +108,10 @@ function renderMinimalistSvg(label) {
   const borderY = 120;
   const borderW = SVG_WIDTH - borderX * 2;
   const borderH = 430;
-  const footerPlateW = 560;
-  const footerPlateH = 44;
-  const footerPlateX = (SVG_WIDTH - footerPlateW) / 2;
-  const footerPlateY = borderY + borderH - footerPlateH / 2;
+  const footerBarH = 58;
+  const footerBarX = borderX + 2;
+  const footerBarY = borderY + borderH - footerBarH - 2;
+  const footerBarW = borderW - 4;
 
   const hero = fitHero(label.words, borderW - 150);
   const heroCenterY = 302;
@@ -123,7 +121,12 @@ function renderMinimalistSvg(label) {
   const heroOne = textPath(hero.lines[0], SVG_WIDTH / 2, hero.lines.length === 1 ? heroCenterY : heroCenterY - heroLineHeight / 2, hero.size, hero.letterSpacing);
   const heroTwo = hero.lines.length > 1 ? textPath(hero.lines[1], SVG_WIDTH / 2, heroCenterY + heroLineHeight / 2, hero.size, hero.letterSpacing) : "";
   const address = textPath(label.address, SVG_WIDTH / 2, 438, 30, 0);
-  const footer = textPath(FOOTER_TEXT, SVG_WIDTH / 2, 548, 34, 0);
+  const footer = textPath(FOOTER_TEXT, SVG_WIDTH / 2, footerBarY + 40, 32, 0);
+
+  const logoW = 340;
+  const logoH = 74;
+  const logoX = (SVG_WIDTH - logoW) / 2;
+  const logoY = 18;
 
   const codeAria = escapeXml(`${label.region} ${label.words}`);
 
@@ -133,17 +136,16 @@ function renderMinimalistSvg(label) {
   <rect x="${borderX}" y="${borderY}" width="${borderW}" height="${borderH}" fill="none" stroke="${BRAND_BLUE}" stroke-width="4" />
 
   <g>
-    <image href="${logoWoloDataUri}" x="${SVG_WIDTH / 2 - 160}" y="28" width="188" height="62" />
-    <image href="${logoCodeDataUri}" x="${SVG_WIDTH / 2 + 30}" y="58" width="94" height="15" />
+    <image href="${logoFullDataUri}" x="${logoX}" y="${logoY}" width="${logoW}" height="${logoH}" />
   </g>
 
   <path d="${region}" fill="${BRAND_BLUE}" />
-  <path d="${heroOne}" fill="#111111" />
-  ${heroTwo ? `<path d="${heroTwo}" fill="#111111" />` : ""}
+  <path d="${heroOne}" fill="#111111" stroke="#111111" stroke-width="1.1" stroke-linejoin="round" />
+  ${heroTwo ? `<path d="${heroTwo}" fill="#111111" stroke="#111111" stroke-width="1.1" stroke-linejoin="round" />` : ""}
   <path d="${address}" fill="#2a2a2a" />
 
-  <rect x="${footerPlateX}" y="${footerPlateY}" width="${footerPlateW}" height="${footerPlateH}" fill="#ffffff" />
-  <path d="${footer}" fill="${BRAND_BLUE}" />
+  <rect x="${footerBarX}" y="${footerBarY}" width="${footerBarW}" height="${footerBarH}" fill="${BRAND_BLUE}" />
+  <path d="${footer}" fill="#ffffff" />
 </svg>`;
 }
 
