@@ -107,6 +107,11 @@ function createMinimalistLayout(label, measureText, heroWords) {
     textCenter + heroOneWidth / 2,
     hero.lines.length > 1 ? textCenter + heroTwoWidth / 2 : -Infinity
   );
+  const slashFont = 30;
+  const slashGap = 18;
+  const slashWidth = measureText("/", slashFont, 0);
+  const slashBaseline = hero.lines.length > 1 ? heroTwoBaseline : heroOneBaseline;
+  const slashBox = boxFromMetrics(heroRight + slashGap, slashBaseline, slashWidth, slashFont);
 
   const boxes = {
     title: hasTitle ? boxFromMetrics(textCenter - measureText(label.title, titleFont, 0.2) / 2, titleBaseline, measureText(label.title, titleFont, 0.2), titleFont) : null,
@@ -151,6 +156,7 @@ function createMinimalistLayout(label, measureText, heroWords) {
     bottom: footer.y + footer.h - 4
   });
   if (boxes.section.bottom + 4 > boxes.heroOne.top) throw new Error("Layout collision: section overlaps hero words");
+  if (overlap(slashBox, boxes.heroTwo || boxes.heroOne, 0)) throw new Error("Layout collision: closing slash overlaps words");
 
   const allText = [boxes.title, boxes.section, boxes.heroOne, boxes.heroTwo, boxes.address1, boxes.address2, boxes.footer].filter(Boolean);
   for (let i = 0; i < allText.length; i += 1) {
@@ -180,7 +186,7 @@ function createMinimalistLayout(label, measureText, heroWords) {
     footer,
     svgHeight,
     sectionSlashX: boxes.section.left - 20,
-    heroSlashX: heroRight + 12
+    heroSlashX: slashBox.left
   };
 }
 
@@ -207,6 +213,11 @@ function createCodeLayout(label, measureText, heroWords) {
     textCenter + heroOneWidth / 2,
     hero.lines.length > 1 ? textCenter + heroTwoWidth / 2 : -Infinity
   );
+  const slashFont = 30;
+  const slashGap = 18;
+  const slashWidth = measureText("/", slashFont, 0);
+  const slashBaseline = hero.lines.length > 1 ? heroTwoBaseline : heroOneBaseline;
+  const slashBox = boxFromMetrics(heroRight + slashGap, slashBaseline, slashWidth, slashFont);
 
   const boxes = {
     section: boxFromMetrics(textLeft, sectionBaseline, sectionWidth, sectionFont),
@@ -230,6 +241,7 @@ function createCodeLayout(label, measureText, heroWords) {
   checkInside("hero line 1", boxes.heroOne, bracketBounds);
   checkInside("hero line 2", boxes.heroTwo, bracketBounds);
   if (boxes.section.bottom + 4 > boxes.heroOne.top) throw new Error("Layout collision: section overlaps hero words");
+  if (overlap(slashBox, boxes.heroTwo || boxes.heroOne, 0)) throw new Error("Layout collision: closing slash overlaps words");
 
   const allText = [boxes.section, boxes.heroOne, boxes.heroTwo].filter(Boolean);
   for (let i = 0; i < allText.length; i += 1) {
@@ -258,7 +270,7 @@ function createCodeLayout(label, measureText, heroWords) {
     footer: null,
     svgHeight: canvasHeight,
     sectionSlashX: boxes.section.left - 20,
-    heroSlashX: heroRight + 12
+    heroSlashX: slashBox.left
   };
 }
 
