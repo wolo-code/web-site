@@ -141,23 +141,24 @@ function createMinimalistLayout(label, measureText, heroWords) {
   const hero = fitHero(heroWords, textRight - textLeft - 40, measureText);
   const heroLineHeight = hero.size * 1.12;
 
-  let sectionBaseline = null;
   let heroOneBaseline;
   let heroTwoBaseline;
 
-  if (hasSection) {
-    sectionBaseline = bracketMid - 10;
-    heroOneBaseline = bracketMid + hero.size * 0.82 + 4;
-    heroTwoBaseline = hero.lines.length > 1 ? heroOneBaseline + heroLineHeight : heroOneBaseline;
+  if (hero.lines.length === 1) {
+    heroOneBaseline = Math.round(bracketMid + hero.size * 0.35);
+    heroTwoBaseline = heroOneBaseline;
   } else {
-    if (hero.lines.length === 1) {
-      heroOneBaseline = Math.round(bracketMid + hero.size * 0.35);
-      heroTwoBaseline = heroOneBaseline;
-    } else {
-      heroOneBaseline = Math.round(bracketMid - heroLineHeight / 2 + hero.size * 0.35);
-      heroTwoBaseline = heroOneBaseline + heroLineHeight;
-    }
+    heroOneBaseline = Math.round(bracketMid - heroLineHeight / 2 + hero.size * 0.35);
+    heroTwoBaseline = heroOneBaseline + heroLineHeight;
   }
+
+  const heroOneTop = heroOneBaseline - hero.size * 0.82;
+  const sectionBaseline = hasSection
+    ? Math.max(
+        Math.round(bracketTop + 14 + sectionFont * 0.82),
+        Math.round(heroOneTop - 8 - sectionFont * 0.26)
+      )
+    : null;
 
   const addressItems = [];
   if (hasAddress1) addressItems.push({ key: "address1", text: label.address1 });
@@ -306,23 +307,24 @@ function createCodeLayout(label, measureText, heroWords) {
   const bracketMid = bracket.top + bracket.h / 2;
   const heroLineHeight = hero.size * 1.12;
 
-  let sectionBaseline = null;
   let heroOneBaseline;
   let heroTwoBaseline;
 
-  if (hasSection) {
-    sectionBaseline = bracketMid - 10;
-    heroOneBaseline = bracketMid + hero.size * 0.82 + 4;
-    heroTwoBaseline = hero.lines.length > 1 ? heroOneBaseline + heroLineHeight : heroOneBaseline;
+  if (hero.lines.length === 1) {
+    heroOneBaseline = Math.round(bracketMid + hero.size * 0.35);
+    heroTwoBaseline = heroOneBaseline;
   } else {
-    if (hero.lines.length === 1) {
-      heroOneBaseline = Math.round(bracketMid + hero.size * 0.35);
-      heroTwoBaseline = heroOneBaseline;
-    } else {
-      heroOneBaseline = Math.round(bracketMid - heroLineHeight / 2 + hero.size * 0.35);
-      heroTwoBaseline = heroOneBaseline + heroLineHeight;
-    }
+    heroOneBaseline = Math.round(bracketMid - heroLineHeight / 2 + hero.size * 0.35);
+    heroTwoBaseline = heroOneBaseline + heroLineHeight;
   }
+
+  const heroOneTop = heroOneBaseline - hero.size * 0.82;
+  const sectionBaseline = hasSection
+    ? Math.max(
+        Math.round(bracket.top + 14 + sectionFont * 0.82),
+        Math.round(heroOneTop - 8 - sectionFont * 0.26)
+      )
+    : null;
 
   const sectionWidth = hasSection ? measureText(city, sectionFont, 0.6) : 0;
   const heroOneWidth = measureText(hero.lines[0], hero.size, hero.letterSpacing);
