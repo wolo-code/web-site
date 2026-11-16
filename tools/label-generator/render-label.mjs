@@ -101,7 +101,7 @@ export function renderMinimalistSvg(label) {
   const footer = layout.footer ? textPath(FOOTER_TEXT, layout.canvasWidth / 2, layout.footer.y + 39, 30, 0) : "";
   const codeAria = escapeXml(`${layout.hasSection ? layout.sectionText + " " : ""}${layout.heroWords}`);
 
-  return `<?xml version="1.0" encoding="UTF-8"?>
+  const rawSvg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${layout.canvasWidth}" height="${layout.svgHeight}" viewBox="0 0 ${layout.canvasWidth} ${layout.svgHeight}" role="img" aria-label="${codeAria}">
   <rect width="${layout.canvasWidth}" height="${layout.svgHeight}" fill="#ffffff" />
   ${layout.topRule ? `<rect x="${layout.topRule.x}" y="${layout.topRule.y}" width="${layout.topRule.w}" height="${layout.topRule.h}" fill="${BRAND_BLUE}" />` : ""}
@@ -130,6 +130,12 @@ export function renderMinimalistSvg(label) {
   ${layout.footer ? `<rect x="${layout.footer.x}" y="${layout.footer.y}" width="${layout.footer.w}" height="${layout.footer.h}" fill="${BRAND_BLUE}" />` : ""}
   ${footer ? `<path d="${footer}" fill="#ffffff" />` : ""}
 </svg>`;
+
+  return rawSvg
+    .split("\n")
+    .map(line => line.trimEnd())
+    .filter(line => line.length > 0)
+    .join("\n") + "\n";
 }
 
 export function renderPng(svgSource) {
