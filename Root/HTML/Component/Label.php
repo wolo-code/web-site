@@ -7,17 +7,17 @@
 			</div>
 		</div>
 		<div class='label-live-actions'>
-			<button id='label-edit-btn' class='border control label-btn' type='button' aria-haspopup='dialog'>
-				<svg class='btn-icon' viewBox='0 0 24 24' width='16' height='16' aria-hidden='true'>
-					<path fill='currentColor' d='m14.06 9.02.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83a.996.996 0 0 0 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z'/>
-				</svg>
-				<span>Edit</span>
-			</button>
-			<button id='label-download-png' class='border control label-btn label-btn-primary' type='button'>
-				<svg class='btn-icon' viewBox='0 0 24 24' width='16' height='16' aria-hidden='true'>
+			<button id='label-download-png' class='border control label-btn label-btn-icon' type='button' title='Download PNG' aria-label='Download PNG'>
+				<svg class='btn-icon' viewBox='0 0 24 24' width='18' height='18' aria-hidden='true'>
 					<path fill='currentColor' d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z'/>
 				</svg>
-				<span id='label-download-text'>Download PNG</span>
+				<span id='label-download-text' class='visually-hidden'>Download PNG</span>
+			</button>
+			<button id='label-edit-btn' class='border control label-btn label-btn-icon' type='button' title='Edit label' aria-label='Edit label' aria-haspopup='dialog'>
+				<svg class='btn-icon' viewBox='0 0 24 24' width='18' height='18' aria-hidden='true'>
+					<path fill='currentColor' d='m14.06 9.02.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83a.996.996 0 0 0 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z'/>
+				</svg>
+				<span class='visually-hidden'>Edit</span>
 			</button>
 		</div>
 	</div>
@@ -36,35 +36,58 @@
 		<div class='label-modal-body'>
 			<form id='label-edit-form' onsubmit='return false;'>
 				<div class='label-form-row'>
-					<input id='label-input-title' type='text' placeholder='Title – e.g. Home' aria-label='Title'>
-					<label class='label-omit-check' title='Leave title out of the generated image'>
-						<input type='checkbox' id='label-omit-title'>
-						<span>Leave out</span>
-					</label>
+					<div class='label-input-wrap'>
+						<span class='label-hover-tag'>Title</span>
+						<input id='label-input-title' type='text' placeholder='Title – e.g. Home' aria-label='Title'>
+					</div>
+					<div class='label-omit-wrap'>
+						<label class='label-omit-check' title='Leave out title' aria-label='Leave out title'>
+							<input type='checkbox' id='label-omit-title'>
+							<span class='label-omit-tip'>Leave out</span>
+						</label>
+					</div>
 				</div>
 				<div class='label-form-row'>
-					<input id='label-input-segment' type='text' placeholder='Segment – e.g. Main gate' aria-label='Segment'>
-					<label class='label-omit-check' title='Leave segment out of the generated image'>
-						<input type='checkbox' id='label-omit-segment'>
-						<span>Leave out</span>
-					</label>
+					<div class='label-input-wrap'>
+						<span class='label-hover-tag'>Segment</span>
+						<input id='label-input-segment' type='text' placeholder='Segment – e.g. Main gate' aria-label='Segment'>
+					</div>
+					<div class='label-omit-wrap'>
+						<label class='label-omit-check' title='Leave out segment' aria-label='Leave out segment'>
+							<input type='checkbox' id='label-omit-segment'>
+							<span class='label-omit-tip'>Leave out</span>
+						</label>
+					</div>
 				</div>
 				<div class='label-form-row'>
-					<input id='label-input-address1' type='text' placeholder='Address line 1 (optional)' aria-label='Address line 1'>
-					<label class='label-omit-check' title='Leave address line 1 out of the generated image'>
-						<input type='checkbox' id='label-omit-address1'>
-						<span>Leave out</span>
-					</label>
+					<div class='label-input-wrap'>
+						<span class='label-hover-tag'>Address line 1</span>
+						<input id='label-input-address1' type='text' placeholder='Address line 1 (optional)' aria-label='Address line 1'>
+					</div>
+					<div class='label-omit-wrap'>
+						<label class='label-omit-check' title='Leave out address line 1' aria-label='Leave out address line 1'>
+							<input type='checkbox' id='label-omit-address1'>
+							<span class='label-omit-tip'>Leave out</span>
+						</label>
+					</div>
 				</div>
 				<div class='label-form-row'>
-					<input id='label-input-address2' type='text' placeholder='Address line 2 (optional)' aria-label='Address line 2'>
-					<label class='label-omit-check' title='Leave address line 2 out of the generated image'>
-						<input type='checkbox' id='label-omit-address2'>
-						<span>Leave out</span>
-					</label>
+					<div class='label-input-wrap'>
+						<span class='label-hover-tag'>Address line 2</span>
+						<input id='label-input-address2' type='text' placeholder='Address line 2 (optional)' aria-label='Address line 2'>
+					</div>
+					<div class='label-omit-wrap'>
+						<label class='label-omit-check' title='Leave out address line 2' aria-label='Leave out address line 2'>
+							<input type='checkbox' id='label-omit-address2'>
+							<span class='label-omit-tip'>Leave out</span>
+						</label>
+					</div>
 				</div>
 				<div class='label-form-row label-form-code'>
-					<input id='label-input-code' type='text' placeholder='Code – e.g. kathmandu.mask.net.soil' aria-label='Code (required)' required>
+					<div class='label-input-wrap'>
+						<span class='label-hover-tag'>Code</span>
+						<input id='label-input-code' type='text' placeholder='Code – e.g. kathmandu.mask.net.soil' aria-label='Code (required)' required>
+					</div>
 				</div>
 				<div class='label-modal-actions'>
 					<button type='button' id='label-modal-cancel' class='border control'>Cancel</button>
@@ -75,6 +98,17 @@
 	</div>
 </div>
 <style>
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
 #message .label-live-intro { margin-bottom: 16px; }
 #message .label-live-card {
 	border: 1px solid #d5e9ef;
@@ -102,45 +136,40 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	gap: 12px;
+	gap: 16px;
 	margin-top: 14px;
 }
-.label-btn {
+.label-btn-icon {
+	width: 42px;
+	height: 42px;
+	padding: 0;
+	border-radius: 50%;
 	display: inline-flex;
 	align-items: center;
-	gap: 8px;
-	padding: 8px 18px;
-	font-family: 'Abel', sans-serif;
-	font-size: 16px;
-	border-radius: 6px;
-	cursor: pointer;
+	justify-content: center;
 	border: 1px solid #b8dbe8;
 	background: #ffffff;
-	color: #333333;
-	transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+	color: #555555;
+	cursor: pointer;
+	transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
-.label-btn:hover {
-	background: #f3f9fb;
+.label-btn-icon:hover {
+	background: #f0f8fb;
 	border-color: #69b7cf;
+	color: #69b7cf;
+	transform: translateY(-1px);
 }
-.label-btn:focus-visible {
+.label-btn-icon:active {
+	transform: translateY(0);
+}
+.label-btn-icon:focus-visible {
 	outline: 2px solid #69b7cf;
 	outline-offset: 2px;
 }
-.label-btn-primary {
-	background: #69b7cf;
-	border-color: #5aa6bc;
-	color: #ffffff;
-	font-weight: 500;
-}
-.label-btn-primary:hover {
-	background: #5aa6bc;
-	border-color: #4a94aa;
-	color: #ffffff;
-}
-.label-btn:disabled {
-	opacity: 0.65;
+.label-btn-icon:disabled {
+	opacity: 0.6;
 	cursor: not-allowed;
+	transform: none;
 }
 
 /* Modal overlay & card */
@@ -173,7 +202,7 @@
 }
 .label-modal-header {
 	position: relative;
-	padding: 14px 20px 10px;
+	padding: 14px 20px 12px;
 	text-align: center;
 }
 .label-modal-header .message_dialog_label {
@@ -204,27 +233,57 @@
 	background: #f0f0f0;
 	color: #222222;
 }
+
+/* Modal body - without thick bar below header */
 .label-modal-body {
-	border-top: 5px solid #69b7cf;
-	padding: 18px 22px 22px;
+	border-top: none;
+	padding: 14px 24px 22px;
 	background: #ffffff;
 }
+
 .label-form-row {
 	display: flex;
-	align-items: center;
+	align-items: flex-end;
 	gap: 12px;
-	margin-bottom: 16px;
+	margin-bottom: 14px;
+	position: relative;
 }
-.label-form-row input[type='text'] {
+.label-input-wrap {
 	flex: 1 1 auto;
 	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+}
+.label-hover-tag {
+	font-family: 'Abel', sans-serif;
+	font-size: 11px;
+	font-weight: 600;
+	color: #69b7cf;
+	text-transform: uppercase;
+	letter-spacing: 0.6px;
+	line-height: 1;
+	margin-bottom: 3px;
+	opacity: 0;
+	transform: translateY(3px);
+	pointer-events: none;
+	transition: opacity 0.16s ease, transform 0.16s ease;
+}
+.label-form-row:hover .label-hover-tag,
+.label-input-wrap:focus-within .label-hover-tag {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.label-form-row input[type='text'] {
+	width: 100%;
 	font-family: 'Abel', sans-serif;
 	font-size: 16px;
 	color: #444444;
 	background: transparent;
 	border: none;
 	border-bottom: 1px solid #d8d8d8;
-	padding: 6px 2px;
+	padding: 4px 2px 6px;
 	outline: none;
 	box-sizing: border-box;
 	transition: border-color 0.2s ease, opacity 0.2s ease, color 0.2s ease;
@@ -238,36 +297,72 @@
 	text-decoration: line-through;
 	color: #888888;
 }
-.label-omit-check {
+
+/* Omit checkbox with hover-only tooltip/label */
+.label-omit-wrap {
 	flex: 0 0 auto;
 	display: flex;
 	align-items: center;
-	gap: 5px;
-	font-size: 14px;
-	color: #777777;
+	padding-bottom: 6px;
+}
+.label-omit-check {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
 	cursor: pointer;
 	user-select: none;
-	white-space: nowrap;
 }
 .label-omit-check input[type='checkbox'] {
 	cursor: pointer;
 	accent-color: #69b7cf;
-	width: 15px;
-	height: 15px;
+	width: 17px;
+	height: 17px;
 	margin: 0;
 }
-.label-omit-check:hover {
-	color: #333333;
+.label-omit-tip {
+	position: absolute;
+	right: 100%;
+	top: 50%;
+	transform: translateY(-50%) translateX(-6px);
+	background: #333333;
+	color: #ffffff;
+	font-family: 'Abel', sans-serif;
+	font-size: 11px;
+	padding: 3px 8px;
+	border-radius: 4px;
+	white-space: nowrap;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.15s ease, transform 0.15s ease;
+	z-index: 10;
 }
+.label-omit-tip::after {
+	content: '';
+	position: absolute;
+	left: 100%;
+	top: 50%;
+	transform: translateY(-50%);
+	border-width: 4px;
+	border-style: solid;
+	border-color: transparent transparent transparent #333333;
+}
+.label-omit-check:hover .label-omit-tip {
+	opacity: 1;
+	transform: translateY(-50%) translateX(-8px);
+}
+
+/* Centered modal action buttons */
 .label-modal-actions {
 	display: flex;
-	justify-content: flex-end;
-	gap: 10px;
+	justify-content: center;
+	align-items: center;
+	gap: 14px;
 	margin-top: 22px;
 	padding-top: 14px;
 	border-top: 1px solid #eeeeee;
 }
 .label-modal-actions button {
+	min-width: 90px;
 	padding: 7px 18px;
 	font-family: 'Abel', sans-serif;
 	font-size: 15px;

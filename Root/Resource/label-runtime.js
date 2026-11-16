@@ -211,7 +211,9 @@ function downloadLabelPng() {
 	const downloadText = document.getElementById("label-download-text");
 	if(!capture || !svg || !downloadBtn) return;
 
+	const originalTitle = downloadBtn.getAttribute("title") || "Download PNG";
 	const originalText = downloadText ? downloadText.textContent : "Download PNG";
+	downloadBtn.setAttribute("title", "Generating PNG...");
 	if(downloadText) downloadText.textContent = "Generating...";
 	downloadBtn.disabled = true;
 
@@ -243,14 +245,17 @@ function downloadLabelPng() {
 			const filename = getDownloadFilename(currentLabel);
 			downloadURI(png, filename);
 
+			downloadBtn.setAttribute("title", "Downloaded! ✓");
 			if(downloadText) downloadText.textContent = "Downloaded! ✓";
 			setTimeout(() => {
+				downloadBtn.setAttribute("title", originalTitle);
 				if(downloadText) downloadText.textContent = originalText;
 				downloadBtn.disabled = false;
 			}, 1500);
 		} catch (err) {
 			console.error("PNG download failed:", err);
 			URL.revokeObjectURL(svgUrl);
+			downloadBtn.setAttribute("title", originalTitle);
 			if(downloadText) downloadText.textContent = originalText;
 			downloadBtn.disabled = false;
 		}
@@ -259,6 +264,7 @@ function downloadLabelPng() {
 	image.onerror = (err) => {
 		console.error("Failed to render SVG image for download:", err);
 		URL.revokeObjectURL(svgUrl);
+		downloadBtn.setAttribute("title", originalTitle);
 		if(downloadText) downloadText.textContent = originalText;
 		downloadBtn.disabled = false;
 	};
@@ -266,9 +272,13 @@ function downloadLabelPng() {
 	image.src = svgUrl;
 }
 
-function updateFieldOmittedClass(input, isOmitted) {
-	if(!input) return;
-	input.classList.toggle("is-omitted", !!isOmitted);
+function updateFieldOmittedClass(input, isOmitted, tipEl) {
+	if(input) {
+		input.classList.toggle("is-omitted", !!isOmitted);
+	}
+	if(tipEl) {
+		tipEl.textContent = isOmitted ? "Left out" : "Leave out";
+	}
 }
 
 function openEditModal() {
@@ -297,10 +307,10 @@ function openEditModal() {
 	if(omitAddress1Check) omitAddress1Check.checked = !!currentLabel.omitAddress1 || !currentLabel.address1;
 	if(omitAddress2Check) omitAddress2Check.checked = !!currentLabel.omitAddress2 || !currentLabel.address2;
 
-	updateFieldOmittedClass(titleInput, omitTitleCheck?.checked);
-	updateFieldOmittedClass(segmentInput, omitSegmentCheck?.checked);
-	updateFieldOmittedClass(address1Input, omitAddress1Check?.checked);
-	updateFieldOmittedClass(address2Input, omitAddress2Check?.checked);
+	updateFieldOmittedClass(titleInput, omitTitleCheck?.checked, omitTitleCheck?.parentElement?.querySelector(".label-omit-tip"));
+	updateFieldOmittedClass(segmentInput, omitSegmentCheck?.checked, omitSegmentCheck?.parentElement?.querySelector(".label-omit-tip"));
+	updateFieldOmittedClass(address1Input, omitAddress1Check?.checked, omitAddress1Check?.parentElement?.querySelector(".label-omit-tip"));
+	updateFieldOmittedClass(address2Input, omitAddress2Check?.checked, omitAddress2Check?.parentElement?.querySelector(".label-omit-tip"));
 
 	overlay.classList.remove("hide");
 	overlay.setAttribute("aria-hidden", "false");
@@ -441,14 +451,15 @@ function initEventListeners() {
 		const check = document.getElementById(checkId);
 		const input = document.getElementById(inputId);
 		if(check && input) {
+			const tip = check.parentElement?.querySelector(".label-omit-tip");
 			check.addEventListener("change", () => {
-				updateFieldOmittedClass(input, check.checked);
+				updateFieldOmittedClass(input, check.checked, tip);
 			});
 			input.addEventListener("input", () => {
 				// If user explicitly types into an empty field that was left out, automatically uncheck leave-out
 				if(input.value.trim() && check.checked) {
 					check.checked = false;
-					updateFieldOmittedClass(input, false);
+					updateFieldOmittedClass(input, false, tip);
 				}
 			});
 		}
