@@ -85,9 +85,10 @@
 				</div>
 				<div class='label-form-row label-form-code'>
 					<div class='label-input-wrap'>
-						<span class='label-hover-tag'>Code</span>
-						<input id='label-input-code' type='text' placeholder='Code – e.g. kathmandu.mask.net.soil' aria-label='Code (required)' required>
+						<span class='label-hover-tag'>Wolo code</span>
+						<input id='label-input-code' type='text' placeholder='Wolo code – e.g. kathmandu.mask.net.soil' aria-label='Wolo code (required)' required>
 					</div>
+					<div class='label-omit-wrap label-omit-spacer' aria-hidden='true'></div>
 				</div>
 				<div class='label-modal-actions'>
 					<button type='button' id='label-modal-cancel' class='border control'>Cancel</button>
@@ -300,10 +301,15 @@
 
 /* Omit checkbox with hover-only tooltip/label */
 .label-omit-wrap {
-	flex: 0 0 auto;
+	flex: 0 0 17px;
+	width: 17px;
 	display: flex;
 	align-items: center;
 	padding-bottom: 6px;
+}
+.label-omit-spacer {
+	visibility: hidden;
+	pointer-events: none;
 }
 .label-omit-check {
 	position: relative;
@@ -351,15 +357,14 @@
 	transform: translateY(-50%) translateX(-8px);
 }
 
-/* Centered modal action buttons */
+/* Centered modal action buttons without top separator line */
 .label-modal-actions {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	gap: 14px;
-	margin-top: 22px;
-	padding-top: 14px;
-	border-top: 1px solid #eeeeee;
+	margin-top: 24px;
+	padding-top: 8px;
 }
 .label-modal-actions button {
 	min-width: 90px;
