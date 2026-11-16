@@ -2,6 +2,20 @@ import { BRAND_BLUE, FOOTER_TEXT, createLabelLayout } from "/label-layout-shared
 
 const MAX_LEN = { title: 80, section: 64, address1: 80, address2: 96, code: 120 };
 let logoDataUri = null;
+let currentLabel = null;
+
+const DEFAULT_LABEL = {
+	title: "Boudhanath Stupa",
+	section: "Kathmandu",
+	address1: "Boudha Stupa Rd",
+	address2: "Kathmandu 44600, Nepal",
+	code: "kathmandu.mask.net.soil",
+	variant: "minimalist",
+	omitTitle: false,
+	omitSection: false,
+	omitAddress1: false,
+	omitAddress2: false
+};
 
 function normalizeText(value, maxLen, required = true) {
 	const raw = typeof value === "string" ? value : "";
@@ -21,9 +35,14 @@ function readLabelFromQuery() {
 	const variantRaw = normalizeText(params.get("variant"), 24, false).toLowerCase();
 	const variant = variantRaw === "code" ? "code" : "minimalist";
 	const title = normalizeText(params.get("title"), MAX_LEN.title, false);
-	const section = normalizeText(params.get("section"), MAX_LEN.section, false);
+	const section = normalizeText(params.get("segment") || params.get("section"), MAX_LEN.section, false);
 	const address1 = normalizeText(params.get("address1"), MAX_LEN.address1, false);
 	const address2 = normalizeText(params.get("address2"), MAX_LEN.address2, false);
+	const omitTitle = params.get("omit_title") === "1" || params.get("omit_title") === "true";
+	const omitSection = params.get("omit_segment") === "1" || params.get("omit_section") === "1" || params.get("omit_segment") === "true" || params.get("omit_section") === "true";
+	const omitAddress1 = params.get("omit_address1") === "1" || params.get("omit_address1") === "true";
+	const omitAddress2 = params.get("omit_address2") === "1" || params.get("omit_address2") === "true";
+
 	let code = normalizeText(params.get("code"), MAX_LEN.code, false);
 	if(!code) {
 		const url = normalizeText(params.get("url"), 200, false);
@@ -36,11 +55,24 @@ function readLabelFromQuery() {
 		}
 	}
 	code = normalizeText(code, MAX_LEN.code, false);
-	const missing = [];
-	if(!section) missing.push("section");
-	if(!code) missing.push("code");
-	if(missing.length) throw new Error(`Missing required label parameter: ${missing.join(", ")}`);
-	return { title, section, address1, address2, code, slug: "live", variant };
+
+	if(!code) {
+		return { ...DEFAULT_LABEL, slug: "live" };
+	}
+
+	return {
+		title,
+		section,
+		address1,
+		address2,
+		code,
+		slug: "live",
+		variant,
+		omitTitle,
+		omitSection,
+		omitAddress1,
+		omitAddress2
+	};
 }
 
 function measureFactory() {
@@ -107,8 +139,10 @@ function buildLabelSvg(label, layout, logoHref) {
 	}
 
 	if(layout.hasTitle) addText(svg, label.title, layout.textCenter, layout.titleBaseline, { class: "abel muted", "font-size": 44, "text-anchor": "middle" });
-	addText(svg, "\\", layout.sectionSlashX, layout.sectionBaseline, { class: "abel accent", "font-size": 30, "fill-opacity": 0.55, "text-anchor": "start" });
-	addText(svg, label.section, layout.textLeft, layout.sectionBaseline, { class: "abel section", "font-size": 34, "letter-spacing": 0.6, "text-anchor": "start" });
+	if(layout.hasSection) {
+		addText(svg, "\\", layout.sectionSlashX, layout.sectionBaseline, { class: "abel accent", "font-size": 30, "fill-opacity": 0.55, "text-anchor": "start" });
+		addText(svg, label.section, layout.textLeft, layout.sectionBaseline, { class: "abel section", "font-size": 34, "letter-spacing": 0.6, "text-anchor": "start" });
+	}
 
 	const b = layout.bracket;
 	addPath(svg, `M ${b.x} ${b.top + b.arm} L ${b.x} ${b.top} L ${b.x + b.arm} ${b.top}`, { stroke: BRAND_BLUE, "stroke-width": b.stroke, fill: "none" });
@@ -122,8 +156,8 @@ function buildLabelSvg(label, layout, logoHref) {
 	}
 	addText(svg, "/", layout.heroSlashX, layout.hero.lines.length === 1 ? layout.heroOneBaseline : layout.heroTwoBaseline, { class: "abel accent", "font-size": 30, "fill-opacity": 0.55, "text-anchor": "start" });
 
-	if(layout.address1Baseline != null) addText(svg, label.address1, layout.textCenter, layout.address1Baseline, { class: "abel muted", "font-size": 42, "text-anchor": "middle" });
-	if(layout.address2Baseline != null) addText(svg, label.address2, layout.textCenter, layout.address2Baseline, { class: "abel muted", "font-size": 42, "text-anchor": "middle" });
+	if(layout.address1Baseline != null && layout.address1Text) addText(svg, layout.address1Text, layout.textCenter, layout.address1Baseline, { class: "abel muted", "font-size": 42, "text-anchor": "middle" });
+	if(layout.address2Baseline != null && layout.address2Text) addText(svg, layout.address2Text, layout.textCenter, layout.address2Baseline, { class: "abel muted", "font-size": 42, "text-anchor": "middle" });
 
 	if(layout.footer) {
 		const footer = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -157,53 +191,274 @@ function getInlineLogoDataUri() {
 		.catch(() => null);
 }
 
+function getDownloadFilename(label) {
+	const parts = [];
+	if(label && label.title && !label.omitTitle) {
+		parts.push(label.title);
+	} else if(label && label.code) {
+		parts.push(label.code);
+	} else {
+		parts.push("label");
+	}
+	const clean = parts.join("-").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+	return `wolo-label-${clean || "preview"}.png`;
+}
+
 function downloadLabelPng() {
 	const capture = document.getElementById("label-capture");
 	const svg = capture ? capture.querySelector("svg") : null;
-	if(!capture || !svg) return;
+	const downloadBtn = document.getElementById("label-download-png");
+	const downloadText = document.getElementById("label-download-text");
+	if(!capture || !svg || !downloadBtn) return;
+
+	const originalText = downloadText ? downloadText.textContent : "Download PNG";
+	if(downloadText) downloadText.textContent = "Generating...";
+	downloadBtn.disabled = true;
+
 	const serializer = new XMLSerializer();
 	const svgMarkup = serializer.serializeToString(svg);
 	const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
 	const svgUrl = URL.createObjectURL(svgBlob);
 	const image = new Image();
+
 	image.onload = () => {
-		const style = getComputedStyle(capture);
-		const padX = parseFloat(style.paddingLeft || "0");
-		const padY = parseFloat(style.paddingTop || "0");
-		const width = Math.round(svg.viewBox.baseVal.width + padX * 2);
-		const height = Math.round(svg.viewBox.baseVal.height + padY * 2);
-		const canvas = document.createElement("canvas");
-		canvas.width = width;
-		canvas.height = height;
-		const ctx = canvas.getContext("2d");
-		ctx.fillStyle = "#ffffff";
-		ctx.fillRect(0, 0, width, height);
-		ctx.drawImage(image, Math.round(padX), Math.round(padY), Math.round(svg.viewBox.baseVal.width), Math.round(svg.viewBox.baseVal.height));
-		URL.revokeObjectURL(svgUrl);
-		const png = canvas.toDataURL("image/png");
-		downloadURI(png, "Wolo Label.png");
+		try {
+			const style = getComputedStyle(capture);
+			const padX = parseFloat(style.paddingLeft || "0");
+			const padY = parseFloat(style.paddingTop || "0");
+			const scale = 2; // Crisp 2x print-ready resolution
+			const svgW = svg.viewBox.baseVal.width;
+			const svgH = svg.viewBox.baseVal.height;
+			const width = Math.round((svgW + padX * 2) * scale);
+			const height = Math.round((svgH + padY * 2) * scale);
+			const canvas = document.createElement("canvas");
+			canvas.width = width;
+			canvas.height = height;
+			const ctx = canvas.getContext("2d");
+			ctx.fillStyle = "#ffffff";
+			ctx.fillRect(0, 0, width, height);
+			ctx.drawImage(image, Math.round(padX * scale), Math.round(padY * scale), Math.round(svgW * scale), Math.round(svgH * scale));
+			URL.revokeObjectURL(svgUrl);
+			const png = canvas.toDataURL("image/png");
+			const filename = getDownloadFilename(currentLabel);
+			downloadURI(png, filename);
+
+			if(downloadText) downloadText.textContent = "Downloaded! ✓";
+			setTimeout(() => {
+				if(downloadText) downloadText.textContent = originalText;
+				downloadBtn.disabled = false;
+			}, 1500);
+		} catch (err) {
+			console.error("PNG download failed:", err);
+			URL.revokeObjectURL(svgUrl);
+			if(downloadText) downloadText.textContent = originalText;
+			downloadBtn.disabled = false;
+		}
 	};
+
+	image.onerror = (err) => {
+		console.error("Failed to render SVG image for download:", err);
+		URL.revokeObjectURL(svgUrl);
+		if(downloadText) downloadText.textContent = originalText;
+		downloadBtn.disabled = false;
+	};
+
 	image.src = svgUrl;
 }
 
-function mount() {
-	const preview = document.getElementById("label-preview");
-	const download = document.getElementById("label-download-png");
-	if(!preview || !download) return;
+function updateFieldOmittedClass(input, isOmitted) {
+	if(!input) return;
+	input.classList.toggle("is-omitted", !!isOmitted);
+}
 
+function openEditModal() {
+	const overlay = document.getElementById("label-modal-overlay");
+	if(!overlay || !currentLabel) return;
+
+	const titleInput = document.getElementById("label-input-title");
+	const segmentInput = document.getElementById("label-input-segment");
+	const address1Input = document.getElementById("label-input-address1");
+	const address2Input = document.getElementById("label-input-address2");
+	const codeInput = document.getElementById("label-input-code");
+
+	const omitTitleCheck = document.getElementById("label-omit-title");
+	const omitSegmentCheck = document.getElementById("label-omit-segment");
+	const omitAddress1Check = document.getElementById("label-omit-address1");
+	const omitAddress2Check = document.getElementById("label-omit-address2");
+
+	if(titleInput) titleInput.value = currentLabel.title || "";
+	if(segmentInput) segmentInput.value = currentLabel.section || "";
+	if(address1Input) address1Input.value = currentLabel.address1 || "";
+	if(address2Input) address2Input.value = currentLabel.address2 || "";
+	if(codeInput) codeInput.value = currentLabel.code || "";
+
+	if(omitTitleCheck) omitTitleCheck.checked = !!currentLabel.omitTitle || !currentLabel.title;
+	if(omitSegmentCheck) omitSegmentCheck.checked = !!currentLabel.omitSection || !currentLabel.section;
+	if(omitAddress1Check) omitAddress1Check.checked = !!currentLabel.omitAddress1 || !currentLabel.address1;
+	if(omitAddress2Check) omitAddress2Check.checked = !!currentLabel.omitAddress2 || !currentLabel.address2;
+
+	updateFieldOmittedClass(titleInput, omitTitleCheck?.checked);
+	updateFieldOmittedClass(segmentInput, omitSegmentCheck?.checked);
+	updateFieldOmittedClass(address1Input, omitAddress1Check?.checked);
+	updateFieldOmittedClass(address2Input, omitAddress2Check?.checked);
+
+	overlay.classList.remove("hide");
+	overlay.setAttribute("aria-hidden", "false");
+	if(titleInput) titleInput.focus();
+}
+
+function closeEditModal() {
+	const overlay = document.getElementById("label-modal-overlay");
+	if(!overlay) return;
+	overlay.classList.add("hide");
+	overlay.setAttribute("aria-hidden", "true");
+}
+
+function applyEditForm() {
+	const codeInput = document.getElementById("label-input-code");
+	const code = (codeInput?.value || "").trim();
+	if(!code) {
+		if(codeInput) {
+			codeInput.focus();
+			codeInput.reportValidity();
+		}
+		return;
+	}
+
+	const title = (document.getElementById("label-input-title")?.value || "").trim();
+	const segment = (document.getElementById("label-input-segment")?.value || "").trim();
+	const address1 = (document.getElementById("label-input-address1")?.value || "").trim();
+	const address2 = (document.getElementById("label-input-address2")?.value || "").trim();
+
+	const omitTitle = document.getElementById("label-omit-title")?.checked || false;
+	const omitSection = document.getElementById("label-omit-segment")?.checked || false;
+	const omitAddress1 = document.getElementById("label-omit-address1")?.checked || false;
+	const omitAddress2 = document.getElementById("label-omit-address2")?.checked || false;
+
+	const updated = {
+		...(currentLabel || {}),
+		title,
+		section: segment,
+		address1,
+		address2,
+		code,
+		omitTitle,
+		omitSection,
+		omitAddress1,
+		omitAddress2
+	};
+
+	// Update browser URL query params
+	const params = new URLSearchParams();
+	params.set("code", code);
+	if(title) params.set("title", title);
+	if(omitTitle) params.set("omit_title", "1");
+	if(segment) params.set("segment", segment);
+	if(omitSection) params.set("omit_segment", "1");
+	if(address1) params.set("address1", address1);
+	if(omitAddress1) params.set("omit_address1", "1");
+	if(address2) params.set("address2", address2);
+	if(omitAddress2) params.set("omit_address2", "1");
+	if(updated.variant && updated.variant !== "minimalist") params.set("variant", updated.variant);
+
+	const newUrl = window.location.pathname + "?" + params.toString();
+	window.history.replaceState(null, "", newUrl);
+
+	closeEditModal();
+	renderLabel(updated);
+}
+
+function renderLabel(label) {
+	const preview = document.getElementById("label-preview");
+	if(!preview) return;
+
+	currentLabel = label;
 	try {
-		const label = readLabelFromQuery();
 		getInlineLogoDataUri().finally(() => {
-		const layout = createLabelLayout(label, measureFactory(), label.variant);
-		const svg = buildLabelSvg(label, layout, logoDataUri);
-		preview.replaceChildren(svg);
-		download.addEventListener("click", downloadLabelPng);
+			const layout = createLabelLayout(label, measureFactory(), label.variant);
+			const svg = buildLabelSvg(label, layout, logoDataUri);
+			preview.replaceChildren(svg);
 		});
 	} catch (error) {
 		const message = document.createElement("p");
 		message.textContent = error instanceof Error ? error.message : "Unable to render label.";
 		preview.replaceChildren(message);
 	}
+}
+
+function initEventListeners() {
+	const downloadBtn = document.getElementById("label-download-png");
+	if(downloadBtn) {
+		downloadBtn.addEventListener("click", downloadLabelPng);
+	}
+
+	const editBtn = document.getElementById("label-edit-btn");
+	if(editBtn) {
+		editBtn.addEventListener("click", openEditModal);
+	}
+
+	const closeBtn = document.getElementById("label-modal-close");
+	if(closeBtn) {
+		closeBtn.addEventListener("click", closeEditModal);
+	}
+
+	const cancelBtn = document.getElementById("label-modal-cancel");
+	if(cancelBtn) {
+		cancelBtn.addEventListener("click", closeEditModal);
+	}
+
+	const form = document.getElementById("label-edit-form");
+	if(form) {
+		form.addEventListener("submit", (e) => {
+			e.preventDefault();
+			applyEditForm();
+		});
+	}
+
+	const overlay = document.getElementById("label-modal-overlay");
+	if(overlay) {
+		overlay.addEventListener("click", (e) => {
+			if(e.target === overlay) closeEditModal();
+		});
+	}
+
+	window.addEventListener("keydown", (e) => {
+		if(e.key === "Escape") {
+			const overlayEl = document.getElementById("label-modal-overlay");
+			if(overlayEl && !overlayEl.classList.contains("hide")) {
+				closeEditModal();
+			}
+		}
+	});
+
+	// Connect omit checkboxes to their input elements for visual strike-through / dimmed state
+	[
+		["label-omit-title", "label-input-title"],
+		["label-omit-segment", "label-input-segment"],
+		["label-omit-address1", "label-input-address1"],
+		["label-omit-address2", "label-input-address2"]
+	].forEach(([checkId, inputId]) => {
+		const check = document.getElementById(checkId);
+		const input = document.getElementById(inputId);
+		if(check && input) {
+			check.addEventListener("change", () => {
+				updateFieldOmittedClass(input, check.checked);
+			});
+			input.addEventListener("input", () => {
+				// If user explicitly types into an empty field that was left out, automatically uncheck leave-out
+				if(input.value.trim() && check.checked) {
+					check.checked = false;
+					updateFieldOmittedClass(input, false);
+				}
+			});
+		}
+	});
+}
+
+function mount() {
+	initEventListeners();
+	const label = readLabelFromQuery();
+	renderLabel(label);
 }
 
 if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount);

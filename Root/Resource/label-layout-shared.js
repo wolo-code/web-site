@@ -68,7 +68,11 @@ function fitHero(words, maxWidth, measureText) {
 }
 
 function createMinimalistLayout(label, measureText, heroWords) {
-  const hasTitle = !!String(label.title || "").trim();
+  const hasTitle = !label.omitTitle && !!String(label.title || "").trim();
+  const hasSection = !label.omitSection && !!String(label.section || "").trim();
+  const hasAddress1 = !label.omitAddress1 && !!String(label.address1 || "").trim();
+  const hasAddress2 = !label.omitAddress2 && !!String(label.address2 || "").trim();
+
   const topRule = { x: 180, y: 28, w: 840, h: 5 };
   const logo = { w: 284, h: 284 / 4.56 };
   logo.x = (SVG_WIDTH - logo.w) / 2;
@@ -87,20 +91,58 @@ function createMinimalistLayout(label, measureText, heroWords) {
   const titleBaseline = hasTitle ? logo.y + logo.h + 46 : null;
   const bracketTop = hasTitle ? titleBaseline + 20 : logo.y + logo.h + 24;
   const bracketMid = bracketTop + bracket.h / 2;
-  const sectionBaseline = bracketMid - 10;
 
   const hero = fitHero(heroWords, textRight - textLeft - 40, measureText);
   const heroLineHeight = hero.size * 1.12;
-  const heroOneBaseline = bracketMid + hero.size * 0.82 + 4;
-  const heroTwoBaseline = hero.lines.length > 1 ? heroOneBaseline + heroLineHeight : heroOneBaseline;
 
-  const address1Baseline = bracketTop + bracket.h + 52;
-  const address2Baseline = address1Baseline + addressStep;
+  let sectionBaseline = null;
+  let heroOneBaseline;
+  let heroTwoBaseline;
+
+  if (hasSection) {
+    sectionBaseline = bracketMid - 10;
+    heroOneBaseline = bracketMid + hero.size * 0.82 + 4;
+    heroTwoBaseline = hero.lines.length > 1 ? heroOneBaseline + heroLineHeight : heroOneBaseline;
+  } else {
+    if (hero.lines.length === 1) {
+      heroOneBaseline = Math.round(bracketMid + hero.size * 0.35);
+      heroTwoBaseline = heroOneBaseline;
+    } else {
+      heroOneBaseline = Math.round(bracketMid - heroLineHeight / 2 + hero.size * 0.35);
+      heroTwoBaseline = heroOneBaseline + heroLineHeight;
+    }
+  }
+
+  const addressItems = [];
+  if (hasAddress1) addressItems.push({ key: "address1", text: label.address1 });
+  if (hasAddress2) addressItems.push({ key: "address2", text: label.address2 });
+
+  let address1Baseline = null;
+  let address2Baseline = null;
+  let address1Text = "";
+  let address2Text = "";
+
+  if (addressItems.length === 1) {
+    address1Baseline = bracketTop + bracket.h + 52;
+    address1Text = addressItems[0].text;
+  } else if (addressItems.length >= 2) {
+    address1Baseline = bracketTop + bracket.h + 52;
+    address2Baseline = address1Baseline + addressStep;
+    address1Text = addressItems[0].text;
+    address2Text = addressItems[1].text;
+  }
+
   const footer = { x: topRule.x, w: topRule.w, h: 58 };
-  footer.y = Math.round(address2Baseline + 30);
+  if (addressItems.length === 2) {
+    footer.y = Math.round(address2Baseline + 30);
+  } else if (addressItems.length === 1) {
+    footer.y = Math.round(address1Baseline + 32);
+  } else {
+    footer.y = Math.round(bracketTop + bracket.h + 30);
+  }
   const svgHeight = footer.y + footer.h + 22;
 
-  const sectionWidth = measureText(label.section, sectionFont, 0.6);
+  const sectionWidth = hasSection ? measureText(label.section, sectionFont, 0.6) : 0;
   const heroOneWidth = measureText(hero.lines[0], hero.size, hero.letterSpacing);
   const heroTwoWidth = hero.lines.length > 1 ? measureText(hero.lines[1], hero.size, hero.letterSpacing) : 0;
   const heroRight = Math.max(
@@ -113,13 +155,15 @@ function createMinimalistLayout(label, measureText, heroWords) {
   const slashBaseline = hero.lines.length > 1 ? heroTwoBaseline : heroOneBaseline;
   const slashBox = boxFromMetrics(heroRight + slashGap, slashBaseline, slashWidth, slashFont);
 
+  const sectionBox = hasSection ? boxFromMetrics(textLeft, sectionBaseline, sectionWidth, sectionFont) : null;
+
   const boxes = {
     title: hasTitle ? boxFromMetrics(textCenter - measureText(label.title, titleFont, 0.2) / 2, titleBaseline, measureText(label.title, titleFont, 0.2), titleFont) : null,
-    section: boxFromMetrics(textLeft, sectionBaseline, sectionWidth, sectionFont),
+    section: sectionBox,
     heroOne: boxFromMetrics(textCenter - heroOneWidth / 2, heroOneBaseline, heroOneWidth, hero.size),
     heroTwo: hero.lines.length > 1 ? boxFromMetrics(textCenter - heroTwoWidth / 2, heroTwoBaseline, heroTwoWidth, hero.size) : null,
-    address1: boxFromMetrics(textCenter - measureText(label.address1, addressFont, 0.2) / 2, address1Baseline, measureText(label.address1, addressFont, 0.2), addressFont),
-    address2: boxFromMetrics(textCenter - measureText(label.address2, addressFont, 0.2) / 2, address2Baseline, measureText(label.address2, addressFont, 0.2), addressFont),
+    address1: address1Baseline ? boxFromMetrics(textCenter - measureText(address1Text, addressFont, 0.2) / 2, address1Baseline, measureText(address1Text, addressFont, 0.2), addressFont) : null,
+    address2: address2Baseline ? boxFromMetrics(textCenter - measureText(address2Text, addressFont, 0.2) / 2, address2Baseline, measureText(address2Text, addressFont, 0.2), addressFont) : null,
     footer: boxFromMetrics(SVG_WIDTH / 2 - measureText(FOOTER_TEXT, 30, 0) / 2, footer.y + 39, measureText(FOOTER_TEXT, 30, 0), 30)
   };
 
@@ -143,19 +187,19 @@ function createMinimalistLayout(label, measureText, heroWords) {
     }
   };
 
-  checkInside("section", boxes.section, bracketBounds);
+  if (boxes.section) checkInside("section", boxes.section, bracketBounds);
   checkInside("hero line 1", boxes.heroOne, bracketBounds);
-  checkInside("hero line 2", boxes.heroTwo, bracketBounds);
-  checkInside("title", boxes.title, contentBounds);
-  checkInside("address1", boxes.address1, contentBounds);
-  checkInside("address2", boxes.address2, contentBounds);
+  if (boxes.heroTwo) checkInside("hero line 2", boxes.heroTwo, bracketBounds);
+  if (boxes.title) checkInside("title", boxes.title, contentBounds);
+  if (boxes.address1) checkInside("address1", boxes.address1, contentBounds);
+  if (boxes.address2) checkInside("address2", boxes.address2, contentBounds);
   checkInside("footer", boxes.footer, {
     left: footer.x + 16,
     right: footer.x + footer.w - 16,
     top: footer.y + 4,
     bottom: footer.y + footer.h - 4
   });
-  if (boxes.section.bottom + 4 > boxes.heroOne.top) throw new Error("Layout collision: section overlaps hero words");
+  if (boxes.section && boxes.section.bottom + 4 > boxes.heroOne.top) throw new Error("Layout collision: section overlaps hero words");
   if (overlap(slashBox, boxes.heroTwo || boxes.heroOne, 0)) throw new Error("Layout collision: closing slash overlaps words");
 
   const allText = [boxes.title, boxes.section, boxes.heroOne, boxes.heroTwo, boxes.address1, boxes.address2, boxes.footer].filter(Boolean);
@@ -170,6 +214,11 @@ function createMinimalistLayout(label, measureText, heroWords) {
     variant: "minimalist",
     canvasWidth: SVG_WIDTH,
     hasTitle,
+    hasSection,
+    hasAddress1: !!address1Text,
+    hasAddress2: !!address2Text,
+    address1Text,
+    address2Text,
     heroWords,
     hero,
     topRule,
@@ -185,12 +234,13 @@ function createMinimalistLayout(label, measureText, heroWords) {
     address2Baseline,
     footer,
     svgHeight,
-    sectionSlashX: boxes.section.left - 20,
+    sectionSlashX: sectionBox ? sectionBox.left - 20 : textLeft - 20,
     heroSlashX: slashBox.left
   };
 }
 
 function createCodeLayout(label, measureText, heroWords) {
+  const hasSection = !label.omitSection && !!String(label.section || "").trim();
   const canvasWidth = 760;
   const canvasHeight = 520;
   const bracket = { x: 76, top: 90, w: 608, h: 360, stroke: 3, arm: 22 };
@@ -201,12 +251,27 @@ function createCodeLayout(label, measureText, heroWords) {
 
   const hero = fitHero(heroWords, textRight - textLeft - 36, measureText);
   const bracketMid = bracket.top + bracket.h / 2;
-  const sectionBaseline = bracketMid - 10;
   const heroLineHeight = hero.size * 1.12;
-  const heroOneBaseline = bracketMid + hero.size * 0.82 + 4;
-  const heroTwoBaseline = hero.lines.length > 1 ? heroOneBaseline + heroLineHeight : heroOneBaseline;
 
-  const sectionWidth = measureText(label.section, sectionFont, 0.6);
+  let sectionBaseline = null;
+  let heroOneBaseline;
+  let heroTwoBaseline;
+
+  if (hasSection) {
+    sectionBaseline = bracketMid - 10;
+    heroOneBaseline = bracketMid + hero.size * 0.82 + 4;
+    heroTwoBaseline = hero.lines.length > 1 ? heroOneBaseline + heroLineHeight : heroOneBaseline;
+  } else {
+    if (hero.lines.length === 1) {
+      heroOneBaseline = Math.round(bracketMid + hero.size * 0.35);
+      heroTwoBaseline = heroOneBaseline;
+    } else {
+      heroOneBaseline = Math.round(bracketMid - heroLineHeight / 2 + hero.size * 0.35);
+      heroTwoBaseline = heroOneBaseline + heroLineHeight;
+    }
+  }
+
+  const sectionWidth = hasSection ? measureText(label.section, sectionFont, 0.6) : 0;
   const heroOneWidth = measureText(hero.lines[0], hero.size, hero.letterSpacing);
   const heroTwoWidth = hero.lines.length > 1 ? measureText(hero.lines[1], hero.size, hero.letterSpacing) : 0;
   const heroRight = Math.max(
@@ -219,8 +284,10 @@ function createCodeLayout(label, measureText, heroWords) {
   const slashBaseline = hero.lines.length > 1 ? heroTwoBaseline : heroOneBaseline;
   const slashBox = boxFromMetrics(heroRight + slashGap, slashBaseline, slashWidth, slashFont);
 
+  const sectionBox = hasSection ? boxFromMetrics(textLeft, sectionBaseline, sectionWidth, sectionFont) : null;
+
   const boxes = {
-    section: boxFromMetrics(textLeft, sectionBaseline, sectionWidth, sectionFont),
+    section: sectionBox,
     heroOne: boxFromMetrics(textCenter - heroOneWidth / 2, heroOneBaseline, heroOneWidth, hero.size),
     heroTwo: hero.lines.length > 1 ? boxFromMetrics(textCenter - heroTwoWidth / 2, heroTwoBaseline, heroTwoWidth, hero.size) : null
   };
@@ -237,10 +304,10 @@ function createCodeLayout(label, measureText, heroWords) {
       throw new Error(`Layout overflow for "${name}"`);
     }
   };
-  checkInside("section", boxes.section, bracketBounds);
+  if (boxes.section) checkInside("section", boxes.section, bracketBounds);
   checkInside("hero line 1", boxes.heroOne, bracketBounds);
-  checkInside("hero line 2", boxes.heroTwo, bracketBounds);
-  if (boxes.section.bottom + 4 > boxes.heroOne.top) throw new Error("Layout collision: section overlaps hero words");
+  if (boxes.heroTwo) checkInside("hero line 2", boxes.heroTwo, bracketBounds);
+  if (boxes.section && boxes.section.bottom + 4 > boxes.heroOne.top) throw new Error("Layout collision: section overlaps hero words");
   if (overlap(slashBox, boxes.heroTwo || boxes.heroOne, 0)) throw new Error("Layout collision: closing slash overlaps words");
 
   const allText = [boxes.section, boxes.heroOne, boxes.heroTwo].filter(Boolean);
@@ -254,6 +321,11 @@ function createCodeLayout(label, measureText, heroWords) {
     variant: "code",
     canvasWidth,
     hasTitle: false,
+    hasSection,
+    hasAddress1: false,
+    hasAddress2: false,
+    address1Text: "",
+    address2Text: "",
     heroWords,
     hero,
     topRule: null,
@@ -269,7 +341,7 @@ function createCodeLayout(label, measureText, heroWords) {
     address2Baseline: null,
     footer: null,
     svgHeight: canvasHeight,
-    sectionSlashX: boxes.section.left - 20,
+    sectionSlashX: sectionBox ? sectionBox.left - 20 : textLeft - 20,
     heroSlashX: slashBox.left
   };
 }
