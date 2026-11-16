@@ -6,13 +6,14 @@ let currentLabel = null;
 
 const DEFAULT_LABEL = {
 	title: "Boudhanath Stupa",
+	segment: "Boudha",
 	section: "Kathmandu",
 	address1: "Boudha Stupa Rd",
 	address2: "Kathmandu 44600, Nepal",
 	code: "kathmandu.mask.net.soil",
 	variant: "minimalist",
 	omitTitle: false,
-	omitSection: false,
+	omitSegment: false,
 	omitAddress1: false,
 	omitAddress2: false
 };
@@ -35,11 +36,12 @@ function readLabelFromQuery() {
 	const variantRaw = normalizeText(params.get("variant"), 24, false).toLowerCase();
 	const variant = variantRaw === "code" ? "code" : "minimalist";
 	const title = normalizeText(params.get("title"), MAX_LEN.title, false);
-	const section = normalizeText(params.get("segment") || params.get("section"), MAX_LEN.section, false);
+	const segment = normalizeText(params.get("segment"), MAX_LEN.section, false);
+	const section = normalizeText(params.get("city") || params.get("section"), MAX_LEN.section, false);
 	const address1 = normalizeText(params.get("address1"), MAX_LEN.address1, false);
 	const address2 = normalizeText(params.get("address2"), MAX_LEN.address2, false);
 	const omitTitle = params.get("omit_title") === "1" || params.get("omit_title") === "true";
-	const omitSection = params.get("omit_segment") === "1" || params.get("omit_section") === "1" || params.get("omit_segment") === "true" || params.get("omit_section") === "true";
+	const omitSegment = params.get("omit_segment") === "1" || params.get("omit_segment") === "true";
 	const omitAddress1 = params.get("omit_address1") === "1" || params.get("omit_address1") === "true";
 	const omitAddress2 = params.get("omit_address2") === "1" || params.get("omit_address2") === "true";
 
@@ -62,6 +64,7 @@ function readLabelFromQuery() {
 
 	return {
 		title,
+		segment,
 		section,
 		address1,
 		address2,
@@ -69,7 +72,7 @@ function readLabelFromQuery() {
 		slug: "live",
 		variant,
 		omitTitle,
-		omitSection,
+		omitSegment,
 		omitAddress1,
 		omitAddress2
 	};
@@ -109,7 +112,7 @@ function buildLabelSvg(label, layout, logoHref) {
 	svg.setAttribute("viewBox", `0 0 ${layout.canvasWidth} ${layout.svgHeight}`);
 
 	const style = document.createElementNS("http://www.w3.org/2000/svg", "style");
-	style.textContent = ".abel{font-family:Abel,sans-serif} .hero{font-weight:700;letter-spacing:1px} .accent{fill:#69b7cf} .section{fill:#333333} .dark{fill:#111} .muted{fill:#3f3f3f}";
+	style.textContent = ".abel{font-family:Abel,sans-serif} .hero{font-weight:700;letter-spacing:1px} .accent{fill:#69b7cf} .section{fill:#333333} .dark{fill:#111} .muted{fill:#3f3f3f} .subtitle{fill:#666666}";
 	svg.appendChild(style);
 
 	const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -139,9 +142,10 @@ function buildLabelSvg(label, layout, logoHref) {
 	}
 
 	if(layout.hasTitle) addText(svg, label.title, layout.textCenter, layout.titleBaseline, { class: "abel muted", "font-size": 44, "text-anchor": "middle" });
+	if(layout.hasSegment) addText(svg, label.segment, layout.textCenter, layout.segmentBaseline, { class: "abel subtitle", "font-size": 30, "letter-spacing": 0.4, "text-anchor": "middle" });
 	if(layout.hasSection) {
 		addText(svg, "\\", layout.sectionSlashX, layout.sectionBaseline, { class: "abel accent", "font-size": 30, "fill-opacity": 0.55, "text-anchor": "start" });
-		addText(svg, label.section, layout.textLeft, layout.sectionBaseline, { class: "abel section", "font-size": 34, "letter-spacing": 0.6, "text-anchor": "start" });
+		addText(svg, layout.sectionText, layout.textLeft, layout.sectionBaseline, { class: "abel section", "font-size": 34, "letter-spacing": 0.6, "text-anchor": "start" });
 	}
 
 	const b = layout.bracket;
@@ -297,13 +301,13 @@ function openEditModal() {
 	const omitAddress2Check = document.getElementById("label-omit-address2");
 
 	if(titleInput) titleInput.value = currentLabel.title || "";
-	if(segmentInput) segmentInput.value = currentLabel.section || "";
+	if(segmentInput) segmentInput.value = currentLabel.segment || "";
 	if(address1Input) address1Input.value = currentLabel.address1 || "";
 	if(address2Input) address2Input.value = currentLabel.address2 || "";
 	if(codeInput) codeInput.value = currentLabel.code || "";
 
 	if(omitTitleCheck) omitTitleCheck.checked = !!currentLabel.omitTitle || !currentLabel.title;
-	if(omitSegmentCheck) omitSegmentCheck.checked = !!currentLabel.omitSection || !currentLabel.section;
+	if(omitSegmentCheck) omitSegmentCheck.checked = !!currentLabel.omitSegment || !currentLabel.segment;
 	if(omitAddress1Check) omitAddress1Check.checked = !!currentLabel.omitAddress1 || !currentLabel.address1;
 	if(omitAddress2Check) omitAddress2Check.checked = !!currentLabel.omitAddress2 || !currentLabel.address2;
 
@@ -341,19 +345,19 @@ function applyEditForm() {
 	const address2 = (document.getElementById("label-input-address2")?.value || "").trim();
 
 	const omitTitle = document.getElementById("label-omit-title")?.checked || false;
-	const omitSection = document.getElementById("label-omit-segment")?.checked || false;
+	const omitSegment = document.getElementById("label-omit-segment")?.checked || false;
 	const omitAddress1 = document.getElementById("label-omit-address1")?.checked || false;
 	const omitAddress2 = document.getElementById("label-omit-address2")?.checked || false;
 
 	const updated = {
 		...(currentLabel || {}),
 		title,
-		section: segment,
+		segment,
 		address1,
 		address2,
 		code,
 		omitTitle,
-		omitSection,
+		omitSegment,
 		omitAddress1,
 		omitAddress2
 	};
@@ -364,7 +368,8 @@ function applyEditForm() {
 	if(title) params.set("title", title);
 	if(omitTitle) params.set("omit_title", "1");
 	if(segment) params.set("segment", segment);
-	if(omitSection) params.set("omit_segment", "1");
+	if(omitSegment) params.set("omit_segment", "1");
+	if(currentLabel && currentLabel.section) params.set("section", currentLabel.section);
 	if(address1) params.set("address1", address1);
 	if(omitAddress1) params.set("omit_address1", "1");
 	if(address2) params.set("address2", address2);

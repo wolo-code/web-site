@@ -1,6 +1,6 @@
 <div id='message'>
 	<div class='label-live'>
-		<p class='label-live-intro'>Dynamic minimalist label preview (query params: title, segment, address1, address2, code).</p>
+		<p class='label-live-intro'>Wolo label generator</p>
 		<div class='label-live-card'>
 			<div id='label-capture'>
 				<div id='label-preview' aria-live='polite'></div>
