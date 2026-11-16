@@ -276,12 +276,12 @@ function downloadLabelPng() {
 	image.src = svgUrl;
 }
 
-function updateFieldOmittedClass(input, isOmitted, tipEl) {
+function updateFieldOmittedClass(input, isIncluded, tipEl) {
 	if(input) {
-		input.classList.toggle("is-omitted", !!isOmitted);
+		input.classList.toggle("is-omitted", !isIncluded);
 	}
 	if(tipEl) {
-		tipEl.textContent = isOmitted ? "Left out" : "Leave out";
+		tipEl.textContent = isIncluded ? "Included" : "Include";
 	}
 }
 
@@ -295,10 +295,10 @@ function openEditModal() {
 	const address2Input = document.getElementById("label-input-address2");
 	const codeInput = document.getElementById("label-input-code");
 
-	const omitTitleCheck = document.getElementById("label-omit-title");
-	const omitSegmentCheck = document.getElementById("label-omit-segment");
-	const omitAddress1Check = document.getElementById("label-omit-address1");
-	const omitAddress2Check = document.getElementById("label-omit-address2");
+	const includeTitleCheck = document.getElementById("label-include-title");
+	const includeSegmentCheck = document.getElementById("label-include-segment");
+	const includeAddress1Check = document.getElementById("label-include-address1");
+	const includeAddress2Check = document.getElementById("label-include-address2");
 
 	if(titleInput) titleInput.value = currentLabel.title || "";
 	if(segmentInput) segmentInput.value = currentLabel.segment || "";
@@ -306,15 +306,20 @@ function openEditModal() {
 	if(address2Input) address2Input.value = currentLabel.address2 || "";
 	if(codeInput) codeInput.value = currentLabel.code || "";
 
-	if(omitTitleCheck) omitTitleCheck.checked = !!currentLabel.omitTitle || !currentLabel.title;
-	if(omitSegmentCheck) omitSegmentCheck.checked = !!currentLabel.omitSegment || !currentLabel.segment;
-	if(omitAddress1Check) omitAddress1Check.checked = !!currentLabel.omitAddress1 || !currentLabel.address1;
-	if(omitAddress2Check) omitAddress2Check.checked = !!currentLabel.omitAddress2 || !currentLabel.address2;
+	const hasTitle = !currentLabel.omitTitle && !!(currentLabel.title || "").trim();
+	const hasSegment = !currentLabel.omitSegment && !!(currentLabel.segment || "").trim();
+	const hasAddress1 = !currentLabel.omitAddress1 && !!(currentLabel.address1 || "").trim();
+	const hasAddress2 = !currentLabel.omitAddress2 && !!(currentLabel.address2 || "").trim();
 
-	updateFieldOmittedClass(titleInput, omitTitleCheck?.checked, omitTitleCheck?.parentElement?.querySelector(".label-omit-tip"));
-	updateFieldOmittedClass(segmentInput, omitSegmentCheck?.checked, omitSegmentCheck?.parentElement?.querySelector(".label-omit-tip"));
-	updateFieldOmittedClass(address1Input, omitAddress1Check?.checked, omitAddress1Check?.parentElement?.querySelector(".label-omit-tip"));
-	updateFieldOmittedClass(address2Input, omitAddress2Check?.checked, omitAddress2Check?.parentElement?.querySelector(".label-omit-tip"));
+	if(includeTitleCheck) includeTitleCheck.checked = hasTitle;
+	if(includeSegmentCheck) includeSegmentCheck.checked = hasSegment;
+	if(includeAddress1Check) includeAddress1Check.checked = hasAddress1;
+	if(includeAddress2Check) includeAddress2Check.checked = hasAddress2;
+
+	updateFieldOmittedClass(titleInput, hasTitle, includeTitleCheck?.parentElement?.querySelector(".label-omit-tip"));
+	updateFieldOmittedClass(segmentInput, hasSegment, includeSegmentCheck?.parentElement?.querySelector(".label-omit-tip"));
+	updateFieldOmittedClass(address1Input, hasAddress1, includeAddress1Check?.parentElement?.querySelector(".label-omit-tip"));
+	updateFieldOmittedClass(address2Input, hasAddress2, includeAddress2Check?.parentElement?.querySelector(".label-omit-tip"));
 
 	overlay.classList.remove("hide");
 	overlay.setAttribute("aria-hidden", "false");
@@ -344,10 +349,15 @@ function applyEditForm() {
 	const address1 = (document.getElementById("label-input-address1")?.value || "").trim();
 	const address2 = (document.getElementById("label-input-address2")?.value || "").trim();
 
-	const omitTitle = document.getElementById("label-omit-title")?.checked || false;
-	const omitSegment = document.getElementById("label-omit-segment")?.checked || false;
-	const omitAddress1 = document.getElementById("label-omit-address1")?.checked || false;
-	const omitAddress2 = document.getElementById("label-omit-address2")?.checked || false;
+	const includeTitle = document.getElementById("label-include-title")?.checked || false;
+	const includeSegment = document.getElementById("label-include-segment")?.checked || false;
+	const includeAddress1 = document.getElementById("label-include-address1")?.checked || false;
+	const includeAddress2 = document.getElementById("label-include-address2")?.checked || false;
+
+	const omitTitle = !includeTitle;
+	const omitSegment = !includeSegment;
+	const omitAddress1 = !includeAddress1;
+	const omitAddress2 = !includeAddress2;
 
 	const updated = {
 		...(currentLabel || {}),
@@ -446,12 +456,12 @@ function initEventListeners() {
 		}
 	});
 
-	// Connect omit checkboxes to their input elements for visual strike-through / dimmed state
+	// Connect include checkboxes to their input elements for visual dimmed state
 	[
-		["label-omit-title", "label-input-title"],
-		["label-omit-segment", "label-input-segment"],
-		["label-omit-address1", "label-input-address1"],
-		["label-omit-address2", "label-input-address2"]
+		["label-include-title", "label-input-title"],
+		["label-include-segment", "label-input-segment"],
+		["label-include-address1", "label-input-address1"],
+		["label-include-address2", "label-input-address2"]
 	].forEach(([checkId, inputId]) => {
 		const check = document.getElementById(checkId);
 		const input = document.getElementById(inputId);
@@ -461,10 +471,10 @@ function initEventListeners() {
 				updateFieldOmittedClass(input, check.checked, tip);
 			});
 			input.addEventListener("input", () => {
-				// If user explicitly types into an empty field that was left out, automatically uncheck leave-out
-				if(input.value.trim() && check.checked) {
-					check.checked = false;
-					updateFieldOmittedClass(input, false, tip);
+				// If user explicitly types into an excluded field, automatically check to include
+				if(input.value.trim() && !check.checked) {
+					check.checked = true;
+					updateFieldOmittedClass(input, true, tip);
 				}
 			});
 		}

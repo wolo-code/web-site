@@ -1,6 +1,5 @@
 <div id='message'>
 	<div class='label-live'>
-		<p class='label-live-intro'>Wolo label generator</p>
 		<div class='label-live-card'>
 			<div id='label-capture'>
 				<div id='label-preview' aria-live='polite'></div>
@@ -41,9 +40,9 @@
 						<input id='label-input-title' type='text' placeholder='Title – e.g. Home' aria-label='Title'>
 					</div>
 					<div class='label-omit-wrap'>
-						<label class='label-omit-check' title='Leave out title' aria-label='Leave out title'>
-							<input type='checkbox' id='label-omit-title'>
-							<span class='label-omit-tip'>Leave out</span>
+						<label class='label-omit-check' title='Include title' aria-label='Include title'>
+							<input type='checkbox' id='label-include-title' checked>
+							<span class='label-omit-tip'>Include</span>
 						</label>
 					</div>
 				</div>
@@ -53,33 +52,9 @@
 						<input id='label-input-segment' type='text' placeholder='Segment – e.g. Main gate' aria-label='Segment'>
 					</div>
 					<div class='label-omit-wrap'>
-						<label class='label-omit-check' title='Leave out segment' aria-label='Leave out segment'>
-							<input type='checkbox' id='label-omit-segment'>
-							<span class='label-omit-tip'>Leave out</span>
-						</label>
-					</div>
-				</div>
-				<div class='label-form-row'>
-					<div class='label-input-wrap'>
-						<span class='label-hover-tag'>Address line 1</span>
-						<input id='label-input-address1' type='text' placeholder='Address line 1 (optional)' aria-label='Address line 1'>
-					</div>
-					<div class='label-omit-wrap'>
-						<label class='label-omit-check' title='Leave out address line 1' aria-label='Leave out address line 1'>
-							<input type='checkbox' id='label-omit-address1'>
-							<span class='label-omit-tip'>Leave out</span>
-						</label>
-					</div>
-				</div>
-				<div class='label-form-row'>
-					<div class='label-input-wrap'>
-						<span class='label-hover-tag'>Address line 2</span>
-						<input id='label-input-address2' type='text' placeholder='Address line 2 (optional)' aria-label='Address line 2'>
-					</div>
-					<div class='label-omit-wrap'>
-						<label class='label-omit-check' title='Leave out address line 2' aria-label='Leave out address line 2'>
-							<input type='checkbox' id='label-omit-address2'>
-							<span class='label-omit-tip'>Leave out</span>
+						<label class='label-omit-check' title='Include segment' aria-label='Include segment'>
+							<input type='checkbox' id='label-include-segment' checked>
+							<span class='label-omit-tip'>Include</span>
 						</label>
 					</div>
 				</div>
@@ -89,6 +64,30 @@
 						<input id='label-input-code' type='text' placeholder='Wolo code – e.g. kathmandu.mask.net.soil' aria-label='Wolo code (required)' required>
 					</div>
 					<div class='label-omit-wrap label-omit-spacer' aria-hidden='true'></div>
+				</div>
+				<div class='label-form-row'>
+					<div class='label-input-wrap'>
+						<span class='label-hover-tag'>Address line 1</span>
+						<input id='label-input-address1' type='text' placeholder='Address line 1 (optional)' aria-label='Address line 1'>
+					</div>
+					<div class='label-omit-wrap'>
+						<label class='label-omit-check' title='Include address line 1' aria-label='Include address line 1'>
+							<input type='checkbox' id='label-include-address1' checked>
+							<span class='label-omit-tip'>Include</span>
+						</label>
+					</div>
+				</div>
+				<div class='label-form-row'>
+					<div class='label-input-wrap'>
+						<span class='label-hover-tag'>Address line 2</span>
+						<input id='label-input-address2' type='text' placeholder='Address line 2 (optional)' aria-label='Address line 2'>
+					</div>
+					<div class='label-omit-wrap'>
+						<label class='label-omit-check' title='Include address line 2' aria-label='Include address line 2'>
+							<input type='checkbox' id='label-include-address2' checked>
+							<span class='label-omit-tip'>Include</span>
+						</label>
+					</div>
 				</div>
 				<div class='label-modal-actions'>
 					<button type='button' id='label-modal-cancel' class='border control'>Cancel</button>
@@ -110,7 +109,7 @@
 	white-space: nowrap;
 	border: 0;
 }
-#message .label-live-intro { margin-bottom: 16px; }
+#message .label-live { margin-top: 4px; }
 #message .label-live-card {
 	border: 1px solid #d5e9ef;
 	border-radius: 10px;
@@ -294,9 +293,8 @@
 	color: #111111;
 }
 .label-form-row input[type='text'].is-omitted {
-	opacity: 0.42;
-	text-decoration: line-through;
-	color: #888888;
+	opacity: 0.35;
+	color: #999999;
 }
 
 /* Omit checkbox with hover-only tooltip/label */
