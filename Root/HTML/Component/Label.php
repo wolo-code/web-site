@@ -111,10 +111,6 @@
 }
 #message .label-live { margin-top: 4px; }
 #message .label-live-card {
-	border: 1px solid #d5e9ef;
-	border-radius: 10px;
-	padding: 12px;
-	background: #fcfeff;
 	text-align: center;
 	overflow-x: auto;
 }
