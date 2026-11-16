@@ -146,12 +146,12 @@ function downloadURI(uri, name) {
 }
 
 function downloadLabelPng() {
-	const qrBody = document.getElementById("label-preview");
+	const qrBody = document.getElementById("label-capture");
 	if(!qrBody || typeof window.html2canvas !== "function") return;
 	window.html2canvas(qrBody, {
 		scale: 1,
 		onclone: function(clonedDocument) {
-			clonedDocument.querySelectorAll("#label-preview svg image").forEach(function(logo) {
+			clonedDocument.querySelectorAll("#label-capture svg image").forEach(function(logo) {
 				const style = clonedDocument.defaultView.getComputedStyle(logo);
 				logo.setAttribute("width", style.width);
 				logo.setAttribute("height", style.height);
