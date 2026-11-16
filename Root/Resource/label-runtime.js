@@ -1,6 +1,7 @@
 import { BRAND_BLUE, FOOTER_TEXT, createLabelLayout } from "/label-layout-shared.js";
 
 const MAX_LEN = { title: 80, section: 64, address1: 80, address2: 96, code: 120 };
+let logoDataUri = null;
 
 function normalizeText(value, maxLen, required = true) {
 	const raw = typeof value === "string" ? value : "";
@@ -68,7 +69,7 @@ function addText(parent, text, x, y, attrs = {}) {
 	parent.appendChild(node);
 }
 
-function buildLabelSvg(label, layout) {
+function buildLabelSvg(label, layout, logoHref) {
 	const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 	svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 	svg.setAttribute("width", String(layout.canvasWidth));
@@ -97,7 +98,7 @@ function buildLabelSvg(label, layout) {
 
 	if(layout.logo) {
 		const logo = document.createElementNS("http://www.w3.org/2000/svg", "image");
-		logo.setAttribute("href", "/logo_full.svg");
+		logo.setAttribute("href", logoHref || "/logo_full.svg");
 		logo.setAttribute("x", String(layout.logo.x));
 		logo.setAttribute("y", String(layout.logo.y));
 		logo.setAttribute("width", String(layout.logo.w));
@@ -145,22 +146,44 @@ function downloadURI(uri, name) {
 	link.click();
 }
 
+function getInlineLogoDataUri() {
+	if(logoDataUri) return Promise.resolve(logoDataUri);
+	return fetch("/logo_full.svg")
+		.then((response) => response.text())
+		.then((svgText) => {
+			logoDataUri = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svgText)))}`;
+			return logoDataUri;
+		})
+		.catch(() => null);
+}
+
 function downloadLabelPng() {
-	const qrBody = document.getElementById("label-capture");
-	if(!qrBody || typeof window.html2canvas !== "function") return;
-	window.html2canvas(qrBody, {
-		scale: 1,
-		onclone: function(clonedDocument) {
-			clonedDocument.querySelectorAll("#label-capture svg image").forEach(function(logo) {
-				const style = clonedDocument.defaultView.getComputedStyle(logo);
-				logo.setAttribute("width", style.width);
-				logo.setAttribute("height", style.height);
-			});
-		}
-	}).then((canvas) => {
-		const qrImage = canvas.toDataURL("image/png");
-		downloadURI(qrImage, "Wolo Label.png");
-	});
+	const capture = document.getElementById("label-capture");
+	const svg = capture ? capture.querySelector("svg") : null;
+	if(!capture || !svg) return;
+	const serializer = new XMLSerializer();
+	const svgMarkup = serializer.serializeToString(svg);
+	const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
+	const svgUrl = URL.createObjectURL(svgBlob);
+	const image = new Image();
+	image.onload = () => {
+		const style = getComputedStyle(capture);
+		const padX = parseFloat(style.paddingLeft || "0");
+		const padY = parseFloat(style.paddingTop || "0");
+		const width = Math.round(svg.viewBox.baseVal.width + padX * 2);
+		const height = Math.round(svg.viewBox.baseVal.height + padY * 2);
+		const canvas = document.createElement("canvas");
+		canvas.width = width;
+		canvas.height = height;
+		const ctx = canvas.getContext("2d");
+		ctx.fillStyle = "#ffffff";
+		ctx.fillRect(0, 0, width, height);
+		ctx.drawImage(image, Math.round(padX), Math.round(padY), Math.round(svg.viewBox.baseVal.width), Math.round(svg.viewBox.baseVal.height));
+		URL.revokeObjectURL(svgUrl);
+		const png = canvas.toDataURL("image/png");
+		downloadURI(png, "Wolo Label.png");
+	};
+	image.src = svgUrl;
 }
 
 function mount() {
@@ -170,10 +193,12 @@ function mount() {
 
 	try {
 		const label = readLabelFromQuery();
+		getInlineLogoDataUri().finally(() => {
 		const layout = createLabelLayout(label, measureFactory(), label.variant);
-		const svg = buildLabelSvg(label, layout);
+		const svg = buildLabelSvg(label, layout, logoDataUri);
 		preview.replaceChildren(svg);
 		download.addEventListener("click", downloadLabelPng);
+		});
 	} catch (error) {
 		const message = document.createElement("p");
 		message.textContent = error instanceof Error ? error.message : "Unable to render label.";
