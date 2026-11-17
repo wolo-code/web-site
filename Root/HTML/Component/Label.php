@@ -1,3 +1,38 @@
+<?php
+$labels_path = dirname(__DIR__, 3).'/Config/Labels.json';
+$cached_labels = [];
+if(file_exists($labels_path)) {
+	$cached_labels_raw = file_get_contents($labels_path);
+	$cached_labels = json_decode($cached_labels_raw, true);
+	if(!is_array($cached_labels)) $cached_labels = [];
+}
+
+if(!function_exists('label_slugify')) {
+	function label_slugify($value) {
+		$value = strtolower(trim((string)$value));
+		$value = preg_replace('/[^a-z0-9]+/', '-', $value);
+		return trim($value ?? '', '-');
+	}
+}
+
+if(!function_exists('label_asset_stem')) {
+	function label_asset_stem($label) {
+		$slug = (string)($label['slug'] ?? '');
+		$title = label_slugify((string)($label['title'] ?? ''));
+		if($title === '') $title = 'untitled';
+		$variant = (string)($label['variant'] ?? 'minimalist');
+		return $slug.'-'.$title.'-'.$variant;
+	}
+}
+
+if(!function_exists('label_asset_stem_variant')) {
+	function label_asset_stem_variant($label, $variant) {
+		$copy = $label;
+		$copy['variant'] = $variant;
+		return label_asset_stem($copy);
+	}
+}
+?>
 <div id='message'>
 	<div class='label-live'>
 		<div class='label-live-card'>
@@ -20,6 +55,41 @@
 			</button>
 		</div>
 	</div>
+	<?php if(!empty($cached_labels)): ?>
+	<div class='label-cached-section'>
+		<h3 class='label-cached-heading'>Other cached labels</h3>
+		<ul class='label-cached-list'>
+			<?php foreach($cached_labels as $label):
+				$slug = htmlspecialchars($label['slug'] ?? '', ENT_QUOTES, 'UTF-8');
+				$title = htmlspecialchars($label['title'] ?? '', ENT_QUOTES, 'UTF-8');
+				$code = htmlspecialchars($label['code'] ?? '', ENT_QUOTES, 'UTF-8');
+				$asset_stem = htmlspecialchars(label_asset_stem($label), ENT_QUOTES, 'UTF-8');
+				$code_asset_stem = htmlspecialchars(label_asset_stem_variant($label, 'code'), ENT_QUOTES, 'UTF-8');
+				$has_code_variant = !empty($label['extra_variants']) && is_array($label['extra_variants']) && in_array('code', $label['extra_variants'], true);
+				$display_name = $title !== '' ? $title : (!empty($label['address1']) ? htmlspecialchars($label['address1'], ENT_QUOTES, 'UTF-8') : 'Sample');
+			?>
+			<li class='label-cached-item'>
+				<div class='label-cached-meta'>
+					<a class='content-link label-cached-name' href='/labels/<?php echo $asset_stem ?>.png' target='_blank' rel='noopener'><?php echo $display_name ?></a>
+					<span class='label-cached-code'><?php echo $code ?></span>
+				</div>
+				<div class='label-cached-links'>
+					<a class='content-link label-img-link' href='/labels/<?php echo $asset_stem ?>.png' target='_blank' rel='noopener'>PNG</a>
+					<span class='separator'>|</span>
+					<a class='content-link label-img-link' href='/labels/<?php echo $asset_stem ?>.svg' target='_blank' rel='noopener'>SVG</a>
+					<?php if($has_code_variant): ?>
+					<span class='separator'>|</span>
+					<span class='label-cached-sublabel'>Code:</span>
+					<a class='content-link label-img-link' href='/labels/<?php echo $code_asset_stem ?>.png' target='_blank' rel='noopener'>PNG</a>
+					<span class='separator'>|</span>
+					<a class='content-link label-img-link' href='/labels/<?php echo $code_asset_stem ?>.svg' target='_blank' rel='noopener'>SVG</a>
+					<?php endif; ?>
+				</div>
+			</li>
+			<?php endforeach; ?>
+		</ul>
+	</div>
+	<?php endif; ?>
 </div>
 
 <div id='label-modal-overlay' class='label-modal-overlay hide' aria-hidden='true' role='dialog' aria-modal='true' aria-labelledby='label-modal-title'>
@@ -382,6 +452,112 @@
 }
 .label-modal-actions button.primary:hover {
 	background: #5aa6bc;
+}
+
+/* Other cached labels list */
+.label-cached-section {
+	margin-top: 36px;
+	padding-top: 20px;
+	border-top: 1px solid #eef3f6;
+}
+html.dark-mode .label-cached-section {
+	border-top-color: #2a2a4a;
+}
+.label-cached-heading {
+	margin: 0 0 16px;
+	font-size: 1.25rem;
+	font-weight: 500;
+	color: #69b7cf !important;
+}
+.label-cached-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+.label-cached-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px 16px;
+	padding: 10px 14px;
+	background: #fbfdfe;
+	border: 1px solid #dcebf0;
+	border-radius: 8px;
+	transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.label-cached-item:hover {
+	background: #f5fafd;
+	border-color: #69b7cf;
+}
+html.dark-mode .label-cached-item {
+	background: #20203a;
+	border-color: #2e2e50;
+}
+html.dark-mode .label-cached-item:hover {
+	background: #262646;
+	border-color: #69b7cf;
+}
+.label-cached-meta {
+	display: flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+.label-cached-name {
+	font-weight: 600;
+	font-size: 1.05rem;
+	text-decoration: none;
+	color: #333333 !important;
+}
+.label-cached-name:hover {
+	color: #69b7cf !important;
+}
+html.dark-mode .label-cached-name {
+	color: #e0e0e0 !important;
+}
+html.dark-mode .label-cached-name:hover {
+	color: #69b7cf !important;
+}
+.label-cached-code {
+	font-size: 0.9rem;
+	color: #777777;
+	font-family: 'Abel', sans-serif;
+}
+html.dark-mode .label-cached-code {
+	color: #999999;
+}
+.label-cached-links {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 0.95rem;
+}
+.label-cached-links .separator {
+	color: #cfcfcf !important;
+}
+html.dark-mode .label-cached-links .separator {
+	color: #4a4a68 !important;
+}
+.label-cached-sublabel {
+	color: #888888;
+	font-size: 0.85rem;
+	margin-left: 2px;
+}
+html.dark-mode .label-cached-sublabel {
+	color: #aaaaaa;
+}
+.label-img-link {
+	font-weight: 500;
+	padding: 2px 4px;
+	border-radius: 4px;
+	transition: background-color 0.15s ease, color 0.15s ease;
+}
+.label-img-link:hover {
+	background: rgba(105, 183, 207, 0.12);
 }
 </style>
 <script type='module' src='/label-runtime.js'></script>
