@@ -937,6 +937,36 @@ function initEventListeners() {
 			});
 		}
 	});
+
+	// Handle cached label table row clicks and code cell clicks
+	const cachedRows = document.querySelectorAll(".label-cached-row");
+	cachedRows.forEach(row => {
+		const href = row.dataset.href;
+		if(!href) return;
+		row.addEventListener("click", (e) => {
+			const codeCell = e.target.closest(".td-code");
+			if(codeCell) {
+				const codeLink = codeCell.querySelector("a.label-code-link");
+				if(codeLink && e.target !== codeLink && !codeLink.contains(e.target)) {
+					codeLink.click();
+				}
+				return;
+			}
+			if(e.target.closest("a, button")) return;
+			if(e.metaKey || e.ctrlKey) {
+				window.open(href, "_blank", "noopener");
+			} else {
+				window.location.href = href;
+			}
+		});
+		row.addEventListener("keydown", (e) => {
+			if(e.key === "Enter" || e.key === " ") {
+				if(e.target.closest("a, button")) return;
+				e.preventDefault();
+				window.location.href = href;
+			}
+		});
+	});
 }
 
 function mount() {

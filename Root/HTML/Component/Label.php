@@ -32,6 +32,27 @@ if(!function_exists('label_asset_stem_variant')) {
 		return label_asset_stem($copy);
 	}
 }
+
+if(!function_exists('label_dynamic_url')) {
+	function label_dynamic_url($label) {
+		$params = [];
+		$title = trim((string)($label['title'] ?? ''));
+		if($title !== '') $params['title'] = $title;
+		$city = trim((string)($label['city'] ?? ''));
+		if($city !== '') $params['city'] = $city;
+		$section = trim((string)($label['section'] ?? $label['segment'] ?? ''));
+		if($section !== '') $params['section'] = $section;
+		$address1 = trim((string)($label['address1'] ?? ''));
+		if($address1 !== '') $params['address1'] = $address1;
+		$address2 = trim((string)($label['address2'] ?? ''));
+		if($address2 !== '') $params['address2'] = $address2;
+		$code = trim((string)($label['code'] ?? ''));
+		if($code !== '') $params['code'] = $code;
+		$variant = (string)($label['variant'] ?? 'minimalist');
+		if($variant !== '') $params['variant'] = $variant;
+		return '/label?'.http_build_query($params);
+	}
+}
 ?>
 <div id='message'>
 	<div class='label-live'>
@@ -72,16 +93,22 @@ if(!function_exists('label_asset_stem_variant')) {
 				<tbody>
 					<?php foreach($cached_labels as $label):
 						$title = htmlspecialchars($label['title'] ?? '', ENT_QUOTES, 'UTF-8');
-						$section = htmlspecialchars($label['section'] ?? '', ENT_QUOTES, 'UTF-8');
+						$section = htmlspecialchars($label['section'] ?? $label['segment'] ?? '', ENT_QUOTES, 'UTF-8');
 						$code = htmlspecialchars($label['code'] ?? '', ENT_QUOTES, 'UTF-8');
+						$wolo_url = htmlspecialchars(!empty($label['url']) ? $label['url'] : '/'.$code, ENT_QUOTES, 'UTF-8');
+						$label_url = htmlspecialchars(label_dynamic_url($label), ENT_QUOTES, 'UTF-8');
 						$asset_stem = htmlspecialchars(label_asset_stem($label), ENT_QUOTES, 'UTF-8');
 						$code_asset_stem = htmlspecialchars(label_asset_stem_variant($label, 'code'), ENT_QUOTES, 'UTF-8');
 						$has_code_variant = !empty($label['extra_variants']) && is_array($label['extra_variants']) && in_array('code', $label['extra_variants'], true);
 					?>
-					<tr>
+					<tr class='label-cached-row' data-href='<?php echo $label_url ?>' tabindex='0' role='link' aria-label='Open label for <?php echo ($title !== '' ? $title : $code) ?>' title='Open label in editor'>
 						<td class='td-title'><?php echo $title ?></td>
 						<td class='td-section'><?php echo $section ?></td>
-						<td class='td-code'><?php if($code !== ''): ?><code><?php echo $code ?></code><?php endif; ?></td>
+						<td class='td-code'>
+							<?php if($code !== ''): ?>
+							<a class='content-link label-code-link' href='<?php echo $wolo_url ?>' target='_blank' rel='noopener' title='Open <?php echo $code ?> in Wolo app'><code><?php echo $code ?></code></a>
+							<?php endif; ?>
+						</td>
 						<td class='td-links'>
 							<a class='content-link label-img-link' href='/labels/<?php echo $asset_stem ?>.png' target='_blank' rel='noopener'>PNG</a>
 							<a class='content-link label-img-link' href='/labels/<?php echo $asset_stem ?>.svg' target='_blank' rel='noopener'>SVG</a>
@@ -224,15 +251,22 @@ if(!function_exists('label_asset_stem_variant')) {
 	justify-content: center;
 	border: 1px solid #b8dbe8;
 	background: #ffffff;
-	color: #555555;
+	color: #69b7cf;
 	cursor: pointer;
 	transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+.label-btn-icon .btn-icon {
+	color: #69b7cf;
+	fill: currentColor;
 }
 .label-btn-icon:hover {
 	background: #f0f8fb;
 	border-color: #69b7cf;
-	color: #69b7cf;
+	color: #5aa6bc;
 	transform: translateY(-1px);
+}
+.label-btn-icon:hover .btn-icon {
+	color: #5aa6bc;
 }
 .label-btn-icon:active {
 	transform: translateY(0);
@@ -245,6 +279,22 @@ if(!function_exists('label_asset_stem_variant')) {
 	opacity: 0.6;
 	cursor: not-allowed;
 	transform: none;
+}
+html.dark-mode .label-btn-icon {
+	background: #1c2035;
+	border-color: #384860;
+	color: #69b7cf;
+}
+html.dark-mode .label-btn-icon .btn-icon {
+	color: #69b7cf;
+}
+html.dark-mode .label-btn-icon:hover {
+	background: #252e48;
+	border-color: #69b7cf;
+	color: #8ed0e4;
+}
+html.dark-mode .label-btn-icon:hover .btn-icon {
+	color: #8ed0e4;
 }
 
 /* Modal overlay & card */
@@ -510,6 +560,10 @@ html.dark-mode .label-cached-table td {
 	border-bottom-color: #252542;
 	color: #d0d0d0;
 }
+.label-cached-row {
+	cursor: pointer;
+	transition: background-color 0.12s ease;
+}
 .label-cached-table tr:hover td {
 	background-color: #f7fcfe;
 }
@@ -534,15 +588,36 @@ html.dark-mode .label-cached-table .td-section {
 .label-cached-table .td-code {
 	white-space: nowrap;
 }
-.label-cached-table .td-code code {
+.label-cached-table .td-code .label-code-link {
+	display: inline-block;
+	text-decoration: none;
+	padding: 2px 4px;
+	border-radius: 4px;
+	transition: background-color 0.15s ease, color 0.15s ease;
+}
+.label-cached-table .td-code .label-code-link:hover {
+	background: #eef6f9;
+}
+.label-cached-table .td-code .label-code-link code {
 	font-family: consolas, ui-monospace, monospace !important;
 	font-size: 0.9em;
-	color: #555555;
+	color: #69b7cf;
 	background: transparent;
 	padding: 0;
+	transition: color 0.15s ease;
 }
-html.dark-mode .label-cached-table .td-code code {
-	color: #cccccc;
+.label-cached-table .td-code .label-code-link:hover code {
+	color: #5aa6bc;
+	text-decoration: underline;
+}
+html.dark-mode .label-cached-table .td-code .label-code-link:hover {
+	background: #252848;
+}
+html.dark-mode .label-cached-table .td-code .label-code-link code {
+	color: #69b7cf;
+}
+html.dark-mode .label-cached-table .td-code .label-code-link:hover code {
+	color: #8ed0e4;
 }
 .label-cached-table .th-links,
 .label-cached-table .td-links {
