@@ -110,8 +110,8 @@ export function renderMinimalistSvg(label) {
     ${layout.logo ? `<image href="${logoFullDataUri}" x="${layout.logo.x}" y="${layout.logo.y}" width="${layout.logo.w}" height="${layout.logo.h}" />` : ""}
   </g>
 
-  ${layout.hasTitle ? `<path d="${titlePath}" fill="#3f3f3f" />` : ""}
-  ${layout.hasSection ? `<path d="${sectionPath}" fill="#666666" />` : ""}
+  ${layout.hasTitle ? `<path d="${titlePath}" fill="#999999" />` : ""}
+  ${layout.hasSection ? `<path d="${sectionPath}" fill="#999999" />` : ""}
   ${leftSlash ? `<path d="${leftSlash}" fill="${BRAND_BLUE}" fill-opacity="0.55" />` : ""}
   ${cityPath ? `<path d="${cityPath}" fill="${CITY_COLOR}" />` : ""}
 
@@ -124,8 +124,8 @@ export function renderMinimalistSvg(label) {
   ${heroTwo ? `<path d="${heroTwo}" fill="#111111" stroke="#111111" stroke-width="2.6" stroke-linejoin="round" />` : ""}
   <path d="${rightSlash}" fill="${BRAND_BLUE}" fill-opacity="0.55" />
 
-  ${address1 ? `<path d="${address1}" fill="#3f3f3f" />` : ""}
-  ${address2 ? `<path d="${address2}" fill="#3f3f3f" />` : ""}
+  ${address1 ? `<path d="${address1}" fill="#999999" />` : ""}
+  ${address2 ? `<path d="${address2}" fill="#999999" />` : ""}
 
   ${layout.footer ? `<rect x="${layout.footer.x}" y="${layout.footer.y}" width="${layout.footer.w}" height="${layout.footer.h}" fill="${BRAND_BLUE}" />` : ""}
   ${footer ? `<path d="${footer}" fill="#ffffff" />` : ""}

@@ -68,6 +68,12 @@ if(!function_exists('label_dynamic_url')) {
 				</svg>
 				<span id='label-download-text' class='visually-hidden'>Download PNG</span>
 			</button>
+			<button id='label-copy-text' class='border control label-btn label-btn-icon' type='button' title='Copy text' aria-label='Copy text'>
+				<svg class='btn-icon' viewBox='0 0 24 24' width='18' height='18' aria-hidden='true'>
+					<path fill='currentColor' d='M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z'/>
+				</svg>
+				<span id='label-copy-text-status' class='visually-hidden'>Copy text</span>
+			</button>
 			<button id='label-edit-btn' class='border control label-btn label-btn-icon' type='button' title='Edit label' aria-label='Edit label' aria-haspopup='dialog'>
 				<svg class='btn-icon' viewBox='0 0 24 24' width='18' height='18' aria-hidden='true'>
 					<path fill='currentColor' d='m14.06 9.02.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83a.996.996 0 0 0 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z'/>

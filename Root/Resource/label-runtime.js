@@ -560,7 +560,7 @@ function buildLabelSvg(label, layout, logoHref) {
 	svg.setAttribute("viewBox", `0 0 ${layout.canvasWidth} ${layout.svgHeight}`);
 
 	const style = document.createElementNS("http://www.w3.org/2000/svg", "style");
-	style.textContent = ".abel{font-family:Abel,sans-serif} .hero{font-weight:700;letter-spacing:1px} .accent{fill:#69b7cf} .city{fill:#333333} .section{fill:#333333} .dark{fill:#111} .muted{fill:#3f3f3f} .subtitle{fill:#666666}";
+	style.textContent = ".abel{font-family:Abel,sans-serif} .hero{font-weight:700;letter-spacing:1px} .accent{fill:#69b7cf} .city{fill:#333333} .section{fill:#333333} .dark{fill:#111} .muted{fill:#999999} .subtitle{fill:#999999}";
 	svg.appendChild(style);
 
 	const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -724,6 +724,83 @@ function downloadLabelPng() {
 	image.src = svgUrl;
 }
 
+function buildLabelTextToCopy(label) {
+	try {
+		const layout = createLabelLayout(label, measureFactory(), label.variant);
+		const lines = [];
+		if(layout.hasTitle && String(label.title || "").trim()) {
+			lines.push(String(label.title).trim());
+		}
+		if(layout.hasSection && layout.sectionText) {
+			lines.push(String(layout.sectionText).trim());
+		}
+		if(layout.heroWords) {
+			const cityPart = (layout.hasCity && layout.cityText) ? `${layout.cityText} ` : "";
+			lines.push(`\\ ${cityPart}${layout.heroWords} /`);
+		}
+		if(layout.hasAddress1 && layout.address1Text) {
+			lines.push(String(layout.address1Text).trim());
+		}
+		if(layout.hasAddress2 && layout.address2Text) {
+			lines.push(String(layout.address2Text).trim());
+		}
+		return lines.join("\n");
+	} catch {
+		const lines = [];
+		if(label.title && !label.omitTitle) lines.push(String(label.title).trim());
+		const section = label.section !== undefined && label.section !== null ? label.section : label.segment;
+		if(section && !label.omitSection && !label.omitSegment) lines.push(String(section).trim());
+		if(label.code) lines.push(String(label.code).trim());
+		if(label.address1 && !label.omitAddress1) lines.push(String(label.address1).trim());
+		if(label.address2 && !label.omitAddress2) lines.push(String(label.address2).trim());
+		return lines.join("\n");
+	}
+}
+
+function copyTextToClipboard(text) {
+	if(navigator.clipboard && navigator.clipboard.writeText) {
+		return navigator.clipboard.writeText(text);
+	}
+	return new Promise((resolve, reject) => {
+		const textarea = document.createElement("textarea");
+		textarea.value = text;
+		textarea.style.position = "fixed";
+		textarea.style.left = "-9999px";
+		textarea.style.top = "0";
+		document.body.appendChild(textarea);
+		textarea.focus();
+		textarea.select();
+		try {
+			const ok = document.execCommand("copy");
+			document.body.removeChild(textarea);
+			if(ok) resolve();
+			else reject(new Error("execCommand failed"));
+		} catch(err) {
+			document.body.removeChild(textarea);
+			reject(err);
+		}
+	});
+}
+
+function handleCopyText() {
+	if(!currentLabel) return;
+	const text = buildLabelTextToCopy(currentLabel);
+	if(!text) return;
+	const copyBtn = document.getElementById("label-copy-text");
+	const originalTitle = copyBtn ? copyBtn.getAttribute("title") || "Copy text" : "Copy text";
+	const copyStatus = document.getElementById("label-copy-text-status");
+	copyTextToClipboard(text).then(() => {
+		if(copyBtn) copyBtn.setAttribute("title", "Copied! ✓");
+		if(copyStatus) copyStatus.textContent = "Copied! ✓";
+		setTimeout(() => {
+			if(copyBtn) copyBtn.setAttribute("title", originalTitle);
+			if(copyStatus) copyStatus.textContent = originalTitle;
+		}, 1500);
+	}).catch((err) => {
+		console.error("Failed to copy text", err);
+	});
+}
+
 function updateFieldOmittedClass(input, isIncluded, tipEl) {
 	if(input) {
 		input.classList.toggle("is-omitted", !isIncluded);
@@ -855,6 +932,12 @@ function renderLabel(label) {
 	if(!preview) return;
 
 	currentLabel = label;
+	if(label && label.title && !label.omitTitle) {
+		document.title = `${label.title} - Location label - Wolo codes`;
+	} else {
+		document.title = "Location label - Wolo codes";
+	}
+
 	try {
 		getInlineLogoDataUri().finally(() => {
 			const layout = createLabelLayout(label, measureFactory(), label.variant);
@@ -872,6 +955,11 @@ function initEventListeners() {
 	const downloadBtn = document.getElementById("label-download-png");
 	if(downloadBtn) {
 		downloadBtn.addEventListener("click", downloadLabelPng);
+	}
+
+	const copyBtn = document.getElementById("label-copy-text");
+	if(copyBtn) {
+		copyBtn.addEventListener("click", handleCopyText);
 	}
 
 	const editBtn = document.getElementById("label-edit-btn");
