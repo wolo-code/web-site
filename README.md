@@ -10,7 +10,8 @@ Sample labels are data-driven from `Config/Labels.json`.
    - `slug` (stable label id / gallery anchor)
    - `variant` (currently `minimalist`)
    - `extra_variants` (optional array; use `["code"]` to export compact code-only artwork)
-   - `section` (city/region line)
+   - `section` (optional sub-location / entrance line under title, e.g. `Boudha`, `Main gate`)
+   - `city` (city/region line prefixing code words)
    - `address1` (textual address line 1)
    - `address2` (second address line)
    - `code` (Wolo code string, e.g. `kathmandu.mask.net.soil`; renderer uses last 3 words)
@@ -46,7 +47,8 @@ The `/labels` page reads the same JSON file, so adding a label is one data entry
 - The renderer reuses the web-app label download pattern (`html2canvas` + PNG download link behavior) adapted from `web-app/Root/JS/Component/Root/QR.js`.
 - Params:
   - `title` (optional)
-  - `section` (required, left-aligned in the code frame; rendered in 80% black `#333333`, positioned right above the bracket midline)
+  - `section` (optional sub-location / entrance line under title, e.g. `Boudha`, `Main gate`)
+  - `city` (city/region prefix line, left-aligned in code frame; rendered in 80% black `#333333`, positioned above bracket midline; defaults from code)
   - `address1` (required; textual address line 1)
   - `address2` (required; second address line)
   - `code` (required unless `url` is provided; words are derived from code path using current Wolo format)
@@ -56,7 +58,7 @@ The `/labels` page reads the same JSON file, so adding a label is one data entry
 
 Examples:
 
-- `/label?title=Boudhanath%20Stupa&section=Kathmandu&address1=Boudha%20Stupa%20Rd&address2=Kathmandu%2044600%2C%20Nepal&code=kathmandu.mask.net.soil`
-- `/label?section=Kathmandu&address1=Inner%20Ring%20Road&address2=Nepal&code=kathmandu.river.mango.bell` (no title layout)
+- `/label?title=Boudhanath%20Stupa&section=Boudha&city=Kathmandu&address1=Boudha%20Stupa%20Rd&address2=Kathmandu%2044600%2C%20Nepal&code=kathmandu.mask.net.soil`
+- `/label?city=Kathmandu&address1=Inner%20Ring%20Road&address2=Nepal&code=kathmandu.river.mango.bell` (no title layout)
 
 Design notes are documented in `docs/LABEL_DESIGN_NOTES.md`.

@@ -14,18 +14,18 @@
   - `Scan or enter at www.wolo.codes`
 - No rounded code box, no viewfinder brackets, no QR code.
 - Region text is small and blue.
-- Vertical order: top rule -> logo -> optional title -> bracket frame content -> address lines -> scan bar.
-- Inside bracket frame: the three-word code is vertically centered within the frame (with trailing `/`), and the section (`\` prefix, 80% black `#333333`) sits above the code words, matching the style used in the label modal.
-- Optional title appears above section; when title is absent, the stack collapses upward without a blank gap.
-- Section line (`section`) is left-aligned above the bracketed words.
+- Vertical order: top rule -> logo -> optional title -> optional section (sub-location) -> bracket frame content -> address lines -> scan bar.
+- Inside bracket frame: the three-word code is vertically centered within the frame (with trailing `/`), and the city/territory prefix line (`\` prefix, 80% black `#333333`) sits above the code words, matching the style used in the label modal.
+- Optional title appears above optional section; when absent, the stack collapses upward without a blank gap.
+- City line (`city`) is left-aligned above the bracketed words.
 - Three code words are the largest text and black, derived from the code string (last three dot-separated words).
 - Region and address use the same type family as the code text.
-- Faint slash-style marks are rendered immediately before section (`\`) and after the code words (`/`).
+- Faint slash-style marks are rendered immediately before city prefix (`\`) and after the code words (`/`).
 
 ## Code variant
 
 - Variant name: `code`.
-- Includes only: corner brackets + section (`\` prefix) + three words (`/` suffix).
+- Includes only: corner brackets + city prefix (`\` prefix) + three words (`/` suffix).
 - Excludes: top rule, logo, title, address lines, scan bar.
 - Uses a compact square-ish canvas with white background and even padding.
 - `/label` supports `variant=code` and ignores title/address params in that mode.

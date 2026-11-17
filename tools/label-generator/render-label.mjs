@@ -3,7 +3,7 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Resvg } from "@resvg/resvg-js";
 import * as fontkit from "fontkit";
-import { SVG_WIDTH, BRAND_BLUE, SECTION_COLOR, FOOTER_TEXT, createLabelLayout } from "../../Root/Resource/label-layout-shared.mjs";
+import { SVG_WIDTH, BRAND_BLUE, CITY_COLOR, FOOTER_TEXT, createLabelLayout } from "../../Root/Resource/label-layout-shared.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -90,16 +90,16 @@ export function renderMinimalistSvg(label) {
   const variant = label.variant || DEFAULT_VARIANT;
   const layout = createLabelLayout(label, measureTextWidth, variant);
   const titlePath = layout.hasTitle ? textPath(label.title, layout.textCenter, layout.titleBaseline, 44, 0.2) : "";
-  const segmentPath = layout.hasSegment ? textPath(label.segment, layout.textCenter, layout.segmentBaseline, 30, 0.4) : "";
-  const sectionPath = layout.hasSection ? textPath(layout.sectionText, layout.textLeft, layout.sectionBaseline, 34, 0.6, "start") : "";
+  const sectionPath = layout.hasSection ? textPath(layout.sectionText, layout.textCenter, layout.sectionBaseline, 30, 0.4) : "";
+  const cityPath = layout.hasCity ? textPath(layout.cityText, layout.textLeft, layout.cityBaseline, 34, 0.6, "start") : "";
   const heroOne = textPath(layout.hero.lines[0], layout.textCenter, layout.heroOneBaseline, layout.hero.size, layout.hero.letterSpacing);
   const heroTwo = layout.hero.lines.length > 1 ? textPath(layout.hero.lines[1], layout.textCenter, layout.heroTwoBaseline, layout.hero.size, layout.hero.letterSpacing) : "";
-  const leftSlash = layout.hasSection ? textPath("\\", layout.sectionSlashX, layout.sectionBaseline, 30, 0, "start") : "";
+  const leftSlash = layout.hasCity ? textPath("\\", layout.citySlashX, layout.cityBaseline, 30, 0, "start") : "";
   const rightSlash = textPath("/", layout.heroSlashX, layout.hero.lines.length === 1 ? layout.heroOneBaseline : layout.heroTwoBaseline, 30, 0, "start");
   const address1 = layout.address1Baseline && layout.address1Text ? textPath(layout.address1Text, layout.textCenter, layout.address1Baseline, 42, 0.2, "middle") : "";
   const address2 = layout.address2Baseline && layout.address2Text ? textPath(layout.address2Text, layout.textCenter, layout.address2Baseline, 42, 0.2, "middle") : "";
   const footer = layout.footer ? textPath(FOOTER_TEXT, layout.canvasWidth / 2, layout.footer.y + 39, 30, 0) : "";
-  const codeAria = escapeXml(`${layout.hasSection ? layout.sectionText + " " : ""}${layout.heroWords}`);
+  const codeAria = escapeXml(`${layout.hasCity ? layout.cityText + " " : ""}${layout.heroWords}`);
 
   const rawSvg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${layout.canvasWidth}" height="${layout.svgHeight}" viewBox="0 0 ${layout.canvasWidth} ${layout.svgHeight}" role="img" aria-label="${codeAria}">
@@ -111,9 +111,9 @@ export function renderMinimalistSvg(label) {
   </g>
 
   ${layout.hasTitle ? `<path d="${titlePath}" fill="#3f3f3f" />` : ""}
-  ${layout.hasSegment ? `<path d="${segmentPath}" fill="#666666" />` : ""}
+  ${layout.hasSection ? `<path d="${sectionPath}" fill="#666666" />` : ""}
   ${leftSlash ? `<path d="${leftSlash}" fill="${BRAND_BLUE}" fill-opacity="0.55" />` : ""}
-  ${sectionPath ? `<path d="${sectionPath}" fill="${SECTION_COLOR}" />` : ""}
+  ${cityPath ? `<path d="${cityPath}" fill="${CITY_COLOR}" />` : ""}
 
   <path d="M ${layout.bracket.x} ${layout.bracket.top + layout.bracket.arm} L ${layout.bracket.x} ${layout.bracket.top} L ${layout.bracket.x + layout.bracket.arm} ${layout.bracket.top}" stroke="${BRAND_BLUE}" stroke-width="${layout.bracket.stroke}" fill="none" />
   <path d="M ${layout.bracket.x + layout.bracket.w - layout.bracket.arm} ${layout.bracket.top} L ${layout.bracket.x + layout.bracket.w} ${layout.bracket.top} L ${layout.bracket.x + layout.bracket.w} ${layout.bracket.top + layout.bracket.arm}" stroke="${BRAND_BLUE}" stroke-width="${layout.bracket.stroke}" fill="none" />

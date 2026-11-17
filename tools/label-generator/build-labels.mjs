@@ -46,7 +46,7 @@ function run() {
     title: "Longest Words Test",
     slug: "kathmandu-longest-words-test",
     variant: DEFAULT_VARIANT,
-    section: "Kathmandu",
+    city: "Kathmandu",
     address1: "Longest Words Test",
     address2: "Test render for long-word fit (not part of gallery).",
     code: "kathmandu.calculator.chimpanzee.helicopter",

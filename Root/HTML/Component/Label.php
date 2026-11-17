@@ -127,12 +127,12 @@ if(!function_exists('label_asset_stem_variant')) {
 				</div>
 				<div class='label-form-row'>
 					<div class='label-input-wrap'>
-						<span class='label-hover-tag'>Segment</span>
-						<input id='label-input-segment' type='text' placeholder='Segment – e.g. Main gate' aria-label='Segment'>
+						<span class='label-hover-tag'>Section</span>
+						<input id='label-input-section' type='text' placeholder='Section – e.g. Main gate' aria-label='Section'>
 					</div>
 					<div class='label-omit-wrap'>
-						<label class='label-omit-check' title='Include segment' aria-label='Include segment'>
-							<input type='checkbox' id='label-include-segment' checked>
+						<label class='label-omit-check' title='Include section' aria-label='Include section'>
+							<input type='checkbox' id='label-include-section' checked>
 							<span class='label-omit-tip'>Include</span>
 						</label>
 					</div>

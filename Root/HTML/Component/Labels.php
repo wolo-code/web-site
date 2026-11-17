@@ -28,7 +28,10 @@ function label_dynamic_url($label) {
 	$params = [];
 	$title = trim((string)($label['title'] ?? ''));
 	if($title !== '') $params['title'] = $title;
-	$params['section'] = (string)($label['section'] ?? '');
+	$city = trim((string)($label['city'] ?? ''));
+	if($city !== '') $params['city'] = $city;
+	$section = trim((string)($label['section'] ?? $label['segment'] ?? ''));
+	if($section !== '') $params['section'] = $section;
 	$params['address1'] = (string)($label['address1'] ?? '');
 	$params['address2'] = (string)($label['address2'] ?? '');
 	$params['code'] = (string)($label['code'] ?? '');
@@ -60,7 +63,8 @@ function label_code_words($label) {
 		$slug = htmlspecialchars($label['slug'] ?? '', ENT_QUOTES, 'UTF-8');
 		$title = htmlspecialchars($label['title'] ?? '', ENT_QUOTES, 'UTF-8');
 		$variant = htmlspecialchars($label['variant'] ?? 'minimalist', ENT_QUOTES, 'UTF-8');
-		$section = htmlspecialchars($label['section'] ?? '', ENT_QUOTES, 'UTF-8');
+		$city = htmlspecialchars($label['city'] ?? '', ENT_QUOTES, 'UTF-8');
+		$section = htmlspecialchars($label['section'] ?? $label['segment'] ?? '', ENT_QUOTES, 'UTF-8');
 		$address1 = htmlspecialchars($label['address1'] ?? '', ENT_QUOTES, 'UTF-8');
 		$url = htmlspecialchars($label['url'] ?? '', ENT_QUOTES, 'UTF-8');
 		$address2 = htmlspecialchars($label['address2'] ?? '', ENT_QUOTES, 'UTF-8');
@@ -69,7 +73,7 @@ function label_code_words($label) {
 		$asset_stem = htmlspecialchars(label_asset_stem($label), ENT_QUOTES, 'UTF-8');
 		$code_asset_stem = htmlspecialchars(label_asset_stem_variant($label, 'code'), ENT_QUOTES, 'UTF-8');
 		$has_code_variant = !empty($label['extra_variants']) && is_array($label['extra_variants']) && in_array('code', $label['extra_variants'], true);
-		$code = trim($section.' '.$code_words);
+		$code = trim(($city !== '' ? $city.' ' : '').$code_words);
 	?>
 	<section class='label-card' id='<?php echo $slug ?>'>
 		<h2 class='label-title'>
@@ -96,7 +100,10 @@ function label_code_words($label) {
 		<div class='label-meta'>
 			<p><strong>Title:</strong> <?php echo ($title !== '' ? $title : '(none)') ?></p>
 			<p><strong>Variant:</strong> <?php echo $variant ?></p>
+			<?php if($section !== ''): ?>
 			<p><strong>Section:</strong> <?php echo $section ?></p>
+			<?php endif; ?>
+			<p><strong>City / Territory:</strong> <?php echo $city ?></p>
 			<p><strong>Wolo words:</strong> <?php echo $code_words ?></p>
 			<p><strong>Address line 1:</strong> <?php echo $address1 ?></p>
 			<p><strong>Address line 2:</strong> <?php echo $address2 ?></p>
