@@ -58,36 +58,45 @@ if(!function_exists('label_asset_stem_variant')) {
 	<?php if(!empty($cached_labels)): ?>
 	<div class='label-cached-section'>
 		<h3 class='label-cached-heading'>Other cached labels</h3>
-		<ul class='label-cached-list'>
-			<?php foreach($cached_labels as $label):
-				$slug = htmlspecialchars($label['slug'] ?? '', ENT_QUOTES, 'UTF-8');
-				$title = htmlspecialchars($label['title'] ?? '', ENT_QUOTES, 'UTF-8');
-				$code = htmlspecialchars($label['code'] ?? '', ENT_QUOTES, 'UTF-8');
-				$asset_stem = htmlspecialchars(label_asset_stem($label), ENT_QUOTES, 'UTF-8');
-				$code_asset_stem = htmlspecialchars(label_asset_stem_variant($label, 'code'), ENT_QUOTES, 'UTF-8');
-				$has_code_variant = !empty($label['extra_variants']) && is_array($label['extra_variants']) && in_array('code', $label['extra_variants'], true);
-				$display_name = $title !== '' ? $title : (!empty($label['address1']) ? htmlspecialchars($label['address1'], ENT_QUOTES, 'UTF-8') : 'Sample');
-			?>
-			<li class='label-cached-item'>
-				<div class='label-cached-meta'>
-					<a class='content-link label-cached-name' href='/labels/<?php echo $asset_stem ?>.png' target='_blank' rel='noopener'><?php echo $display_name ?></a>
-					<span class='label-cached-code'><?php echo $code ?></span>
-				</div>
-				<div class='label-cached-links'>
-					<a class='content-link label-img-link' href='/labels/<?php echo $asset_stem ?>.png' target='_blank' rel='noopener'>PNG</a>
-					<span class='separator'>|</span>
-					<a class='content-link label-img-link' href='/labels/<?php echo $asset_stem ?>.svg' target='_blank' rel='noopener'>SVG</a>
-					<?php if($has_code_variant): ?>
-					<span class='separator'>|</span>
-					<span class='label-cached-sublabel'>Code:</span>
-					<a class='content-link label-img-link' href='/labels/<?php echo $code_asset_stem ?>.png' target='_blank' rel='noopener'>PNG</a>
-					<span class='separator'>|</span>
-					<a class='content-link label-img-link' href='/labels/<?php echo $code_asset_stem ?>.svg' target='_blank' rel='noopener'>SVG</a>
-					<?php endif; ?>
-				</div>
-			</li>
-			<?php endforeach; ?>
-		</ul>
+		<div class='label-cached-table-wrap'>
+			<table class='label-cached-table'>
+				<thead>
+					<tr>
+						<th>Title</th>
+						<th>Section</th>
+						<th>Wolo code</th>
+						<th class='th-links'>Full</th>
+						<th class='th-links'>Min</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach($cached_labels as $label):
+						$title = htmlspecialchars($label['title'] ?? '', ENT_QUOTES, 'UTF-8');
+						$section = htmlspecialchars($label['section'] ?? '', ENT_QUOTES, 'UTF-8');
+						$code = htmlspecialchars($label['code'] ?? '', ENT_QUOTES, 'UTF-8');
+						$asset_stem = htmlspecialchars(label_asset_stem($label), ENT_QUOTES, 'UTF-8');
+						$code_asset_stem = htmlspecialchars(label_asset_stem_variant($label, 'code'), ENT_QUOTES, 'UTF-8');
+						$has_code_variant = !empty($label['extra_variants']) && is_array($label['extra_variants']) && in_array('code', $label['extra_variants'], true);
+					?>
+					<tr>
+						<td class='td-title'><?php echo $title ?></td>
+						<td class='td-section'><?php echo $section ?></td>
+						<td class='td-code'><?php if($code !== ''): ?><code><?php echo $code ?></code><?php endif; ?></td>
+						<td class='td-links'>
+							<a class='content-link label-img-link' href='/labels/<?php echo $asset_stem ?>.png' target='_blank' rel='noopener'>PNG</a>
+							<a class='content-link label-img-link' href='/labels/<?php echo $asset_stem ?>.svg' target='_blank' rel='noopener'>SVG</a>
+						</td>
+						<td class='td-links'>
+							<?php if($has_code_variant): ?>
+							<a class='content-link label-img-link' href='/labels/<?php echo $code_asset_stem ?>.png' target='_blank' rel='noopener'>PNG</a>
+							<a class='content-link label-img-link' href='/labels/<?php echo $code_asset_stem ?>.svg' target='_blank' rel='noopener'>SVG</a>
+							<?php endif; ?>
+						</td>
+					</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</div>
 	</div>
 	<?php endif; ?>
 </div>
@@ -454,7 +463,7 @@ if(!function_exists('label_asset_stem_variant')) {
 	background: #5aa6bc;
 }
 
-/* Other cached labels list */
+/* Other cached labels table */
 .label-cached-section {
 	margin-top: 36px;
 	padding-top: 20px;
@@ -464,100 +473,109 @@ html.dark-mode .label-cached-section {
 	border-top-color: #2a2a4a;
 }
 .label-cached-heading {
-	margin: 0 0 16px;
+	margin: 0 0 14px;
 	font-size: 1.25rem;
 	font-weight: 500;
 	color: #69b7cf !important;
 }
-.label-cached-list {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
+.label-cached-table-wrap {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
 }
-.label-cached-item {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: space-between;
-	gap: 8px 16px;
-	padding: 10px 14px;
-	background: #fbfdfe;
-	border: 1px solid #dcebf0;
-	border-radius: 8px;
-	transition: border-color 0.15s ease, background-color 0.15s ease;
-}
-.label-cached-item:hover {
-	background: #f5fafd;
-	border-color: #69b7cf;
-}
-html.dark-mode .label-cached-item {
-	background: #20203a;
-	border-color: #2e2e50;
-}
-html.dark-mode .label-cached-item:hover {
-	background: #262646;
-	border-color: #69b7cf;
-}
-.label-cached-meta {
-	display: flex;
-	align-items: baseline;
-	flex-wrap: wrap;
-	gap: 8px;
-}
-.label-cached-name {
-	font-weight: 600;
-	font-size: 1.05rem;
-	text-decoration: none;
-	color: #333333 !important;
-}
-.label-cached-name:hover {
-	color: #69b7cf !important;
-}
-html.dark-mode .label-cached-name {
-	color: #e0e0e0 !important;
-}
-html.dark-mode .label-cached-name:hover {
-	color: #69b7cf !important;
-}
-.label-cached-code {
-	font-size: 0.9rem;
-	color: #777777;
-	font-family: 'Abel', sans-serif;
-}
-html.dark-mode .label-cached-code {
-	color: #999999;
-}
-.label-cached-links {
-	display: flex;
-	align-items: center;
-	gap: 8px;
+.label-cached-table {
+	width: 100%;
+	border-collapse: collapse;
 	font-size: 0.95rem;
+	text-align: left;
 }
-.label-cached-links .separator {
-	color: #cfcfcf !important;
+.label-cached-table th,
+.label-cached-table td {
+	padding: 8px 12px;
+	border-bottom: 1px solid #edf2f5;
+	vertical-align: middle;
 }
-html.dark-mode .label-cached-links .separator {
-	color: #4a4a68 !important;
+.label-cached-table th {
+	font-weight: 600;
+	color: #69b7cf;
+	border-bottom: 2px solid #b8dbe8;
+	white-space: nowrap;
+	font-size: 0.9rem;
+	letter-spacing: 0.3px;
 }
-.label-cached-sublabel {
-	color: #888888;
-	font-size: 0.85rem;
-	margin-left: 2px;
+html.dark-mode .label-cached-table th {
+	color: #69b7cf;
+	border-bottom-color: #384860;
 }
-html.dark-mode .label-cached-sublabel {
-	color: #aaaaaa;
+html.dark-mode .label-cached-table td {
+	border-bottom-color: #252542;
+	color: #d0d0d0;
 }
-.label-img-link {
+.label-cached-table tr:hover td {
+	background-color: #f7fcfe;
+}
+html.dark-mode .label-cached-table tr:hover td {
+	background-color: #222242;
+}
+.label-cached-table .td-title {
 	font-weight: 500;
-	padding: 2px 4px;
-	border-radius: 4px;
-	transition: background-color 0.15s ease, color 0.15s ease;
+	color: #333333;
+	white-space: nowrap;
 }
-.label-img-link:hover {
-	background: rgba(105, 183, 207, 0.12);
+html.dark-mode .label-cached-table .td-title {
+	color: #e0e0e0;
+}
+.label-cached-table .td-section {
+	color: #555555;
+	white-space: nowrap;
+}
+html.dark-mode .label-cached-table .td-section {
+	color: #b0b0b0;
+}
+.label-cached-table .td-code {
+	white-space: nowrap;
+}
+.label-cached-table .td-code code {
+	font-family: consolas, ui-monospace, monospace !important;
+	font-size: 0.9em;
+	color: #555555;
+	background: transparent;
+	padding: 0;
+}
+html.dark-mode .label-cached-table .td-code code {
+	color: #cccccc;
+}
+.label-cached-table .th-links,
+.label-cached-table .td-links {
+	text-align: center;
+	white-space: nowrap;
+}
+.label-cached-table .td-links .label-img-link {
+	display: inline-block;
+	padding: 2px 6px;
+	margin: 0 2px;
+	font-size: 0.85rem;
+	font-weight: 600;
+	border-radius: 4px;
+	text-decoration: none;
+	color: #69b7cf !important;
+	background: #f0f7fa;
+	border: 1px solid #d4e8f0;
+	transition: all 0.15s ease;
+}
+.label-cached-table .td-links .label-img-link:hover {
+	background: #69b7cf;
+	color: #ffffff !important;
+	border-color: #5aa6bc;
+}
+html.dark-mode .label-cached-table .td-links .label-img-link {
+	background: #252848;
+	border-color: #3a3e68;
+	color: #69b7cf !important;
+}
+html.dark-mode .label-cached-table .td-links .label-img-link:hover {
+	background: #69b7cf;
+	color: #ffffff !important;
+	border-color: #5aa6bc;
 }
 </style>
 <script type='module' src='/label-runtime.js'></script>
