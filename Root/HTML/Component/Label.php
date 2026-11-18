@@ -54,6 +54,23 @@ if(!function_exists('label_dynamic_url')) {
 	}
 }
 ?>
+<script>
+(() => {
+	const key = 'label-query:' + window.location.pathname;
+	if(window.location.search) {
+		window.__LABEL_QUERY__ = window.location.search;
+		try { window.sessionStorage.setItem(key, window.location.search); } catch(e) {}
+		return;
+	}
+	try {
+		const saved = window.sessionStorage.getItem(key);
+		if(saved) {
+			window.__LABEL_QUERY__ = saved;
+			window.history.replaceState(window.history.state || {}, '', window.location.pathname + saved + window.location.hash);
+		}
+	} catch(e) {}
+})();
+</script>
 <div id='message'>
 	<div class='label-live'>
 		<div class='label-live-card'>
