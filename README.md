@@ -58,7 +58,9 @@ The `/labels` page reads the same JSON file, so adding a label is one data entry
 
 Examples:
 
-- `/label?title=Boudhanath%20Stupa&section=Boudha&city=Kathmandu&address1=Boudha%20Stupa%20Rd&address2=Kathmandu%2044600%2C%20Nepal&code=kathmandu.mask.net.soil`
-- `/label?city=Kathmandu&address1=Inner%20Ring%20Road&address2=Nepal&code=kathmandu.river.mango.bell` (no title layout)
+- `/label?title=Boudhanath%20Stupa&section=SE%202nd%20Level%20corner&city=Kathmandu&address1=Boudha%20Stupa%20Rd&address2=Kathmandu%2044600%2C%20Nepal&code=kathmandu.mask.net.soil`
+- `/label?title=Starship%20Tower&city=USA%2040&code=usa_40.tub.plate.chain`
+- `/label?title=Giga%20Texas&section=Door&city=Austin&code=austin.jackal.quick.mask`
+- `/label?title=Mechazilla&section=Gulf%20of%20Mexico%20291&address1=Starbase%20Pad%20A&address2=54022%20TX-4%2C%20Brownsville%2C%20TX%2078521%2C%20USA&code=gulf-of-mexico-291.tsunami.harvest.award&variant=code`
 
 Design notes are documented in `docs/LABEL_DESIGN_NOTES.md`.

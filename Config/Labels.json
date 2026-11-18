@@ -3,7 +3,7 @@
     "title": "Boudhanath Stupa",
     "slug": "boudha",
     "variant": "minimalist",
-    "section": "Boudha",
+    "section": "SE 2nd Level corner",
     "city": "Kathmandu",
     "address1": "Boudha Stupa Rd",
     "address2": "Kathmandu 44600, Nepal",
@@ -24,34 +24,63 @@
     "url": "https://wolo.codes/nepal-35.turnip.pocket.earth"
   },
   {
-    "title": "",
-    "slug": "no-title-sample",
+    "title": "Starship Tower",
+    "slug": "starship-tower",
     "variant": "minimalist",
     "section": "",
-    "city": "Kathmandu",
-    "address1": "Inner Ring Road",
-    "address2": "Nepal",
-    "code": "kathmandu.river.mango.bell",
-    "url": "https://wolo.codes/kathmandu.river.mango.bell"
+    "city": "USA 40",
+    "address1": "Starbase",
+    "address2": "Texas, USA",
+    "code": "usa_40.tub.plate.chain",
+    "extra_variants": ["code"],
+    "url": "https://wolo.codes/usa_40.tub.plate.chain"
+  },
+  {
+    "title": "Giga Texas",
+    "slug": "giga-texas",
+    "variant": "minimalist",
+    "section": "Door",
+    "city": "Austin",
+    "address1": "1 Tesla Road",
+    "address2": "Austin, TX 78725, USA",
+    "code": "austin.jackal.quick.mask",
+    "extra_variants": ["code"],
+    "url": "https://wolo.codes/austin.jackal.quick.mask"
+  },
+  {
+    "title": "Mechazilla",
+    "slug": "mechazilla",
+    "variant": "minimalist",
+    "section": "Gulf of Mexico 291",
+    "city": "Gulf of Mexico 291",
+    "address1": "Starbase Pad A",
+    "address2": "54022 TX-4, Brownsville, TX 78521, USA",
+    "code": "gulf-of-mexico-291.tsunami.harvest.award",
+    "extra_variants": ["code"],
+    "url": "https://wolo.codes/gulf-of-mexico-291.tsunami.harvest.award"
   },
   {
     "title": "Lalbagh Glass House",
     "slug": "lalbagh",
     "variant": "minimalist",
-    "section": "Bengaluru",
+    "section": "",
+    "city": "Bengaluru",
     "address1": "Lalbagh Botanical Garden",
     "address2": "Mavalli, Bengaluru, Karnataka 560004, India",
     "code": "bengaluru.leopard.lotus.guitar",
+    "extra_variants": ["code"],
     "url": "https://wolo.codes/bengaluru.leopard.lotus.guitar"
   },
   {
     "title": "Gurudongmar Lake",
     "slug": "gurudongmar",
     "variant": "minimalist",
-    "section": "India 1112",
+    "section": "",
+    "city": "India 1112",
     "address1": "North Sikkim",
     "address2": "Sikkim, India",
     "code": "india-1112.candle.kiwi.mango",
+    "extra_variants": ["code"],
     "url": "https://wolo.codes/india-1112.candle.kiwi.mango"
   }
 ]

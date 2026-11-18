@@ -34,7 +34,7 @@ if(!function_exists('label_asset_stem_variant')) {
 }
 
 if(!function_exists('label_dynamic_url')) {
-	function label_dynamic_url($label) {
+	function label_dynamic_url($label, $variant = null) {
 		$params = [];
 		$title = trim((string)($label['title'] ?? ''));
 		if($title !== '') $params['title'] = $title;
@@ -48,8 +48,8 @@ if(!function_exists('label_dynamic_url')) {
 		if($address2 !== '') $params['address2'] = $address2;
 		$code = trim((string)($label['code'] ?? ''));
 		if($code !== '') $params['code'] = $code;
-		$variant = (string)($label['variant'] ?? 'minimalist');
-		if($variant !== '') $params['variant'] = $variant;
+		$use_variant = $variant !== null ? $variant : (string)($label['variant'] ?? 'minimalist');
+		if($use_variant !== '') $params['variant'] = $use_variant;
 		return '/label?'.http_build_query($params);
 	}
 }
@@ -76,6 +76,93 @@ if(!function_exists('label_dynamic_url')) {
 		<div class='label-live-card'>
 			<div id='label-capture'>
 				<div id='label-preview' aria-live='polite'></div>
+			</div>
+			<div id='label-modal-overlay' class='label-modal-overlay hide' aria-hidden='true' role='dialog' aria-modal='true' aria-labelledby='label-modal-title'>
+				<div class='label-modal message_dialog'>
+					<div class='label-modal-header'>
+						<h2 id='label-modal-title' class='message_dialog_label'>Label</h2>
+						<button type='button' id='label-modal-close' class='message_dialog_close control' aria-label='Close'>
+							<svg viewBox='0 0 24 24' width='18' height='18' aria-hidden='true'>
+								<path d='M18 6L6 18M6 6l12 12' stroke='currentColor' stroke-width='2' stroke-linecap='round'/>
+							</svg>
+						</button>
+					</div>
+					<div class='label-modal-body'>
+						<form id='label-edit-form' onsubmit='return false;'>
+							<div class='label-form-row'>
+								<div class='label-input-wrap'>
+									<span class='label-hover-tag'>Title</span>
+									<input id='label-input-title' type='text' placeholder='Title – e.g. Home' aria-label='Title'>
+								</div>
+								<div class='label-omit-wrap'>
+									<label class='label-omit-check' title='Include title' aria-label='Include title'>
+										<input type='checkbox' id='label-include-title' checked>
+										<span class='label-omit-tip'>Include</span>
+									</label>
+								</div>
+							</div>
+							<div class='label-form-row'>
+								<div class='label-input-wrap'>
+									<span class='label-hover-tag'>Section</span>
+									<input id='label-input-section' type='text' placeholder='Section – e.g. Main gate' aria-label='Section'>
+								</div>
+								<div class='label-omit-wrap'>
+									<label class='label-omit-check' title='Include section' aria-label='Include section'>
+										<input type='checkbox' id='label-include-section' checked>
+										<span class='label-omit-tip'>Include</span>
+									</label>
+								</div>
+							</div>
+							<div class='label-form-row label-form-code'>
+								<div class='label-input-wrap'>
+									<span class='label-hover-tag'>Wolo code</span>
+									<input id='label-input-code' type='text' placeholder='Wolo code – e.g. kathmandu.mask.net.soil' aria-label='Wolo code (required)' required>
+								</div>
+								<div class='label-omit-wrap label-omit-spacer' aria-hidden='true'></div>
+							</div>
+							<div class='label-form-row'>
+								<div class='label-input-wrap'>
+									<span class='label-hover-tag'>Address line 1</span>
+									<input id='label-input-address1' type='text' placeholder='Address line 1 (optional)' aria-label='Address line 1'>
+								</div>
+								<div class='label-omit-wrap'>
+									<label class='label-omit-check' title='Include address line 1' aria-label='Include address line 1'>
+										<input type='checkbox' id='label-include-address1' checked>
+										<span class='label-omit-tip'>Include</span>
+									</label>
+								</div>
+							</div>
+							<div class='label-form-row'>
+								<div class='label-input-wrap'>
+									<span class='label-hover-tag'>Address line 2</span>
+									<input id='label-input-address2' type='text' placeholder='Address line 2 (optional)' aria-label='Address line 2'>
+								</div>
+								<div class='label-omit-wrap'>
+									<label class='label-omit-check' title='Include address line 2' aria-label='Include address line 2'>
+										<input type='checkbox' id='label-include-address2' checked>
+										<span class='label-omit-tip'>Include</span>
+									</label>
+								</div>
+							</div>
+							<div class='label-form-row label-form-frame-row' id='label-row-frame-only'>
+								<div class='label-input-wrap'>
+									<span class='label-hover-tag'>Style</span>
+									<span class='label-static-field'>Minimalist (frame only)</span>
+								</div>
+								<div class='label-omit-wrap'>
+									<label class='label-omit-check' title='Minimalist (frame only): removes header and footer, leaving only the frame' aria-label='Minimalist (frame only)'>
+										<input type='checkbox' id='label-toggle-frame-only'>
+										<span class='label-omit-tip'>Enable</span>
+									</label>
+								</div>
+							</div>
+							<div class='label-modal-actions'>
+								<button type='button' id='label-modal-cancel' class='border control'>Cancel</button>
+								<button type='submit' id='label-modal-apply' class='border control primary'>Apply</button>
+							</div>
+						</form>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class='label-live-actions'>
@@ -109,22 +196,38 @@ if(!function_exists('label_dynamic_url')) {
 						<th>Title</th>
 						<th>Section</th>
 						<th>Wolo code</th>
-						<th class='th-links'>Full</th>
-						<th class='th-links'>Min</th>
+						<th class='th-links th-full'>Full</th>
+						<th class='th-links th-frame-only' title='Minimalist (frame only): removes header and footer, leaving only the frame'>Frame only</th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php foreach($cached_labels as $label):
 						$title = htmlspecialchars($label['title'] ?? '', ENT_QUOTES, 'UTF-8');
 						$section = htmlspecialchars($label['section'] ?? $label['segment'] ?? '', ENT_QUOTES, 'UTF-8');
+						$city = htmlspecialchars($label['city'] ?? '', ENT_QUOTES, 'UTF-8');
+						$address1 = htmlspecialchars($label['address1'] ?? '', ENT_QUOTES, 'UTF-8');
+						$address2 = htmlspecialchars($label['address2'] ?? '', ENT_QUOTES, 'UTF-8');
 						$code = htmlspecialchars($label['code'] ?? '', ENT_QUOTES, 'UTF-8');
 						$wolo_url = htmlspecialchars(!empty($label['url']) ? $label['url'] : '/'.$code, ENT_QUOTES, 'UTF-8');
-						$label_url = htmlspecialchars(label_dynamic_url($label), ENT_QUOTES, 'UTF-8');
+						$label_url = htmlspecialchars(label_dynamic_url($label, 'minimalist'), ENT_QUOTES, 'UTF-8');
+						$stripped_label_url = htmlspecialchars(label_dynamic_url($label, 'code'), ENT_QUOTES, 'UTF-8');
 						$asset_stem = htmlspecialchars(label_asset_stem($label), ENT_QUOTES, 'UTF-8');
 						$code_asset_stem = htmlspecialchars(label_asset_stem_variant($label, 'code'), ENT_QUOTES, 'UTF-8');
 						$has_code_variant = !empty($label['extra_variants']) && is_array($label['extra_variants']) && in_array('code', $label['extra_variants'], true);
 					?>
-					<tr class='label-cached-row' data-href='<?php echo $label_url ?>' tabindex='0' role='link' aria-label='Open label for <?php echo ($title !== '' ? $title : $code) ?>' title='Open label in editor'>
+					<tr class='label-cached-row'
+						data-href='<?php echo $label_url ?>'
+						data-href-stripped='<?php echo $stripped_label_url ?>'
+						data-title='<?php echo $title ?>'
+						data-section='<?php echo $section ?>'
+						data-city='<?php echo $city ?>'
+						data-address1='<?php echo $address1 ?>'
+						data-address2='<?php echo $address2 ?>'
+						data-code='<?php echo $code ?>'
+						tabindex='0'
+						role='link'
+						aria-label='Open label for <?php echo ($title !== '' ? $title : $code) ?>'
+						title='Open label in editor'>
 						<td class='td-title'><?php echo $title ?></td>
 						<td class='td-section'><?php echo $section ?></td>
 						<td class='td-code'>
@@ -132,14 +235,16 @@ if(!function_exists('label_dynamic_url')) {
 							<a class='content-link label-code-link' href='<?php echo $wolo_url ?>' target='_blank' rel='noopener' title='Open <?php echo $code ?> in Wolo app'><code><?php echo $code ?></code></a>
 							<?php endif; ?>
 						</td>
-						<td class='td-links'>
-							<a class='content-link label-img-link' href='/labels/<?php echo $asset_stem ?>.png' target='_blank' rel='noopener'>PNG</a>
-							<a class='content-link label-img-link' href='/labels/<?php echo $asset_stem ?>.svg' target='_blank' rel='noopener'>SVG</a>
+						<td class='td-links td-full'>
+							<button type='button' class='label-img-link label-toggle-preview' data-action='full' title='Preview full label' aria-label='Preview full label'><svg class='link-icon' viewBox='0 0 24 24' width='16' height='16' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><rect x='3' y='4' width='18' height='16' rx='1'/><path d='M8 8h8'/><path d='M3 16h18'/><path d='M7 12h10' stroke-width='2.4'/></svg></button>
+							<a class='content-link label-img-link' href='/labels/<?php echo $asset_stem ?>.png' target='_blank' rel='noopener' title='Full label PNG' aria-label='Full label PNG'><svg class='link-icon' viewBox='0 0 24 24' width='16' height='16' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><rect x='3' y='4' width='18' height='16' rx='2'/><circle cx='9' cy='9.5' r='1.6'/><path d='M21 16l-5-5-9 9'/></svg></a>
+							<a class='content-link label-img-link' href='/labels/<?php echo $asset_stem ?>.svg' target='_blank' rel='noopener' title='Full label SVG' aria-label='Full label SVG'><svg class='link-icon' viewBox='0 0 24 24' width='16' height='16' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M5 19C7 9 17 15 19 5'/><rect x='3' y='17' width='4' height='4' rx='0.5'/><rect x='17' y='3' width='4' height='4' rx='0.5'/><path d='M5 19L11 13'/></svg></a>
 						</td>
-						<td class='td-links'>
+						<td class='td-links td-frame-only'>
+							<button type='button' class='label-img-link label-toggle-preview' data-action='frame' title='Preview minimalist (frame only)' aria-label='Preview minimalist (frame only)'><svg class='link-icon' viewBox='0 0 24 24' width='16' height='16' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M4 9V5h4M16 5h4v4M20 15v4h-4M8 19H4v-4'/><path d='M8 12h8' stroke-width='2.4'/></svg></button>
 							<?php if($has_code_variant): ?>
-							<a class='content-link label-img-link' href='/labels/<?php echo $code_asset_stem ?>.png' target='_blank' rel='noopener'>PNG</a>
-							<a class='content-link label-img-link' href='/labels/<?php echo $code_asset_stem ?>.svg' target='_blank' rel='noopener'>SVG</a>
+							<a class='content-link label-img-link' href='/labels/<?php echo $code_asset_stem ?>.png' target='_blank' rel='noopener' title='Frame-only PNG' aria-label='Frame-only PNG'><svg class='link-icon' viewBox='0 0 24 24' width='16' height='16' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><rect x='3' y='4' width='18' height='16' rx='2'/><circle cx='9' cy='9.5' r='1.6'/><path d='M21 16l-5-5-9 9'/></svg></a>
+							<a class='content-link label-img-link' href='/labels/<?php echo $code_asset_stem ?>.svg' target='_blank' rel='noopener' title='Frame-only SVG' aria-label='Frame-only SVG'><svg class='link-icon' viewBox='0 0 24 24' width='16' height='16' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M5 19C7 9 17 15 19 5'/><rect x='3' y='17' width='4' height='4' rx='0.5'/><rect x='17' y='3' width='4' height='4' rx='0.5'/><path d='M5 19L11 13'/></svg></a>
 							<?php endif; ?>
 						</td>
 					</tr>
@@ -151,81 +256,6 @@ if(!function_exists('label_dynamic_url')) {
 	<?php endif; ?>
 </div>
 
-<div id='label-modal-overlay' class='label-modal-overlay hide' aria-hidden='true' role='dialog' aria-modal='true' aria-labelledby='label-modal-title'>
-	<div class='label-modal message_dialog'>
-		<div class='label-modal-header'>
-			<h2 id='label-modal-title' class='message_dialog_label'>Label</h2>
-			<button type='button' id='label-modal-close' class='message_dialog_close control' aria-label='Close'>
-				<svg viewBox='0 0 24 24' width='18' height='18' aria-hidden='true'>
-					<path d='M18 6L6 18M6 6l12 12' stroke='currentColor' stroke-width='2' stroke-linecap='round'/>
-				</svg>
-			</button>
-		</div>
-		<div class='label-modal-body'>
-			<form id='label-edit-form' onsubmit='return false;'>
-				<div class='label-form-row'>
-					<div class='label-input-wrap'>
-						<span class='label-hover-tag'>Title</span>
-						<input id='label-input-title' type='text' placeholder='Title – e.g. Home' aria-label='Title'>
-					</div>
-					<div class='label-omit-wrap'>
-						<label class='label-omit-check' title='Include title' aria-label='Include title'>
-							<input type='checkbox' id='label-include-title' checked>
-							<span class='label-omit-tip'>Include</span>
-						</label>
-					</div>
-				</div>
-				<div class='label-form-row'>
-					<div class='label-input-wrap'>
-						<span class='label-hover-tag'>Section</span>
-						<input id='label-input-section' type='text' placeholder='Section – e.g. Main gate' aria-label='Section'>
-					</div>
-					<div class='label-omit-wrap'>
-						<label class='label-omit-check' title='Include section' aria-label='Include section'>
-							<input type='checkbox' id='label-include-section' checked>
-							<span class='label-omit-tip'>Include</span>
-						</label>
-					</div>
-				</div>
-				<div class='label-form-row label-form-code'>
-					<div class='label-input-wrap'>
-						<span class='label-hover-tag'>Wolo code</span>
-						<input id='label-input-code' type='text' placeholder='Wolo code – e.g. kathmandu.mask.net.soil' aria-label='Wolo code (required)' required>
-					</div>
-					<div class='label-omit-wrap label-omit-spacer' aria-hidden='true'></div>
-				</div>
-				<div class='label-form-row'>
-					<div class='label-input-wrap'>
-						<span class='label-hover-tag'>Address line 1</span>
-						<input id='label-input-address1' type='text' placeholder='Address line 1 (optional)' aria-label='Address line 1'>
-					</div>
-					<div class='label-omit-wrap'>
-						<label class='label-omit-check' title='Include address line 1' aria-label='Include address line 1'>
-							<input type='checkbox' id='label-include-address1' checked>
-							<span class='label-omit-tip'>Include</span>
-						</label>
-					</div>
-				</div>
-				<div class='label-form-row'>
-					<div class='label-input-wrap'>
-						<span class='label-hover-tag'>Address line 2</span>
-						<input id='label-input-address2' type='text' placeholder='Address line 2 (optional)' aria-label='Address line 2'>
-					</div>
-					<div class='label-omit-wrap'>
-						<label class='label-omit-check' title='Include address line 2' aria-label='Include address line 2'>
-							<input type='checkbox' id='label-include-address2' checked>
-							<span class='label-omit-tip'>Include</span>
-						</label>
-					</div>
-				</div>
-				<div class='label-modal-actions'>
-					<button type='button' id='label-modal-cancel' class='border control'>Cancel</button>
-					<button type='submit' id='label-modal-apply' class='border control primary'>Apply</button>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
 <style>
 .visually-hidden {
 	position: absolute;
@@ -240,8 +270,14 @@ if(!function_exists('label_dynamic_url')) {
 }
 #message .label-live { margin-top: 4px; }
 #message .label-live-card {
+	position: relative;
 	text-align: center;
-	overflow-x: auto;
+	min-height: 440px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 8px;
+	overflow: hidden;
 }
 #label-capture {
 	display: inline-block;
@@ -320,9 +356,9 @@ html.dark-mode .label-btn-icon:hover .btn-icon {
 	color: #8ed0e4;
 }
 
-/* Modal overlay & card */
+/* Modal overlay & card: covers only the display label area */
 .label-modal-overlay {
-	position: fixed;
+	position: absolute;
 	inset: 0;
 	background: rgba(0, 0, 0, 0.45);
 	backdrop-filter: blur(2px);
@@ -330,21 +366,41 @@ html.dark-mode .label-btn-icon:hover .btn-icon {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	z-index: 10000;
+	z-index: 100;
 	padding: 16px;
 	box-sizing: border-box;
+	border-radius: 8px;
 }
 .label-modal-overlay.hide {
 	display: none !important;
+}
+html.dark-mode .label-modal-overlay {
+	background: rgba(0, 0, 0, 0.65);
 }
 .label-modal.message_dialog {
 	position: relative;
 	background: #ffffff;
 	width: min(420px, 100%);
+	max-height: calc(100% - 24px);
+	overflow-y: auto;
 	border-radius: 8px;
 	border: 1px solid #d9d9d9;
 	box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
 	font-family: 'Abel', sans-serif;
+	box-sizing: border-box;
+}
+html.dark-mode .label-modal.message_dialog {
+	background: #1c2035;
+	border-color: #384860;
+	color: #e0e0e0;
+}
+html.dark-mode .label-modal-body {
+	background: #1c2035;
+}
+html.dark-mode .label-modal-header .message_dialog_close:hover {
+	background: #252e48;
+	color: #ffffff;
+}
 	overflow: hidden;
 	box-sizing: border-box;
 }
@@ -443,6 +499,32 @@ html.dark-mode .label-btn-icon:hover .btn-icon {
 .label-form-row input[type='text'].is-omitted {
 	opacity: 0.35;
 	color: #999999;
+}
+.label-static-field {
+	width: 100%;
+	font-family: 'Abel', sans-serif;
+	font-size: 16px;
+	color: #444444;
+	background: transparent;
+	border-bottom: 1px solid #d8d8d8;
+	padding: 4px 2px 6px;
+	box-sizing: border-box;
+	user-select: none;
+	display: block;
+	transition: border-color 0.2s ease, opacity 0.2s ease, color 0.2s ease;
+}
+.label-static-field.is-omitted,
+.label-form-row.is-omitted .label-static-field {
+	opacity: 0.35;
+	color: #999999;
+}
+html.dark-mode .label-static-field {
+	color: #d0d0d0;
+	border-bottom-color: #383858;
+}
+html.dark-mode .label-static-field.is-omitted,
+html.dark-mode .label-form-row.is-omitted .label-static-field {
+	color: #777777;
 }
 
 /* Omit checkbox with hover-only tooltip/label */
@@ -648,9 +730,14 @@ html.dark-mode .label-cached-table .td-code .label-code-link:hover code {
 	white-space: nowrap;
 }
 .label-cached-table .td-links .label-img-link {
-	display: inline-block;
-	padding: 2px 6px;
-	margin: 0 2px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 26px;
+	padding: 0;
+	margin: 0 1px;
+	vertical-align: middle;
 	font-size: 0.85rem;
 	font-weight: 600;
 	border-radius: 4px;
@@ -659,6 +746,15 @@ html.dark-mode .label-cached-table .td-code .label-code-link:hover code {
 	background: #f0f7fa;
 	border: 1px solid #d4e8f0;
 	transition: all 0.15s ease;
+}
+.label-cached-table .td-links .link-icon {
+	display: block;
+	pointer-events: none;
+}
+.label-cached-table .td-links button.label-img-link {
+	font-family: inherit;
+	cursor: pointer;
+	line-height: inherit;
 }
 .label-cached-table .td-links .label-img-link:hover {
 	background: #69b7cf;

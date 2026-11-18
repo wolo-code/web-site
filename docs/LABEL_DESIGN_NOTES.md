@@ -13,7 +13,7 @@
 - Footer is a blue filled bar attached to the bottom of the bordered label with white text:
   - `Scan or enter at www.wolo.codes`
 - No rounded code box, no viewfinder brackets, no QR code.
-- Region text is small and blue.
+- Section (sub-location) text is small and gray; the city line is 80% black.
 - Vertical order: top rule -> logo -> optional title -> optional section (sub-location) -> bracket frame content -> address lines -> scan bar.
 - Inside bracket frame: the three-word code is vertically centered within the frame (with trailing `/`), and the city/territory prefix line (`\` prefix, 80% black `#333333`) sits above the code words, matching the style used in the label modal.
 - Optional title appears above optional section; when absent, the stack collapses upward without a blank gap.
@@ -58,5 +58,7 @@ The `/labels` gallery uses the canonical variant/title filename, while slug anch
   - `code` (required unless `url` is passed)
   - `url` (optional fallback for extracting code path)
 - SVG is default output; `format=png` returns PNG.
-- `/label` includes a client-side Download PNG action using the web-app `QR.js` export pattern (`html2canvas` + `downloadURI`).
+- `/label` Download PNG serializes the SVG (logo inlined as a data URI), draws it to a canvas inside the padded `#label-capture` area and saves `Wolo Code - <title>.png`. No html2canvas.
+- `variant=minimalist|code` (default minimalist); `+` decodes as a space; `code` may include or omit the city prefix.
+- Framework `Init.js` rewrites the URL on load; `Label.php` stashes `location.search` first so params survive.
 - Static generator (`tools/label-generator/render-label.mjs`) and `/label` runtime both use the same shared layout math so geometry/checks stay in sync.

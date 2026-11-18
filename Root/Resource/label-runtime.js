@@ -114,11 +114,15 @@ function createMinimalistLayout(label, measureText, heroWords) {
   const hasTitle = !label.omitTitle && !!String(label.title || "").trim();
   const hasAddress1 = !label.omitAddress1 && !!String(label.address1 || "").trim();
   const hasAddress2 = !label.omitAddress2 && !!String(label.address2 || "").trim();
+  const hasHeader = !label.omitHeader;
+  const hasFooter = !label.omitFooter;
 
-  const topRule = { x: 180, y: 28, w: 840, h: 5 };
-  const logo = { w: 284, h: 284 / 4.56 };
-  logo.x = (SVG_WIDTH - logo.w) / 2;
-  logo.y = topRule.y + topRule.h + 18;
+  const topRule = hasHeader ? { x: 180, y: 28, w: 840, h: 5 } : null;
+  const logo = hasHeader ? { w: 284, h: 284 / 4.56 } : null;
+  if (logo) {
+    logo.x = (SVG_WIDTH - logo.w) / 2;
+    logo.y = topRule.y + topRule.h + 18;
+  }
 
   const bracket = { x: 220, w: 760, h: 230, stroke: 3, arm: 22 };
   const textLeft = bracket.x + 30;
@@ -135,18 +139,20 @@ function createMinimalistLayout(label, measureText, heroWords) {
   let sectionBaseline = null;
   let bracketTop;
 
+  const startY = hasHeader ? (logo.y + logo.h) : 16;
+
   if (hasTitle && hasSection) {
-    titleBaseline = logo.y + logo.h + 44;
+    titleBaseline = startY + 44;
     sectionBaseline = titleBaseline + 40;
     bracketTop = sectionBaseline + 22;
   } else if (hasTitle) {
-    titleBaseline = logo.y + logo.h + 46;
+    titleBaseline = startY + 46;
     bracketTop = titleBaseline + 20;
   } else if (hasSection) {
-    sectionBaseline = logo.y + logo.h + 42;
+    sectionBaseline = startY + 42;
     bracketTop = sectionBaseline + 22;
   } else {
-    bracketTop = logo.y + logo.h + 24;
+    bracketTop = startY + 24;
   }
 
   const bracketMid = bracketTop + bracket.h / 2;
@@ -191,15 +197,27 @@ function createMinimalistLayout(label, measureText, heroWords) {
     address2Text = addressItems[1].text;
   }
 
-  const footer = { x: topRule.x, w: topRule.w, h: 58 };
-  if (addressItems.length === 2) {
-    footer.y = Math.round(address2Baseline + 30);
-  } else if (addressItems.length === 1) {
-    footer.y = Math.round(address1Baseline + 32);
+  let footer = null;
+  let svgHeight;
+  if (hasFooter) {
+    footer = { x: 180, w: 840, h: 58 };
+    if (addressItems.length === 2) {
+      footer.y = Math.round(address2Baseline + 30);
+    } else if (addressItems.length === 1) {
+      footer.y = Math.round(address1Baseline + 32);
+    } else {
+      footer.y = Math.round(bracketTop + bracket.h + 30);
+    }
+    svgHeight = footer.y + footer.h + 22;
   } else {
-    footer.y = Math.round(bracketTop + bracket.h + 30);
+    if (addressItems.length === 2) {
+      svgHeight = Math.round(address2Baseline + 40);
+    } else if (addressItems.length === 1) {
+      svgHeight = Math.round(address1Baseline + 40);
+    } else {
+      svgHeight = Math.round(bracketTop + bracket.h + 36);
+    }
   }
-  const svgHeight = footer.y + footer.h + 22;
 
   const cityWidth = hasCity ? measureText(city, cityFont, 0.6) : 0;
   const heroOneWidth = measureText(hero.lines[0], hero.size, hero.letterSpacing);
@@ -225,7 +243,7 @@ function createMinimalistLayout(label, measureText, heroWords) {
     heroTwo: hero.lines.length > 1 ? boxFromMetrics(textCenter - heroTwoWidth / 2, heroTwoBaseline, heroTwoWidth, hero.size) : null,
     address1: address1Baseline ? boxFromMetrics(textCenter - measureText(address1Text, addressFont, 0.2) / 2, address1Baseline, measureText(address1Text, addressFont, 0.2), addressFont) : null,
     address2: address2Baseline ? boxFromMetrics(textCenter - measureText(address2Text, addressFont, 0.2) / 2, address2Baseline, measureText(address2Text, addressFont, 0.2), addressFont) : null,
-    footer: boxFromMetrics(SVG_WIDTH / 2 - measureText(FOOTER_TEXT, 30, 0) / 2, footer.y + 39, measureText(FOOTER_TEXT, 30, 0), 30)
+    footer: footer ? boxFromMetrics(SVG_WIDTH / 2 - measureText(FOOTER_TEXT, 30, 0) / 2, footer.y + 39, measureText(FOOTER_TEXT, 30, 0), 30) : null
   };
 
   const bracketBounds = {
@@ -237,8 +255,8 @@ function createMinimalistLayout(label, measureText, heroWords) {
   const contentBounds = {
     left: 100,
     right: SVG_WIDTH - 100,
-    top: topRule.y + topRule.h + 8,
-    bottom: footer.y - 16
+    top: topRule ? topRule.y + topRule.h + 8 : 8,
+    bottom: footer ? footer.y - 16 : svgHeight - 16
   };
 
   const checkInside = (name, box, bounds) => {
@@ -255,12 +273,14 @@ function createMinimalistLayout(label, measureText, heroWords) {
   if (boxes.section) checkInside("section", boxes.section, contentBounds);
   if (boxes.address1) checkInside("address1", boxes.address1, contentBounds);
   if (boxes.address2) checkInside("address2", boxes.address2, contentBounds);
-  checkInside("footer", boxes.footer, {
-    left: footer.x + 16,
-    right: footer.x + footer.w - 16,
-    top: footer.y + 4,
-    bottom: footer.y + footer.h - 4
-  });
+  if (footer && boxes.footer) {
+    checkInside("footer", boxes.footer, {
+      left: footer.x + 16,
+      right: footer.x + footer.w - 16,
+      top: footer.y + 4,
+      bottom: footer.y + footer.h - 4
+    });
+  }
   if (boxes.city && boxes.city.bottom + 4 > boxes.heroOne.top) throw new Error("Layout collision: city overlaps hero words");
   if (overlap(slashBox, boxes.heroTwo || boxes.heroOne, 0)) throw new Error("Layout collision: closing slash overlaps words");
 
@@ -270,7 +290,7 @@ function createMinimalistLayout(label, measureText, heroWords) {
       if (overlap(allText[i], allText[j], 2)) throw new Error(`Text overlap detected between blocks ${i} and ${j}`);
     }
   }
-  if (logo.y - (topRule.y + topRule.h) < 12) throw new Error("Logo must keep minimum gap under top rule");
+  if (logo && topRule && logo.y - (topRule.y + topRule.h) < 12) throw new Error("Logo must keep minimum gap under top rule");
 
   return {
     variant: "minimalist",
@@ -454,7 +474,7 @@ let currentLabel = null;
 
 const DEFAULT_LABEL = {
 	title: "Boudhanath Stupa",
-	section: "Boudha",
+	section: "SE 2nd Level corner",
 	city: "Kathmandu",
 	address1: "Boudha Stupa Rd",
 	address2: "Kathmandu 44600, Nepal",
@@ -463,7 +483,9 @@ const DEFAULT_LABEL = {
 	omitTitle: false,
 	omitSection: false,
 	omitAddress1: false,
-	omitAddress2: false
+	omitAddress2: false,
+	omitHeader: false,
+	omitFooter: false
 };
 
 function normalizeText(value, maxLen, required = true) {
@@ -494,6 +516,12 @@ function readLabelFromQuery() {
 	const omitSection = params.get("omit_section") === "1" || params.get("omit_section") === "true" || params.get("omit_segment") === "1" || params.get("omit_segment") === "true";
 	const omitAddress1 = params.get("omit_address1") === "1" || params.get("omit_address1") === "true";
 	const omitAddress2 = params.get("omit_address2") === "1" || params.get("omit_address2") === "true";
+	const omitHeaderParam = params.get("omit_header") === "1" || params.get("omit_header") === "true";
+	const omitFooterParam = params.get("omit_footer") === "1" || params.get("omit_footer") === "true";
+	const isStrippedParam = params.get("stripped") === "1" || params.get("stripped") === "true" || params.get("frame") === "1" || params.get("frame") === "true";
+	const resolvedVariant = isStrippedParam ? "code" : variant;
+	const omitHeader = omitHeaderParam || isStrippedParam || resolvedVariant === "code";
+	const omitFooter = omitFooterParam || isStrippedParam || resolvedVariant === "code";
 
 	let code = normalizeText(params.get("code"), MAX_LEN.code, false);
 	if(!code) {
@@ -509,7 +537,7 @@ function readLabelFromQuery() {
 	code = normalizeText(code, MAX_LEN.code, false);
 
 	if(!code) {
-		return { ...DEFAULT_LABEL, slug: "live" };
+		return { ...DEFAULT_LABEL, slug: "live", variant: resolvedVariant, omitHeader, omitFooter };
 	}
 
 	return {
@@ -520,11 +548,13 @@ function readLabelFromQuery() {
 		address2,
 		code,
 		slug: "live",
-		variant,
+		variant: resolvedVariant,
 		omitTitle,
 		omitSection,
 		omitAddress1,
-		omitAddress2
+		omitAddress2,
+		omitHeader,
+		omitFooter
 	};
 }
 
@@ -806,6 +836,8 @@ function handleCopyText() {
 function updateFieldOmittedClass(input, isIncluded, tipEl) {
 	if(input) {
 		input.classList.toggle("is-omitted", !isIncluded);
+		const staticField = input.querySelector ? input.querySelector(".label-static-field") : null;
+		if(staticField) staticField.classList.toggle("is-omitted", !isIncluded);
 	}
 	if(tipEl) {
 		tipEl.textContent = isIncluded ? "Included" : "Include";
@@ -826,6 +858,7 @@ function openEditModal() {
 	const includeSectionCheck = document.getElementById("label-include-section") || document.getElementById("label-include-segment");
 	const includeAddress1Check = document.getElementById("label-include-address1");
 	const includeAddress2Check = document.getElementById("label-include-address2");
+	const toggleFrameOnlyCheck = document.getElementById("label-toggle-frame-only") || document.getElementById("label-toggle-stripped");
 
 	if(titleInput) titleInput.value = currentLabel.title || "";
 	if(sectionInput) sectionInput.value = currentLabel.section || currentLabel.segment || "";
@@ -837,11 +870,17 @@ function openEditModal() {
 	const hasSection = !currentLabel.omitSection && !currentLabel.omitSegment && !!(currentLabel.section || currentLabel.segment || "").trim();
 	const hasAddress1 = !currentLabel.omitAddress1 && !!(currentLabel.address1 || "").trim();
 	const hasAddress2 = !currentLabel.omitAddress2 && !!(currentLabel.address2 || "").trim();
+	const isFrameOnly = currentLabel.variant === "code" || (!!currentLabel.omitHeader && !!currentLabel.omitFooter);
 
 	if(includeTitleCheck) includeTitleCheck.checked = hasTitle;
 	if(includeSectionCheck) includeSectionCheck.checked = hasSection;
 	if(includeAddress1Check) includeAddress1Check.checked = hasAddress1;
 	if(includeAddress2Check) includeAddress2Check.checked = hasAddress2;
+	if(toggleFrameOnlyCheck) {
+		toggleFrameOnlyCheck.checked = isFrameOnly;
+		const tip = toggleFrameOnlyCheck.parentElement?.querySelector(".label-omit-tip");
+		if(tip) tip.textContent = isFrameOnly ? "Active" : "Enable";
+	}
 
 	updateFieldOmittedClass(titleInput, hasTitle, includeTitleCheck?.parentElement?.querySelector(".label-omit-tip"));
 	updateFieldOmittedClass(sectionInput, hasSection, includeSectionCheck?.parentElement?.querySelector(".label-omit-tip"));
@@ -887,11 +926,16 @@ function applyEditForm() {
 	)?.checked || false;
 	const includeAddress1 = document.getElementById("label-include-address1")?.checked || false;
 	const includeAddress2 = document.getElementById("label-include-address2")?.checked || false;
+	const toggleFrameOnlyCheck = document.getElementById("label-toggle-frame-only") || document.getElementById("label-toggle-stripped");
+	const isFrameOnly = toggleFrameOnlyCheck?.checked ?? false;
 
 	const omitTitle = !includeTitle;
 	const omitSection = !includeSection;
 	const omitAddress1 = !includeAddress1;
 	const omitAddress2 = !includeAddress2;
+	const omitHeader = isFrameOnly;
+	const omitFooter = isFrameOnly;
+	const variant = isFrameOnly ? "code" : "minimalist";
 
 	const updated = {
 		...(currentLabel || {}),
@@ -901,11 +945,14 @@ function applyEditForm() {
 		address1,
 		address2,
 		code,
+		variant,
 		omitTitle,
 		omitSection,
 		omitSegment: omitSection,
 		omitAddress1,
-		omitAddress2
+		omitAddress2,
+		omitHeader,
+		omitFooter
 	};
 
 	// Update browser URL query params
@@ -920,7 +967,9 @@ function applyEditForm() {
 	if(omitAddress1) params.set("omit_address1", "1");
 	if(address2) params.set("address2", address2);
 	if(omitAddress2) params.set("omit_address2", "1");
-	if(updated.variant && updated.variant !== "minimalist") params.set("variant", updated.variant);
+	if(variant === "code") {
+		params.set("variant", "code");
+	}
 
 	const newUrl = window.location.pathname + "?" + params.toString();
 	window.history.replaceState(null, "", newUrl);
@@ -1028,11 +1077,51 @@ function initEventListeners() {
 		}
 	});
 
-	// Handle cached label table row clicks and code cell clicks
+	const toggleFrameOnlyCheck = document.getElementById("label-toggle-frame-only") || document.getElementById("label-toggle-stripped");
+	if(toggleFrameOnlyCheck) {
+		toggleFrameOnlyCheck.addEventListener("change", () => {
+			const tip = toggleFrameOnlyCheck.parentElement?.querySelector(".label-omit-tip");
+			if(tip) tip.textContent = toggleFrameOnlyCheck.checked ? "Active" : "Enable";
+		});
+	}
+
+	// Handle cached label table row clicks, preview toggles, and code cell clicks
 	const cachedRows = document.querySelectorAll(".label-cached-row");
 	cachedRows.forEach(row => {
-		const href = row.dataset.href;
-		if(!href) return;
+		const fullHref = row.dataset.href;
+		const strippedHref = row.dataset.hrefStripped || fullHref;
+
+		function loadRowIntoPreview(variant = "minimalist") {
+			const isStripped = variant === "code";
+			const targetLabel = {
+				title: row.dataset.title || "",
+				section: row.dataset.section || "",
+				segment: row.dataset.section || "",
+				city: row.dataset.city || "",
+				address1: row.dataset.address1 || "",
+				address2: row.dataset.address2 || "",
+				code: row.dataset.code || "",
+				slug: "live",
+				variant: isStripped ? "code" : "minimalist",
+				omitTitle: false,
+				omitSection: false,
+				omitSegment: false,
+				omitAddress1: false,
+				omitAddress2: false,
+				omitHeader: isStripped,
+				omitFooter: isStripped
+			};
+			renderLabel(targetLabel);
+			const targetUrl = isStripped ? strippedHref : fullHref;
+			if(targetUrl) {
+				window.history.pushState(null, "", targetUrl);
+			}
+			const capture = document.getElementById("label-capture");
+			if(capture) {
+				capture.scrollIntoView({ behavior: "smooth", block: "nearest" });
+			}
+		}
+
 		row.addEventListener("click", (e) => {
 			const codeCell = e.target.closest(".td-code");
 			if(codeCell) {
@@ -1042,20 +1131,53 @@ function initEventListeners() {
 				}
 				return;
 			}
+			// If clicking on direct file links (PNG/SVG a.label-img-link), let browser open them
+			if(e.target.closest("a.label-img-link")) return;
+
+			// If clicking on a preview toggle button inside the row:
+			const toggleBtn = e.target.closest(".label-toggle-preview");
+			if(toggleBtn) {
+				e.preventDefault();
+				const action = toggleBtn.dataset.action;
+				loadRowIntoPreview(action === "frame" || action === "stripped" ? "code" : "minimalist");
+				return;
+			}
+
+			// If clicking anywhere inside td-frame-only or td-stripped cell:
+			if(e.target.closest(".td-frame-only, .td-stripped")) {
+				e.preventDefault();
+				loadRowIntoPreview("code");
+				return;
+			}
+
+			// If clicking anywhere inside td-full cell:
+			if(e.target.closest(".td-full")) {
+				e.preventDefault();
+				loadRowIntoPreview("minimalist");
+				return;
+			}
+
 			if(e.target.closest("a, button")) return;
 			if(e.metaKey || e.ctrlKey) {
-				window.open(href, "_blank", "noopener");
+				window.open(fullHref, "_blank", "noopener");
 			} else {
-				window.location.href = href;
+				e.preventDefault();
+				loadRowIntoPreview("minimalist");
 			}
 		});
+
 		row.addEventListener("keydown", (e) => {
 			if(e.key === "Enter" || e.key === " ") {
 				if(e.target.closest("a, button")) return;
 				e.preventDefault();
-				window.location.href = href;
+				loadRowIntoPreview("minimalist");
 			}
 		});
+	});
+
+	window.addEventListener("popstate", () => {
+		const label = readLabelFromQuery();
+		renderLabel(label);
 	});
 }
 
