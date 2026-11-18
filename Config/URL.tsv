@@ -18,12 +18,14 @@ Path	Name	Extension
 	features	svg
 	paper	svg
 	paper	pdf
+	wolo-technical-paper	pdf
 paper/	fig1	svg
 paper/	fig2	svg
 paper/	fig3	svg
 paper/	fig4	svg
 paper/	Paper	pdf
 paper/	paper	pdf
+paper/	wolo-technical-paper	pdf
 	case	svg
 	competition	svg
 	downloads	svg

@@ -234,6 +234,54 @@ html.dark-mode .paper-subsec-heading {
 	text-align: justify;
 }
 
+/* Locality Variant Cards */
+.paper-variant-card {
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	padding: 16px 20px;
+	margin: 16px 0 20px;
+}
+
+html.dark-mode .paper-variant-card {
+	background: #1c2333;
+	border-color: #2b3548;
+}
+
+.paper-variant-title {
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: #1e293b;
+	margin: 0 0 10px;
+}
+
+html.dark-mode .paper-variant-title {
+	color: #f1f5f9;
+}
+
+.paper-code-example {
+	background: #eef7fa;
+	border: 1px solid #cbd5e1;
+	border-radius: 6px;
+	padding: 8px 14px;
+	margin: 10px 0;
+	text-align: center;
+	font-family: monospace;
+	font-size: 1.05rem;
+	color: #0369a1;
+}
+
+html.dark-mode .paper-code-example {
+	background: #192538;
+	border-color: #2d3e58;
+	color: #38bdf8;
+}
+
+.paper-example-caption {
+	margin: 8px 0 0 !important;
+	font-size: 0.95rem;
+}
+
 /* Mathematical Equations */
 .paper-equation {
 	display: flex;

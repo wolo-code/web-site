@@ -14,18 +14,18 @@
 				</div>
 			</div>
 			<div class='paper-actions'>
-				<a class='paper-btn paper-btn-primary' href='/paper/Paper.pdf' target='_blank' rel='noopener' title='Download complete paper in original IEEE PDF format'>
+				<a class='paper-btn paper-btn-primary' href='/paper/wolo-technical-paper.pdf' target='_blank' rel='noopener' title='Download complete paper in original IEEE PDF format'>
 					<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z'/></svg>
 					<span>Download PDF</span>
 				</a>
-				<span class='paper-version-tag'>doc v1.1.1</span>
+				<span class='paper-version-tag'>doc v1.2.0</span>
 			</div>
 		</header>
 
 		<!-- Abstract & Keywords -->
 		<div class='paper-abstract-box'>
 			<p>
-				<span class='paper-abstract-title'>Abstract&mdash;</span>Geographic coordinates are long complex set of numbers and symbols that are difficult to communicate e.g. 27.9881 N, 86.9250 E. The solution presented here transforms geo coordinates into a sequence of three words preceded with the name of the locality it belongs to, which is generally a city e.g. Bangalore cat apple tomato. The size of the dictionary of the words used is only 1024 words. Thereby allowing the most simple words to be chosen that are unambiguous and easy to communicate.
+				<span class='paper-abstract-title'>Abstract&mdash;</span>Geographic coordinates are long complex set of numbers and symbols that are difficult to communicate e.g. 27.9881 N, 86.9250 E. The solution presented here transforms geo coordinates into a sequence of three words preceded with the name of the locality it belongs to, which is generally a city (e.g. Bangalore cat apple tomato) or a region with an anchor index for rural and global coverage (e.g. Nepal 1112 candle kiwi mango). The size of the dictionary of the words used is only 1024 words. Thereby allowing the most simple words to be chosen that are unambiguous and easy to communicate.
 			</p>
 			<div class='paper-keywords'>
 				<strong>Keywords:</strong> Geographic latitude longitude, word encoding
@@ -36,7 +36,7 @@
 		<section>
 			<h2 class='paper-sec-heading'><span class='paper-sec-num'>I.</span><span>Introduction</span></h2>
 			<p>
-				It is generally difficult to communicate coordinates, and to manually input them into a computer system. On the other hand words are easy &ndash; both to communicate and input; and also to remember. Thus transforming the geographic co-ordinates into words, from which the original data can be retrieved &ndash; makes it easy to handle. Of the output code &ndash; the name of the locality in the beginning, specifies the central reference point and the next three words specify the exact point relative to it. Additionally if the locality is implicit, the three words alone suffice.
+				It is generally difficult to communicate coordinates, and to manually input them into a computer system. On the other hand words are easy &ndash; both to communicate and input; and also to remember. Thus transforming the geographic co-ordinates into words, from which the original data can be retrieved &ndash; makes it easy to handle. Of the output code &ndash; the name of the locality in the beginning (a city name, or a region name followed by a local anchor index) specifies the central reference point and the next three words specify the exact point relative to it. Additionally if the locality is implicit, the three words alone suffice.
 			</p>
 		</section>
 
@@ -248,13 +248,43 @@
 				The three numbers of output code <span class='math-var'>W</span> are mapped to the corresponding words from this table as <span class='math-var'>W<sub>1</sub></span> to <span class='math-var'>W'<sub>1</sub></span> and so on as <span class='math-var'>W'</span>.
 			</p>
 
-			<!-- Subsection E: City -->
-			<h3 class='paper-subsec-heading'><span class='paper-subsec-num'>E.</span><span>City</span></h3>
+			<!-- Subsection E: City and Regional Locality Variants -->
+			<h3 class='paper-subsec-heading'><span class='paper-subsec-num'>E.</span><span>City and Regional Locality Variants</span></h3>
 			<p>
-				The output word code <span class='math-var'>W'</span> specifies a point of the grid <span class='math-var'>G</span> of a specific city. In order to specify a particular city &ndash; the name of the city is added before the 3 words of output code <span class='math-var'>W'</span>.<br>
-				<br>
-				<strong>E.g.</strong> Bangalore cat apple tomato
+				The output word code <span class='math-var'>W'</span> specifies a point relative to a geographic reference origin. Two locality addressing formats are supported:
 			</p>
+
+			<div class='paper-variant-card'>
+				<h4 class='paper-variant-title'>1. City Variant</h4>
+				<p>
+					For locations within a registered city boundary, the name of the city precedes the three words of output code <span class='math-var'>W'</span>:
+				</p>
+				<div class='paper-code-example'>
+					<code>&lt;city&gt; &lt;word<sub>1</sub>&gt; &lt;word<sub>2</sub>&gt; &lt;word<sub>3</sub>&gt;</code>
+				</div>
+				<p class='paper-example-caption'>
+					<strong>E.g.</strong> <code>Bangalore cat apple tomato</code>
+				</p>
+			</div>
+
+			<div class='paper-variant-card'>
+				<h4 class='paper-variant-title'>2. Region Variant (Global &amp; Rural Coverage)</h4>
+				<p>
+					For locations outside registered cities &ndash; in rural, wilderness, maritime, or unmapped global areas &ndash; the system provides a named regional anchor reference.
+				</p>
+				<p>
+					The globe is partitioned into a fixed grid of half-degree anchor tiles (360 rows &times; 720 columns, each tile spanning 0.5&deg; &times; 0.5&deg;). Each named geographic region or administrative territory (countries, states, physical features) maintains a deterministic, frozen index of its intersecting global anchor tiles.
+				</p>
+				<div class='paper-code-example'>
+					<code>&lt;region&gt; &lt;index&gt; &lt;word<sub>1</sub>&gt; &lt;word<sub>2</sub>&gt; &lt;word<sub>3</sub>&gt;</code>
+				</div>
+				<p class='paper-example-caption'>
+					<strong>E.g.</strong> <code>Nepal 1112 candle kiwi mango</code> &ensp;<em>(or <code>India 1112 candle kiwi mango</code>)</em>
+				</p>
+				<p>
+					Here, the numeric <code>&lt;index&gt;</code> identifies the 1-based local anchor tile within that region's namespace, establishing the local grid origin <span class='math-var'>C'</span>. The subsequent three words specify the exact relative point within that tile at the standard 2&nbsp;m resolution using the identical 30-bit word encoding algorithm and 1024-word dictionary.
+				</p>
+			</div>
 
 			<!-- Subsection F: Reversal -->
 			<h3 class='paper-subsec-heading'><span class='paper-subsec-num'>F.</span><span>Reversal</span></h3>
@@ -464,7 +494,7 @@
 		<!-- Footer metadata -->
 		<footer class='paper-footer-meta'>
 			<div>Original Paper: <em>A method of encoding geographic latitude and longitude into sequence of words</em></div>
-			<div><strong>doc v1.1.1</strong></div>
+			<div><strong>doc v1.2.0</strong></div>
 		</footer>
 
 	</article>
