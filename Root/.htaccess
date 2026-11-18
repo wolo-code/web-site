@@ -40,14 +40,17 @@ RewriteRule ^(.*?)\.png$ Resource/$1/index.png [END]
 RewriteCond %{DOCUMENT_ROOT}/Resource/$1/index.svg -f
 RewriteRule ^(.*?)\.svg$ Resource/$1/index.svg [END]
 
-RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{DOCUMENT_ROOT}/Resource/$1.jpg -f
 RewriteRule ^(.+)\.jpg$ Resource/$1.jpg [END]
 
-RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{DOCUMENT_ROOT}/Resource/$1.png -f
 RewriteRule ^(.+)\.png$ Resource/$1.png [END]
 
-RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{DOCUMENT_ROOT}/Resource/$1.svg -f
 RewriteRule ^(.+)\.svg$ Resource/$1.svg [END]
+
+RewriteCond %{DOCUMENT_ROOT}/Resource/$1.pdf -f
+RewriteRule ^(.+)\.pdf$ Resource/$1.pdf [END]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{DOCUMENT_ROOT}/File%{REQUEST_URI} -f

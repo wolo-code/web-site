@@ -80,6 +80,7 @@
 				<li>Each city can have over a billion unique addresses. <span>( 1bn 73mn &amp; 741,824 precisely )</span></li>
 				<li>Ground address - within a city, with 2m resolution</li>
 				<li>Words from a limited <a class='link' href='https://wcodes.org/wordlist'>list</a> of only 1024 words</li>
+				<li>Read the full mathematical derivation and algorithm in the <a class='content-link XURL' href='/paper' data-target='paper' data-title='Paper'>Technical Paper</a></li>
 			</ol>
 		</div>
 		

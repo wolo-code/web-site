@@ -22,6 +22,11 @@
 				<a class='content-link'><span class='image'><?php includeSVG('', 'Apple-App-Store-badge'); ?></span></a>
 			</span>
 		</li>
+		<li>
+			<span class='download available'>
+				<a id='download-paper' href='/paper/Paper.pdf' class='content-link' target='_blank' rel='noopener'>Technical Paper (PDF)</a> <span class='separator'> | </span> <a href='/paper' data-target='paper' class='content-link XURL'>online</a>
+			</span>
+		</li>
 		<div id='download-unified-url'>
 			<span>unified url :</span> <a class='content-link' href="https://wolo.codes/get">wolo.codes/get</a>
 		</div>

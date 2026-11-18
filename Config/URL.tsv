@@ -16,6 +16,14 @@ Path	Name	Extension
 	label-layout-shared	js
 	faq	svg
 	features	svg
+	paper	svg
+	paper	pdf
+paper/	fig1	svg
+paper/	fig2	svg
+paper/	fig3	svg
+paper/	fig4	svg
+paper/	Paper	pdf
+paper/	paper	pdf
 	case	svg
 	competition	svg
 	downloads	svg
