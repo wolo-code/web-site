@@ -12,7 +12,9 @@ function normalizeText(value, maxLen, required = true) {
 }
 
 function queryParams() {
-	const raw = window.location.search.startsWith("?") ? window.location.search.slice(1) : window.location.search;
+	const fallback = typeof window.__LABEL_QUERY__ === "string" ? window.__LABEL_QUERY__ : "";
+	const source = window.location.search || fallback;
+	const raw = source.startsWith("?") ? source.slice(1) : source;
 	return new URLSearchParams(raw.replace(/\+/g, "%20"));
 }
 

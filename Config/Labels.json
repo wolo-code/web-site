@@ -30,5 +30,25 @@
     "address2": "Nepal",
     "code": "kathmandu.river.mango.bell",
     "url": "https://wolo.codes/kathmandu.river.mango.bell"
+  },
+  {
+    "title": "Lalbagh Glass House",
+    "slug": "lalbagh",
+    "variant": "minimalist",
+    "section": "Bengaluru",
+    "address1": "Lalbagh Botanical Garden",
+    "address2": "Mavalli, Bengaluru, Karnataka 560004, India",
+    "code": "bengaluru.leopard.lotus.guitar",
+    "url": "https://wolo.codes/bengaluru.leopard.lotus.guitar"
+  },
+  {
+    "title": "Gurudongmar Lake",
+    "slug": "gurudongmar",
+    "variant": "minimalist",
+    "section": "India 1112",
+    "address1": "North Sikkim",
+    "address2": "Sikkim, India",
+    "code": "india-1112.candle.kiwi.mango",
+    "url": "https://wolo.codes/india-1112.candle.kiwi.mango"
   }
 ]
